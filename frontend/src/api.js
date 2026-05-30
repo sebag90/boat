@@ -1,0 +1,170 @@
+const BASE = import.meta.env.VITE_API_URL || "";
+
+let authToken = localStorage.getItem("auth") || null;
+
+export function setAuth(username, password) {
+  authToken = btoa(`${username}:${password}`);
+  localStorage.setItem("auth", authToken);
+  localStorage.setItem("authUser", username);
+}
+
+export function clearAuth() {
+  authToken = null;
+  localStorage.removeItem("auth");
+  localStorage.removeItem("authUser");
+}
+
+export function isAuthed() {
+  return !!authToken;
+}
+
+export function currentUser() {
+  return localStorage.getItem("authUser") || "";
+}
+
+async function req(path, opts = {}) {
+  const headers = { ...(opts.headers || {}) };
+  if (authToken) headers["Authorization"] = `Basic ${authToken}`;
+  const res = await fetch(BASE + path, { ...opts, headers });
+  if (res.status === 401) {
+    clearAuth();
+    // Let the app know the session is gone (ignored during explicit login).
+    if (!path.endsWith("/me")) {
+      window.dispatchEvent(new Event("auth-expired"));
+    }
+    throw new Error("Unauthorized");
+  }
+  if (!res.ok) throw new Error((await res.text()) || res.statusText);
+  if (res.status === 204) return null;
+  const ct = res.headers.get("content-type") || "";
+  return ct.includes("application/json") ? res.json() : res;
+}
+
+// Attach credentials to direct-link/download URLs is not possible via query,
+// so downloads rely on the browser sending the session; for Basic auth we
+// open them through fetch-less anchors which include no header. To keep file
+// links working we append the token as a header via a fetch helper below.
+export const fileUrl = (path) => BASE + path;
+
+export async function openFile(path) {
+  const headers = {};
+  if (authToken) headers["Authorization"] = `Basic ${authToken}`;
+  const res = await fetch(BASE + path, { headers });
+  if (!res.ok) throw new Error("Could not load file");
+  const blob = await res.blob();
+  const url = URL.createObjectURL(blob);
+  window.open(url, "_blank");
+  setTimeout(() => URL.revokeObjectURL(url), 60000);
+}
+
+export const api = {
+  // auth
+  me: () => req("/api/me"),
+
+  // boats
+  listBoats: () => req("/api/boats"),
+  getBoat: (id) => req(`/api/boats/${id}`),
+  createBoat: (data) =>
+    req("/api/boats", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data),
+    }),
+  updateBoat: (id, data) =>
+    req(`/api/boats/${id}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data),
+    }),
+  deleteBoat: (id) => req(`/api/boats/${id}`, { method: "DELETE" }),
+
+  // documents
+  listDocuments: (id, q) =>
+    req(`/api/boats/${id}/documents${q ? `?q=${encodeURIComponent(q)}` : ""}`),
+  createDocument: (id, { title, description, file }) => {
+    const fd = new FormData();
+    fd.append("title", title);
+    fd.append("description", description);
+    if (file) fd.append("file", file);
+    return req(`/api/boats/${id}/documents`, { method: "POST", body: fd });
+  },
+  updateDocument: (docId, { title, description, file }) => {
+    const fd = new FormData();
+    fd.append("title", title);
+    fd.append("description", description);
+    if (file) fd.append("file", file);
+    return req(`/api/documents/${docId}`, { method: "PUT", body: fd });
+  },
+  deleteDocument: (docId) => req(`/api/documents/${docId}`, { method: "DELETE" }),
+
+  // maintenance
+  listMaintenance: (id) => req(`/api/boats/${id}/maintenance`),
+  addMaintenance: (id, { title, date, description, receipt }) => {
+    const fd = new FormData();
+    fd.append("title", title || "");
+    fd.append("date", date);
+    fd.append("description", description);
+    if (receipt) fd.append("receipt", receipt);
+    return req(`/api/boats/${id}/maintenance`, { method: "POST", body: fd });
+  },
+  updateMaintenance: (recId, { title, date, description, receipt }) => {
+    const fd = new FormData();
+    fd.append("title", title || "");
+    fd.append("date", date);
+    fd.append("description", description);
+    if (receipt) fd.append("receipt", receipt);
+    return req(`/api/maintenance/${recId}`, { method: "PUT", body: fd });
+  },
+  deleteMaintenance: (recId) =>
+    req(`/api/maintenance/${recId}`, { method: "DELETE" }),
+
+  // generic list (todos / shopping)
+  listItems: (kind, id) => req(`/api/boats/${id}/${kind}`),
+  addItem: (kind, id, text) =>
+    req(`/api/boats/${id}/${kind}`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ text }),
+    }),
+  updateItem: (kind, itemId, data) =>
+    req(`/api/${kind}/${itemId}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data),
+    }),
+  deleteItem: (kind, itemId) =>
+    req(`/api/${kind}/${itemId}`, { method: "DELETE" }),
+
+  // logbook
+  listLogbook: (id) => req(`/api/boats/${id}/logbook`),
+  addLog: (id, data) =>
+    req(`/api/boats/${id}/logbook`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data),
+    }),
+  updateLog: (entryId, data) =>
+    req(`/api/logbook/${entryId}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data),
+    }),
+  deleteLog: (entryId) => req(`/api/logbook/${entryId}`, { method: "DELETE" }),
+
+  // shopping (richer items)
+  listShopping: (id) => req(`/api/boats/${id}/shopping`),
+  addShopping: (id, data) =>
+    req(`/api/boats/${id}/shopping`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data),
+    }),
+  updateShopping: (itemId, data) =>
+    req(`/api/shopping/${itemId}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data),
+    }),
+  deleteShopping: (itemId) =>
+    req(`/api/shopping/${itemId}`, { method: "DELETE" }),
+};
