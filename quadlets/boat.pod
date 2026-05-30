@@ -1,0 +1,6 @@
+[Pod]
+PodName=boat
+Network=website.network
+
+[Install]
+WantedBy=default.target

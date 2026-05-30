@@ -1,0 +1,19 @@
+[Unit]
+Description=Boat Postgres
+
+[Container]
+ContainerName=boat-db
+Image=docker.io/library/postgres:16
+Volume=boat-db.volume:/var/lib/postgresql/data
+
+HealthCmd=pg_isready -U boat
+HealthInterval=10s
+
+Pod=boat.pod
+EnvironmentFile=/home/seba/containers_data/boat/db.env
+
+[Service]
+Restart=always
+
+[Install]
+WantedBy=default.target

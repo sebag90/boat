@@ -1,0 +1,19 @@
+[Unit]
+Description=Boat Backend (FastAPI)
+
+[Container]
+ContainerName=boat-backend
+Image=ghcr.io/sebag90/boat-backend:latest
+# Mount your htpasswd file (bcrypt, generated with `htpasswd -B`):
+Volume=/home/seba/containers_data/boat/htpasswd:/etc/auth/htpasswd:ro,Z
+
+Environment=HTPASSWD_FILE=/etc/auth/htpasswd
+EnvironmentFile=/home/seba/containers_data/boat/backend.env
+
+Pod=boat.pod
+
+[Service]
+Restart=always
+
+[Install]
+WantedBy=default.target
