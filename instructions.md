@@ -64,3 +64,7 @@ Also make sure that entries are ordered by date in descending order, so the newe
 
 ## 7:
 we currently have only one user, let's add users and auth based on a simple htpswd file
+
+
+## 8:
+on a mobile phone I cannot open the pdf attached files, make it so that even on a smartphone a pdf reader is shown
