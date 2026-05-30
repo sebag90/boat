@@ -40,34 +40,15 @@ async function req(path, opts = {}) {
   return ct.includes("application/json") ? res.json() : res;
 }
 
-// Attach credentials to direct-link/download URLs is not possible via query,
-// so downloads rely on the browser sending the session; for Basic auth we
-// open them through fetch-less anchors which include no header. To keep file
-// links working we append the token as a header via a fetch helper below.
 export const fileUrl = (path) => BASE + path;
 
-export async function openFile(path) {
-  // Open the tab synchronously (inside the click handler) so mobile browsers
-  // don't block it as an asynchronous popup; navigate it once the file loads.
-  const newWin = window.open("", "_blank");
-  try {
-    const headers = {};
-    if (authToken) headers["Authorization"] = `Basic ${authToken}`;
-    const res = await fetch(BASE + path, { headers });
-    if (!res.ok) throw new Error("Could not load file");
-    const blob = await res.blob();
-    const url = URL.createObjectURL(blob);
-    if (newWin) {
-      newWin.location = url;
-    } else {
-      // Popup was blocked: navigate the current tab as a fallback.
-      window.location.assign(url);
-    }
-    setTimeout(() => URL.revokeObjectURL(url), 60000);
-  } catch (e) {
-    if (newWin) newWin.close();
-    throw e;
-  }
+// Build a direct, openable URL for a protected file by carrying the auth token
+// as a query parameter. This lets a plain <a href> link work everywhere,
+// including mobile browsers' native PDF viewer (no popup / blob workarounds).
+export function authedFileUrl(path) {
+  if (!authToken) return BASE + path;
+  const sep = path.includes("?") ? "&" : "?";
+  return `${BASE}${path}${sep}auth=${encodeURIComponent(authToken)}`;
 }
 
 export const api = {

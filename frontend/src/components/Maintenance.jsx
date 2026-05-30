@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { api, openFile } from "../api.js";
+import { api, authedFileUrl } from "../api.js";
 import { formatDate } from "../format.js";
 import DetailModal from "./DetailModal.jsx";
 import Markdown from "./Markdown.jsx";
@@ -123,11 +123,9 @@ export default function Maintenance({ boatId }) {
               {editing.receipt_filename && (
                 <p>
                   <a
-                    href="#"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      openFile(`/api/maintenance/${editing.id}/receipt`);
-                    }}
+                    href={authedFileUrl(`/api/maintenance/${editing.id}/receipt`)}
+                    target="_blank"
+                    rel="noreferrer"
                   >
                     🧾 {editing.receipt_filename}
                   </a>
