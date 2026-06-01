@@ -68,3 +68,6 @@ we currently have only one user, let's add users and auth based on a simple htps
 
 ## 8:
 on a mobile phone I cannot open the pdf attached files, make it so that even on a smartphone a pdf reader is shown
+
+## 9:
+on a mobile phone the field to enter the date is bigger than all the other and goes outside of the background container it is in, make it the same size as the others fields (this happens in log book and maintenance screens)

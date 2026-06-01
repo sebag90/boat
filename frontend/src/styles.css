@@ -128,10 +128,26 @@ input[type="date"],
 textarea {
   font: inherit;
   width: 100%;
+  min-width: 0;
+  max-width: 100%;
   padding: 8px 10px;
   border: 1px solid var(--border);
   border-radius: 6px;
   background: #fff;
+}
+
+/* iOS gives date inputs an intrinsic size and ignores width:100% unless the
+   native appearance is reset; this keeps them aligned with the other fields. */
+input[type="date"] {
+  -webkit-appearance: none;
+  appearance: none;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+  height: 38px;
+}
+
+input[type="date"]::-webkit-date-and-time-value {
+  text-align: left;
 }
 
 textarea {
