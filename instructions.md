@@ -71,3 +71,7 @@ on a mobile phone I cannot open the pdf attached files, make it so that even on 
 
 ## 9:
 on a mobile phone the field to enter the date is bigger than all the other and goes outside of the background container it is in, make it the same size as the others fields (this happens in log book and maintenance screens)
+
+## 10:
+every lists (maintenance, to-do, shopping, documents etc...) is shown directly in the same div as the one where I can enter a new entry, this is not ideal as it it not immediately clear where the new entry form stops and the list starts. Make it visually more clear by either using a separator or a new div.
+Moreover, instead of having the option to delete a boat on every page, add a tab called settings (this must be the last one on the right) where a user can change the name of the boat and delete it if wished.
