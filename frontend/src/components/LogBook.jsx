@@ -108,26 +108,32 @@ export default function LogBook({ boatId }) {
 
   return (
     <div>
-      <form onSubmit={add} style={{ marginBottom: 16 }}>
-        {fieldset(form, setForm)}
-        <button type="submit">Add trip</button>
-      </form>
+      <div className="form-section">
+        <h3>Add New Trip</h3>
+        <form onSubmit={add}>
+          {fieldset(form, setForm)}
+          <button type="submit">Add trip</button>
+        </form>
+      </div>
 
-      {entries.length === 0 && <div className="empty">No trips logged yet.</div>}
+      <div className="list-section">
+        <h3>Log Book</h3>
+        {entries.length === 0 && <div className="empty">No trips logged yet.</div>}
 
-      {entries.map((entry) => (
-        <div key={entry.id} className="list-item">
-          <span className="txt grow clickable" onClick={() => openEdit(entry)}>
-            <strong>
-              {entry.start || "?"} → {entry.goal || "?"}
-            </strong>
-            <span className="muted"> — {formatDate(entry.date)}</span>
-          </span>
-          <button className="danger" onClick={() => remove(entry)}>
-            ✕
-          </button>
-        </div>
-      ))}
+        {entries.map((entry) => (
+          <div key={entry.id} className="list-item">
+            <span className="txt grow clickable" onClick={() => openEdit(entry)}>
+              <strong>
+                {entry.start || "?"} → {entry.goal || "?"}
+              </strong>
+              <span className="muted"> — {formatDate(entry.date)}</span>
+            </span>
+            <button className="danger" onClick={() => remove(entry)}>
+              ✕
+            </button>
+          </div>
+        ))}
+      </div>
 
       {editing && (
         <DetailModal

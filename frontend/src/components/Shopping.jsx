@@ -59,47 +59,53 @@ export default function Shopping({ boatId }) {
 
   return (
     <div>
-      <form onSubmit={add} style={{ marginBottom: 16 }}>
-        <div className="field">
-          <label>Item name</label>
-          <input
-            type="text"
-            value={form.name}
-            onChange={(e) => setForm({ ...form, name: e.target.value })}
-          />
-        </div>
-        <div className="field">
-          <label>Description</label>
-          <textarea
-            value={form.description}
-            onChange={(e) => setForm({ ...form, description: e.target.value })}
-          />
-        </div>
-        <div className="field">
-          <label>Link (optional)</label>
-          <input
-            type="text"
-            value={form.link}
-            placeholder="https://…"
-            onChange={(e) => setForm({ ...form, link: e.target.value })}
-          />
-        </div>
-        <button type="submit">Add item</button>
-      </form>
+      <div className="form-section">
+        <h3>Add Shopping Item</h3>
+        <form onSubmit={add}>
+          <div className="field">
+            <label>Item name</label>
+            <input
+              type="text"
+              value={form.name}
+              onChange={(e) => setForm({ ...form, name: e.target.value })}
+            />
+          </div>
+          <div className="field">
+            <label>Description</label>
+            <textarea
+              value={form.description}
+              onChange={(e) => setForm({ ...form, description: e.target.value })}
+            />
+          </div>
+          <div className="field">
+            <label>Link (optional)</label>
+            <input
+              type="text"
+              value={form.link}
+              placeholder="https://…"
+              onChange={(e) => setForm({ ...form, link: e.target.value })}
+            />
+          </div>
+          <button type="submit">Add item</button>
+        </form>
+      </div>
 
-      {items.length === 0 && <div className="empty">Shopping list is empty.</div>}
+      <div className="list-section">
+        <h3>Shopping List</h3>
+        {items.length === 0 && <div className="empty">Shopping list is empty.</div>}
 
-      {items.map((item) => (
-        <div key={item.id} className={"list-item" + (item.done ? " done" : "")}>
-          <input type="checkbox" checked={item.done} onChange={() => toggle(item)} />
-          <span className="txt grow clickable" onClick={() => openEdit(item)}>
-            <strong>{item.name}</strong>
-          </span>
-          <button className="danger" onClick={() => remove(item)}>
-            ✕
-          </button>
-        </div>
-      ))}
+        {items.map((item) => (
+          <div key={item.id} className={"list-item" + (item.done ? " done" : "")}>
+            <input type="checkbox" checked={item.done} onChange={() => toggle(item)} />
+            <span className="txt grow clickable" onClick={() => openEdit(item)}>
+              <strong>{item.name}</strong>
+            </span>
+            <button className="danger" onClick={() => remove(item)}>
+              ✕
+            </button>
+          </div>
+        ))}
+      </div>
 
       {editing && (
         <DetailModal

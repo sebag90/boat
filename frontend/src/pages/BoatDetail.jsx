@@ -6,6 +6,7 @@ import Maintenance from "../components/Maintenance.jsx";
 import Checklist from "../components/Checklist.jsx";
 import Shopping from "../components/Shopping.jsx";
 import LogBook from "../components/LogBook.jsx";
+import Settings from "../components/Settings.jsx";
 
 const TABS = [
   { key: "todos", label: "To-Do" },
@@ -13,6 +14,7 @@ const TABS = [
   { key: "logbook", label: "Log Book" },
   { key: "maintenance", label: "Maintenance" },
   { key: "documents", label: "Documents" },
+  { key: "settings", label: "Settings" },
 ];
 
 export default function BoatDetail() {
@@ -64,17 +66,14 @@ export default function BoatDetail() {
           ))}
         </div>
 
-        <div className="card">
+        <div className="tab-content">
           {tab === "todos" && <Checklist kind="todos" boatId={id} placeholder="Add a to-do…" />}
           {tab === "shopping" && <Shopping boatId={id} />}
           {tab === "logbook" && <LogBook boatId={id} />}
           {tab === "maintenance" && <Maintenance boatId={id} />}
           {tab === "documents" && <Documents boatId={id} />}
+          {tab === "settings" && <Settings boat={boat} setBoat={setBoat} onDelete={removeBoat} />}
         </div>
-
-        <button className="danger" onClick={removeBoat}>
-          Delete boat
-        </button>
       </div>
     </>
   );

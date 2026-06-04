@@ -49,34 +49,40 @@ export default function Checklist({ kind, boatId, placeholder }) {
 
   return (
     <div>
-      <form className="row" onSubmit={add} style={{ marginBottom: 12 }}>
-        <input
-          className="grow"
-          type="text"
-          value={text}
-          placeholder={placeholder}
-          onChange={(e) => setText(e.target.value)}
-        />
-        <button type="submit">Add</button>
-      </form>
-
-      {items.length === 0 && <div className="empty">Nothing here yet.</div>}
-
-      {items.map((item) => (
-        <div key={item.id} className={"list-item" + (item.done ? " done" : "")}>
+      <div className="form-section">
+        <h3>Add New Item</h3>
+        <form className="row" onSubmit={add}>
           <input
-            type="checkbox"
-            checked={item.done}
-            onChange={() => toggle(item)}
+            className="grow"
+            type="text"
+            value={text}
+            placeholder={placeholder}
+            onChange={(e) => setText(e.target.value)}
           />
-          <span className="txt grow clickable" onClick={() => openEdit(item)}>
-            {item.text}
-          </span>
-          <button className="danger" onClick={() => remove(item)}>
-            ✕
-          </button>
-        </div>
-      ))}
+          <button type="submit">Add</button>
+        </form>
+      </div>
+
+      <div className="list-section">
+        <h3>To-Do List</h3>
+        {items.length === 0 && <div className="empty">Nothing here yet.</div>}
+
+        {items.map((item) => (
+          <div key={item.id} className={"list-item" + (item.done ? " done" : "")}>
+            <input
+              type="checkbox"
+              checked={item.done}
+              onChange={() => toggle(item)}
+            />
+            <span className="txt grow clickable" onClick={() => openEdit(item)}>
+              {item.text}
+            </span>
+            <button className="danger" onClick={() => remove(item)}>
+              ✕
+            </button>
+          </div>
+        ))}
+      </div>
 
       {editing && (
         <DetailModal

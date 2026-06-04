@@ -73,44 +73,50 @@ export default function Maintenance({ boatId }) {
 
   return (
     <div>
-      <form onSubmit={add} style={{ marginBottom: 16 }}>
-        <div className="field">
-          <label>Title</label>
-          <input type="text" value={title} onChange={(e) => setTitle(e.target.value)} />
-        </div>
-        <div className="field">
-          <label>Date</label>
-          <input type="date" value={date} onChange={(e) => setDate(e.target.value)} />
-        </div>
-        <div className="field">
-          <label>Description of the job done</label>
-          <textarea
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-          />
-        </div>
-        <div className="field">
-          <label>Receipt (optional)</label>
-          <input ref={fileRef} type="file" />
-        </div>
-        <button type="submit" disabled={busy}>
-          Add entry
-        </button>
-      </form>
-
-      {records.length === 0 && <div className="empty">No maintenance history yet.</div>}
-
-      {records.map((r) => (
-        <div key={r.id} className="list-item">
-          <span className="txt grow clickable" onClick={() => openEdit(r)}>
-            <span className="muted">{formatDate(r.date)} — </span>
-            <strong>{r.title || "Untitled"}</strong>
-          </span>
-          <button className="danger" onClick={() => remove(r)}>
-            ✕
+      <div className="form-section">
+        <h3>Add New Maintenance Entry</h3>
+        <form onSubmit={add}>
+          <div className="field">
+            <label>Title</label>
+            <input type="text" value={title} onChange={(e) => setTitle(e.target.value)} />
+          </div>
+          <div className="field">
+            <label>Date</label>
+            <input type="date" value={date} onChange={(e) => setDate(e.target.value)} />
+          </div>
+          <div className="field">
+            <label>Description of the job done</label>
+            <textarea
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+            />
+          </div>
+          <div className="field">
+            <label>Receipt (optional)</label>
+            <input ref={fileRef} type="file" />
+          </div>
+          <button type="submit" disabled={busy}>
+            Add entry
           </button>
-        </div>
-      ))}
+        </form>
+      </div>
+
+      <div className="list-section">
+        <h3>Maintenance History</h3>
+        {records.length === 0 && <div className="empty">No maintenance history yet.</div>}
+
+        {records.map((r) => (
+          <div key={r.id} className="list-item">
+            <span className="txt grow clickable" onClick={() => openEdit(r)}>
+              <span className="muted">{formatDate(r.date)} — </span>
+              <strong>{r.title || "Untitled"}</strong>
+            </span>
+            <button className="danger" onClick={() => remove(r)}>
+              ✕
+            </button>
+          </div>
+        ))}
+      </div>
 
       {editing && (
         <DetailModal

@@ -345,3 +345,69 @@ textarea {
     padding: 10px 16px;
   }
 }
+
+/* ---------- Form and List Sections ---------- */
+.form-section, .list-section, .settings {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 18px;
+  margin-bottom: 16px;
+}
+
+.form-section h3 {
+  margin: 0 0 16px 0;
+  font-size: 16px;
+  color: var(--text);
+  font-weight: 600;
+}
+
+.list-section h3 {
+  margin: 0 0 16px 0;
+  font-size: 16px;
+  color: var(--text);
+  font-weight: 600;
+}
+
+/* Settings component styles */
+.settings-section {
+  margin-bottom: 32px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid var(--border);
+}
+
+.settings-section:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+}
+
+.settings-section h4 {
+  margin: 0 0 16px 0;
+  font-size: 15px;
+  color: var(--text);
+}
+
+.danger-section {
+  border-color: var(--danger);
+  border-width: 2px;
+  border-style: dashed;
+  padding: 20px;
+  border-radius: 8px;
+  background: rgba(192, 57, 43, 0.05);
+}
+
+.boat-info .field-display {
+  margin-bottom: 12px;
+}
+
+.boat-info .field-display label {
+  font-weight: 600;
+  margin-right: 8px;
+  color: var(--text);
+}
+
+.boat-edit .buttons {
+  display: flex;
+  gap: 8px;
+  margin-top: 16px;
+}

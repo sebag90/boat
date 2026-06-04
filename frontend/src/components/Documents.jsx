@@ -75,52 +75,58 @@ export default function Documents({ boatId }) {
 
   return (
     <div>
-      <form onSubmit={add} style={{ marginBottom: 16 }}>
-        <div className="field">
-          <label>Title</label>
-          <input type="text" value={title} onChange={(e) => setTitle(e.target.value)} />
-        </div>
-        <div className="field">
-          <label>Description</label>
-          <textarea
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-          />
-        </div>
-        <div className="field">
-          <label>Document file (optional)</label>
-          <input ref={fileRef} type="file" />
-        </div>
-        <button type="submit" disabled={busy}>
-          Add entry
-        </button>
-      </form>
-
-      <div className="field">
-        <input
-          type="text"
-          value={search}
-          placeholder="🔍 Search documents…"
-          onChange={(e) => setSearch(e.target.value)}
-        />
+      <div className="form-section">
+        <h3>Add New Document</h3>
+        <form onSubmit={add}>
+          <div className="field">
+            <label>Title</label>
+            <input type="text" value={title} onChange={(e) => setTitle(e.target.value)} />
+          </div>
+          <div className="field">
+            <label>Description</label>
+            <textarea
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+            />
+          </div>
+          <div className="field">
+            <label>Document file (optional)</label>
+            <input ref={fileRef} type="file" />
+          </div>
+          <button type="submit" disabled={busy}>
+            Add entry
+          </button>
+        </form>
       </div>
 
-      {docs.length === 0 && (
-        <div className="empty">
-          {search ? "No matching documents." : "No documents yet."}
+      <div className="list-section">
+        <h3>Documents</h3>
+        <div className="field">
+          <input
+            type="text"
+            value={search}
+            placeholder="🔍 Search documents…"
+            onChange={(e) => setSearch(e.target.value)}
+          />
         </div>
-      )}
 
-      {docs.map((d) => (
-        <div key={d.id} className="list-item">
-          <span className="txt grow clickable" onClick={() => openEdit(d)}>
-            <strong>{d.title}</strong>
-          </span>
-          <button className="danger" onClick={() => remove(d)}>
-            ✕
-          </button>
-        </div>
-      ))}
+        {docs.length === 0 && (
+          <div className="empty">
+            {search ? "No matching documents." : "No documents yet."}
+          </div>
+        )}
+
+        {docs.map((d) => (
+          <div key={d.id} className="list-item">
+            <span className="txt grow clickable" onClick={() => openEdit(d)}>
+              <strong>{d.title}</strong>
+            </span>
+            <button className="danger" onClick={() => remove(d)}>
+              ✕
+            </button>
+          </div>
+        ))}
+      </div>
 
       {editing && (
         <DetailModal
