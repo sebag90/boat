@@ -118,16 +118,35 @@ export default function Documents({ boatId }) {
           </div>
         )}
 
-        {docs.map((d) => (
-          <div key={d.id} className="list-item">
-            <span className="txt grow clickable" onClick={() => openEdit(d)}>
-              <strong>{d.title}</strong>
-            </span>
-            <button className="danger" onClick={() => remove(d)}>
-              ✕
-            </button>
-          </div>
-        ))}
+        <div className="tiles-grid">
+          {docs.map((d) => (
+            <div key={d.id} className="tile-item">
+              <div className="tile-content clickable" onClick={() => openEdit(d)}>
+                <div className="tile-title">{d.title}</div>
+                {d.description && (
+                  <div className="tile-desc">{d.description}</div>
+                )}
+                {d.filename && (
+                  <div className="tile-desc" style={{ marginTop: "8px" }}>
+                    <a
+                      href={authedFileUrl(`/api/documents/${d.id}/download`)}
+                      target="_blank"
+                      rel="noreferrer"
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      📄 {d.filename}
+                    </a>
+                  </div>
+                )}
+              </div>
+              <div className="tile-actions">
+                <button className="danger" onClick={() => remove(d)}>
+                  ✕
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
 
       {editing && (

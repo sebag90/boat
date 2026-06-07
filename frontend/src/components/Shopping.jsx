@@ -105,17 +105,38 @@ export default function Shopping({ boatId }) {
         <h3>Shopping List</h3>
         {items.length === 0 && <div className="empty">Shopping list is empty.</div>}
 
-        {items.map((item) => (
-          <div key={item.id} className={"list-item" + (item.done ? " done" : "")}>
-            <input type="checkbox" checked={item.done} onChange={() => toggle(item)} />
-            <span className="txt grow clickable" onClick={() => openEdit(item)}>
-              <strong>{item.name}</strong>
-            </span>
-            <button className="danger" onClick={() => remove(item)}>
-              ✕
-            </button>
-          </div>
-        ))}
+        <div className="tiles-grid">
+          {items.map((item) => (
+            <div key={item.id} className={"tile-item" + (item.done ? " done" : "")}>
+              <div className="tile-content clickable" onClick={() => openEdit(item)}>
+                <div className="row" style={{ marginBottom: "8px" }}>
+                  <input type="checkbox" checked={item.done} onClick={(e) => e.stopPropagation()} onChange={() => toggle(item)} />
+                  <span className="tile-title" style={{ margin: 0 }}>{item.name}</span>
+                </div>
+                {item.description && (
+                  <div className="tile-desc">{item.description}</div>
+                )}
+                {item.link && (
+                  <div className="tile-desc" style={{ marginTop: "8px" }}>
+                    <a
+                      href={item.link}
+                      target="_blank"
+                      rel="noreferrer"
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      🔗 Link
+                    </a>
+                  </div>
+                )}
+              </div>
+              <div className="tile-actions">
+                <button className="danger" onClick={() => remove(item)}>
+                  ✕
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
 
       {editing && (
