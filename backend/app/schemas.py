@@ -76,6 +76,8 @@ class ItemOut(BaseModel):
     id: int
     text: str
     done: bool
+    file_filename: str | None = None
+    file_content_type: str | None = None
     created_at: datetime
 
     class Config:
@@ -101,6 +103,8 @@ class ShoppingOut(BaseModel):
     description: str
     link: str
     done: bool
+    file_filename: str | None = None
+    file_content_type: str | None = None
     created_at: datetime
 
     class Config:

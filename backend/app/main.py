@@ -296,13 +296,58 @@ def list_todos(boat_id: int, db: Session = Depends(get_db)):
 
 
 @app.post("/api/boats/{boat_id}/todos", response_model=schemas.ItemOut)
-def add_todo(boat_id: int, payload: schemas.ItemCreate, db: Session = Depends(get_db)):
-    return _add_item(models.Todo, boat_id, payload, db)
+async def add_todo(
+    boat_id: int,
+    text: str = Form(...),
+    file: UploadFile | None = File(None),
+    db: Session = Depends(get_db)
+):
+    get_boat(boat_id, db)
+    item = models.Todo(boat_id=boat_id, text=text)
+    if file is not None:
+        item.file_data = await file.read()
+        item.file_filename = file.filename
+        item.file_content_type = file.content_type or "application/octet-stream"
+    db.add(item)
+    db.commit()
+    db.refresh(item)
+    return item
 
 
 @app.put("/api/todos/{item_id}", response_model=schemas.ItemOut)
-def update_todo(item_id: int, payload: schemas.ItemUpdate, db: Session = Depends(get_db)):
-    return _update_item(models.Todo, item_id, payload, db)
+async def update_todo(
+    item_id: int,
+    text: str | None = Form(None),
+    done: bool | None = Form(None),
+    file: UploadFile | None = File(None),
+    db: Session = Depends(get_db)
+):
+    item = db.get(models.Todo, item_id)
+    if not item:
+        raise HTTPException(404, "Item not found")
+    if text is not None:
+        item.text = text
+    if done is not None:
+        item.done = done
+    if file is not None:
+        item.file_data = await file.read()
+        item.file_filename = file.filename
+        item.file_content_type = file.content_type or "application/octet-stream"
+    db.commit()
+    db.refresh(item)
+    return item
+
+
+@app.get("/api/todos/{item_id}/file")
+def download_todo_file(item_id: int, db: Session = Depends(get_db)):
+    item = db.get(models.Todo, item_id)
+    if not item or not item.file_data:
+        raise HTTPException(404, "File not found")
+    return StreamingResponse(
+        io.BytesIO(item.file_data),
+        media_type=item.file_content_type or "application/octet-stream",
+        headers={"Content-Disposition": f'inline; filename="{item.file_filename}"'},
+    )
 
 
 @app.delete("/api/todos/{item_id}")
@@ -323,14 +368,25 @@ def list_shopping(boat_id: int, db: Session = Depends(get_db)):
 
 
 @app.post("/api/boats/{boat_id}/shopping", response_model=schemas.ShoppingOut)
-def add_shopping(boat_id: int, payload: schemas.ShoppingCreate, db: Session = Depends(get_db)):
+async def add_shopping(
+    boat_id: int,
+    name: str = Form(...),
+    description: str = Form(""),
+    link: str = Form(""),
+    file: UploadFile | None = File(None),
+    db: Session = Depends(get_db)
+):
     get_boat(boat_id, db)
     item = models.ShoppingItem(
         boat_id=boat_id,
-        name=payload.name,
-        description=payload.description,
-        link=payload.link,
+        name=name,
+        description=description,
+        link=link,
     )
+    if file is not None:
+        item.file_data = await file.read()
+        item.file_filename = file.filename
+        item.file_content_type = file.content_type or "application/octet-stream"
     db.add(item)
     db.commit()
     db.refresh(item)
@@ -338,21 +394,45 @@ def add_shopping(boat_id: int, payload: schemas.ShoppingCreate, db: Session = De
 
 
 @app.put("/api/shopping/{item_id}", response_model=schemas.ShoppingOut)
-def update_shopping(item_id: int, payload: schemas.ShoppingUpdate, db: Session = Depends(get_db)):
+async def update_shopping(
+    item_id: int,
+    name: str | None = Form(None),
+    description: str | None = Form(None),
+    link: str | None = Form(None),
+    done: bool | None = Form(None),
+    file: UploadFile | None = File(None),
+    db: Session = Depends(get_db)
+):
     item = db.get(models.ShoppingItem, item_id)
     if not item:
         raise HTTPException(404, "Item not found")
-    if payload.name is not None:
-        item.name = payload.name
-    if payload.description is not None:
-        item.description = payload.description
-    if payload.link is not None:
-        item.link = payload.link
-    if payload.done is not None:
-        item.done = payload.done
+    if name is not None:
+        item.name = name
+    if description is not None:
+        item.description = description
+    if link is not None:
+        item.link = link
+    if done is not None:
+        item.done = done
+    if file is not None:
+        item.file_data = await file.read()
+        item.file_filename = file.filename
+        item.file_content_type = file.content_type or "application/octet-stream"
     db.commit()
     db.refresh(item)
     return item
+
+
+@app.get("/api/shopping/{item_id}/file")
+def download_shopping_file(item_id: int, db: Session = Depends(get_db)):
+    item = db.get(models.ShoppingItem, item_id)
+    if not item or not item.file_data:
+        raise HTTPException(404, "File not found")
+    return StreamingResponse(
+        io.BytesIO(item.file_data),
+        media_type=item.file_content_type or "application/octet-stream",
+        headers={"Content-Disposition": f'inline; filename="{item.file_filename}"'},
+    )
 
 
 @app.delete("/api/shopping/{item_id}")

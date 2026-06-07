@@ -387,10 +387,8 @@ textarea {
   color: var(--text);
 }
 
-.danger-section {
-  border-color: var(--danger);
-  border-width: 2px;
-  border-style: dashed;
+.settings-section.danger-section {
+  border: 2px dashed var(--danger);
   padding: 20px;
   border-radius: 8px;
   background: rgba(192, 57, 43, 0.05);

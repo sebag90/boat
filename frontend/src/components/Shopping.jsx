@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { api } from "../api.js";
+import { api, authedFileUrl } from "../api.js";
 import DetailModal from "./DetailModal.jsx";
 import Markdown from "./Markdown.jsx";
 
@@ -8,8 +8,10 @@ const EMPTY = { name: "", description: "", link: "" };
 export default function Shopping({ boatId }) {
   const [items, setItems] = useState([]);
   const [form, setForm] = useState(EMPTY);
+  const [file, setFile] = useState(null);
   const [editing, setEditing] = useState(null);
   const [editForm, setEditForm] = useState(EMPTY);
+  const [editFile, setEditFile] = useState(null);
 
   async function load() {
     setItems(await api.listShopping(boatId));
@@ -26,8 +28,11 @@ export default function Shopping({ boatId }) {
       name: form.name.trim(),
       description: form.description.trim(),
       link: form.link.trim(),
+      file: file,
     });
     setForm(EMPTY);
+    setFile(null);
+    if (e.target.file) e.target.file.value = "";
     load();
   }
 
@@ -44,6 +49,7 @@ export default function Shopping({ boatId }) {
   function openEdit(item) {
     setEditing(item);
     setEditForm({ name: item.name, description: item.description, link: item.link });
+    setEditFile(null);
   }
 
   async function saveEdit() {
@@ -52,6 +58,7 @@ export default function Shopping({ boatId }) {
       name: editForm.name.trim(),
       description: editForm.description.trim(),
       link: editForm.link.trim(),
+      file: editFile,
     });
     setEditing(null);
     load();
@@ -84,6 +91,14 @@ export default function Shopping({ boatId }) {
               value={form.link}
               placeholder="https://…"
               onChange={(e) => setForm({ ...form, link: e.target.value })}
+            />
+          </div>
+          <div className="field">
+            <label>File (optional)</label>
+            <input
+              type="file"
+              name="file"
+              onChange={(e) => setFile(e.target.files[0])}
             />
           </div>
           <button type="submit">Add item</button>
@@ -122,6 +137,17 @@ export default function Shopping({ boatId }) {
                   </a>
                 </p>
               )}
+              {editing.file_filename && (
+                <div style={{ marginTop: "10px" }}>
+                  <a
+                    href={authedFileUrl(`/api/shopping/${editing.id}/file`)}
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    📄 {editing.file_filename}
+                  </a>
+                </div>
+              )}
             </>
           }
           edit={
@@ -150,6 +176,13 @@ export default function Shopping({ boatId }) {
                   type="text"
                   value={editForm.link}
                   onChange={(e) => setEditForm({ ...editForm, link: e.target.value })}
+                />
+              </div>
+              <div className="field">
+                <label>Replace File</label>
+                <input
+                  type="file"
+                  onChange={(e) => setEditFile(e.target.files[0])}
                 />
               </div>
             </>

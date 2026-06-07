@@ -75,3 +75,12 @@ on a mobile phone the field to enter the date is bigger than all the other and g
 ## 10:
 every lists (maintenance, to-do, shopping, documents etc...) is shown directly in the same div as the one where I can enter a new entry, this is not ideal as it it not immediately clear where the new entry form stops and the list starts. Make it visually more clear by either using a separator or a new div.
 Moreover, instead of having the option to delete a boat on every page, add a tab called settings (this must be the last one on the right) where a user can change the name of the boat and delete it if wished.
+
+
+## 11:
+add the possibility to upload images both for the to-do list and the shopping list
+
+## 12:
+adjust the attached documents of the todo and shopping list to behave exactly like in the documents and maintenance tabs:
+* users can upload any kind of files, not only jpeg
+* upon clicking on a saved entry in the list, do not preview the attached file and make it cliccable so that it opens in a new page

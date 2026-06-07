@@ -1,13 +1,15 @@
 import { useEffect, useState } from "react";
-import { api } from "../api.js";
+import { api, authedFileUrl } from "../api.js";
 import DetailModal from "./DetailModal.jsx";
 import Markdown from "./Markdown.jsx";
 
 export default function Checklist({ kind, boatId, placeholder }) {
   const [items, setItems] = useState([]);
   const [text, setText] = useState("");
+  const [file, setFile] = useState(null);
   const [editing, setEditing] = useState(null);
   const [editText, setEditText] = useState("");
+  const [editFile, setEditFile] = useState(null);
 
   async function load() {
     setItems(await api.listItems(kind, boatId));
@@ -20,8 +22,10 @@ export default function Checklist({ kind, boatId, placeholder }) {
   async function add(e) {
     e.preventDefault();
     if (!text.trim()) return;
-    await api.addItem(kind, boatId, text.trim());
+    await api.addItem(kind, boatId, { text: text.trim(), file });
     setText("");
+    setFile(null);
+    if (e.target.file) e.target.file.value = "";
     load();
   }
 
@@ -38,11 +42,12 @@ export default function Checklist({ kind, boatId, placeholder }) {
   function openEdit(item) {
     setEditing(item);
     setEditText(item.text);
+    setEditFile(null);
   }
 
   async function saveEdit() {
     if (!editText.trim()) return;
-    await api.updateItem(kind, editing.id, { text: editText.trim() });
+    await api.updateItem(kind, editing.id, { text: editText.trim(), file: editFile });
     setEditing(null);
     load();
   }
@@ -51,15 +56,24 @@ export default function Checklist({ kind, boatId, placeholder }) {
     <div>
       <div className="form-section">
         <h3>Add New Item</h3>
-        <form className="row" onSubmit={add}>
-          <input
-            className="grow"
-            type="text"
-            value={text}
-            placeholder={placeholder}
-            onChange={(e) => setText(e.target.value)}
-          />
-          <button type="submit">Add</button>
+        <form onSubmit={add}>
+          <div className="row">
+            <input
+              className="grow"
+              type="text"
+              value={text}
+              placeholder={placeholder}
+              onChange={(e) => setText(e.target.value)}
+            />
+            <button type="submit">Add</button>
+          </div>
+          <div style={{ marginTop: "0.5rem" }}>
+            <input
+              type="file"
+              name="file"
+              onChange={(e) => setFile(e.target.files[0])}
+            />
+          </div>
         </form>
       </div>
 
@@ -75,7 +89,7 @@ export default function Checklist({ kind, boatId, placeholder }) {
               onChange={() => toggle(item)}
             />
             <span className="txt grow clickable" onClick={() => openEdit(item)}>
-              {item.text}
+              <strong>{item.text}</strong>
             </span>
             <button className="danger" onClick={() => remove(item)}>
               ✕
@@ -89,17 +103,41 @@ export default function Checklist({ kind, boatId, placeholder }) {
           title={editing.text}
           onClose={() => setEditing(null)}
           onSave={saveEdit}
-          view={<Markdown text={editing.text} />}
-          edit={
-            <div className="field">
-              <label>Text</label>
-              <input
-                type="text"
-                value={editText}
-                autoFocus
-                onChange={(e) => setEditText(e.target.value)}
-              />
+          view={
+            <div>
+              <Markdown text={editing.text} />
+              {editing.file_filename && (
+                <div style={{ marginTop: "10px" }}>
+                  <a
+                    href={authedFileUrl(`/api/${kind}/${editing.id}/file`)}
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    📄 {editing.file_filename}
+                  </a>
+                </div>
+              )}
             </div>
+          }
+          edit={
+            <>
+              <div className="field">
+                <label>Text</label>
+                <input
+                  type="text"
+                  value={editText}
+                  autoFocus
+                  onChange={(e) => setEditText(e.target.value)}
+                />
+              </div>
+              <div className="field">
+                <label>Replace File</label>
+                <input
+                  type="file"
+                  onChange={(e) => setEditFile(e.target.files[0])}
+                />
+              </div>
+            </>
           }
         />
       )}

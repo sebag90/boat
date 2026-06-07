@@ -69,6 +69,9 @@ class Todo(Base):
     boat_id: Mapped[int] = mapped_column(ForeignKey("boats.id", ondelete="CASCADE"))
     text: Mapped[str] = mapped_column(Text)
     done: Mapped[bool] = mapped_column(Boolean, default=False)
+    file_filename: Mapped[str | None] = mapped_column(String(500), nullable=True)
+    file_content_type: Mapped[str | None] = mapped_column(String(200), nullable=True)
+    file_data: Mapped[bytes | None] = mapped_column(LargeBinary, nullable=True)
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
 
     boat: Mapped[Boat] = relationship(back_populates="todos")
@@ -98,6 +101,9 @@ class ShoppingItem(Base):
     description: Mapped[str] = mapped_column(Text, default="")
     link: Mapped[str] = mapped_column(Text, default="")
     done: Mapped[bool] = mapped_column(Boolean, default=False)
+    file_filename: Mapped[str | None] = mapped_column(String(500), nullable=True)
+    file_content_type: Mapped[str | None] = mapped_column(String(200), nullable=True)
+    file_data: Mapped[bytes | None] = mapped_column(LargeBinary, nullable=True)
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
 
     boat: Mapped[Boat] = relationship(back_populates="shopping")

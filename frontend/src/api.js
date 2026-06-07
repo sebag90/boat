@@ -112,20 +112,27 @@ export const api = {
   deleteMaintenance: (recId) =>
     req(`/api/maintenance/${recId}`, { method: "DELETE" }),
 
-  // generic list (todos / shopping)
+  // generic list (todos)
   listItems: (kind, id) => req(`/api/boats/${id}/${kind}`),
-  addItem: (kind, id, text) =>
-    req(`/api/boats/${id}/${kind}`, {
+  addItem: (kind, id, { text, file }) => {
+    const fd = new FormData();
+    fd.append("text", text);
+    if (file) fd.append("file", file);
+    return req(`/api/boats/${id}/${kind}`, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ text }),
-    }),
-  updateItem: (kind, itemId, data) =>
-    req(`/api/${kind}/${itemId}`, {
+      body: fd,
+    });
+  },
+  updateItem: (kind, itemId, { text, done, file }) => {
+    const fd = new FormData();
+    if (text !== undefined) fd.append("text", text);
+    if (done !== undefined) fd.append("done", done);
+    if (file) fd.append("file", file);
+    return req(`/api/${kind}/${itemId}`, {
       method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(data),
-    }),
+      body: fd,
+    });
+  },
   deleteItem: (kind, itemId) =>
     req(`/api/${kind}/${itemId}`, { method: "DELETE" }),
 
@@ -147,18 +154,29 @@ export const api = {
 
   // shopping (richer items)
   listShopping: (id) => req(`/api/boats/${id}/shopping`),
-  addShopping: (id, data) =>
-    req(`/api/boats/${id}/shopping`, {
+  addShopping: (id, { name, description, link, file }) => {
+    const fd = new FormData();
+    fd.append("name", name);
+    if (description !== undefined) fd.append("description", description);
+    if (link !== undefined) fd.append("link", link);
+    if (file) fd.append("file", file);
+    return req(`/api/boats/${id}/shopping`, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(data),
-    }),
-  updateShopping: (itemId, data) =>
-    req(`/api/shopping/${itemId}`, {
+      body: fd,
+    });
+  },
+  updateShopping: (itemId, { name, description, link, done, file }) => {
+    const fd = new FormData();
+    if (name !== undefined) fd.append("name", name);
+    if (description !== undefined) fd.append("description", description);
+    if (link !== undefined) fd.append("link", link);
+    if (done !== undefined) fd.append("done", done);
+    if (file) fd.append("file", file);
+    return req(`/api/shopping/${itemId}`, {
       method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(data),
-    }),
+      body: fd,
+    });
+  },
   deleteShopping: (itemId) =>
     req(`/api/shopping/${itemId}`, { method: "DELETE" }),
 };
