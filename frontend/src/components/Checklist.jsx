@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { api, authedFileUrl } from "../api.js";
 import DetailModal from "./DetailModal.jsx";
-import Markdown from "./Markdown.jsx";
+import Dropzone from "./Dropzone.jsx";
 
 export default function Checklist({ kind, boatId, placeholder }) {
   const [items, setItems] = useState([]);
@@ -25,7 +25,6 @@ export default function Checklist({ kind, boatId, placeholder }) {
     await api.addItem(kind, boatId, { text: text.trim(), file });
     setText("");
     setFile(null);
-    if (e.target.file) e.target.file.value = "";
     load();
   }
 
@@ -68,11 +67,7 @@ export default function Checklist({ kind, boatId, placeholder }) {
             <button type="submit">Add</button>
           </div>
           <div style={{ marginTop: "0.5rem" }}>
-            <input
-              type="file"
-              name="file"
-              onChange={(e) => setFile(e.target.files[0])}
-            />
+            <Dropzone onFileSelected={setFile} currentFilename={file?.name} />
           </div>
         </form>
       </div>
@@ -132,9 +127,9 @@ export default function Checklist({ kind, boatId, placeholder }) {
               </div>
               <div className="field">
                 <label>Replace File</label>
-                <input
-                  type="file"
-                  onChange={(e) => setEditFile(e.target.files[0])}
+                <Dropzone
+                  onFileSelected={setEditFile}
+                  currentFilename={editFile?.name || editing.filename}
                 />
               </div>
             </>

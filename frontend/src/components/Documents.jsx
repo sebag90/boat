@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { api, authedFileUrl } from "../api.js";
 import { formatDateTime } from "../format.js";
 import DetailModal from "./DetailModal.jsx";
-import Markdown from "./Markdown.jsx";
+import Dropzone from "./Dropzone.jsx";
 
 export default function Documents({ boatId }) {
   const [docs, setDocs] = useState([]);
@@ -10,12 +10,12 @@ export default function Documents({ boatId }) {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [busy, setBusy] = useState(false);
-  const fileRef = useRef();
+  const [file, setFile] = useState(null);
 
   const [editing, setEditing] = useState(null);
   const [editTitle, setEditTitle] = useState("");
   const [editDescription, setEditDescription] = useState("");
-  const editFileRef = useRef();
+  const [editFile, setEditFile] = useState(null);
 
   async function load(q = search) {
     setDocs(await api.listDocuments(boatId, q));
@@ -39,11 +39,11 @@ export default function Documents({ boatId }) {
       await api.createDocument(boatId, {
         title: title.trim(),
         description: description.trim(),
-        file: fileRef.current?.files[0] || null,
+        file: file,
       });
       setTitle("");
       setDescription("");
-      if (fileRef.current) fileRef.current.value = "";
+      setFile(null);
       load();
     } finally {
       setBusy(false);
@@ -60,6 +60,7 @@ export default function Documents({ boatId }) {
     setEditing(doc);
     setEditTitle(doc.title);
     setEditDescription(doc.description || "");
+    setEditFile(null);
   }
 
   async function saveEdit() {
@@ -67,7 +68,7 @@ export default function Documents({ boatId }) {
     await api.updateDocument(editing.id, {
       title: editTitle.trim(),
       description: editDescription.trim(),
-      file: editFileRef.current?.files[0] || null,
+      file: editFile,
     });
     setEditing(null);
     load();
@@ -91,7 +92,7 @@ export default function Documents({ boatId }) {
           </div>
           <div className="field">
             <label>Document file (optional)</label>
-            <input ref={fileRef} type="file" />
+            <Dropzone onFileSelected={setFile} currentFilename={file?.name} />
           </div>
           <button type="submit" disabled={busy}>
             Add entry
@@ -169,12 +170,11 @@ export default function Documents({ boatId }) {
                 />
               </div>
               <div className="field">
-                <label>
-                  {editing.filename
-                    ? `Replace file (current: ${editing.filename})`
-                    : "Attach a file (optional)"}
-                </label>
-                <input ref={editFileRef} type="file" />
+                <label>Document file (optional)</label>
+                <Dropzone
+                  onFileSelected={setEditFile}
+                  currentFilename={editFile?.name || editing.filename}
+                />
               </div>
             </>
           }

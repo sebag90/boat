@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { api, authedFileUrl } from "../api.js";
 import DetailModal from "./DetailModal.jsx";
-import Markdown from "./Markdown.jsx";
+import Dropzone from "./Dropzone.jsx";
 
 const EMPTY = { name: "", description: "", link: "" };
 
@@ -32,7 +32,6 @@ export default function Shopping({ boatId }) {
     });
     setForm(EMPTY);
     setFile(null);
-    if (e.target.file) e.target.file.value = "";
     load();
   }
 
@@ -95,11 +94,7 @@ export default function Shopping({ boatId }) {
           </div>
           <div className="field">
             <label>File (optional)</label>
-            <input
-              type="file"
-              name="file"
-              onChange={(e) => setFile(e.target.files[0])}
-            />
+            <Dropzone onFileSelected={setFile} currentFilename={file?.name} />
           </div>
           <button type="submit">Add item</button>
         </form>
@@ -180,9 +175,9 @@ export default function Shopping({ boatId }) {
               </div>
               <div className="field">
                 <label>Replace File</label>
-                <input
-                  type="file"
-                  onChange={(e) => setEditFile(e.target.files[0])}
+                <Dropzone
+                  onFileSelected={setEditFile}
+                  currentFilename={editFile?.name || editing.filename}
                 />
               </div>
             </>

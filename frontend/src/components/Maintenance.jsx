@@ -3,6 +3,7 @@ import { api, authedFileUrl } from "../api.js";
 import { formatDate } from "../format.js";
 import DetailModal from "./DetailModal.jsx";
 import Markdown from "./Markdown.jsx";
+import Dropzone from "./Dropzone.jsx";
 
 export default function Maintenance({ boatId }) {
   const [records, setRecords] = useState([]);
@@ -10,13 +11,13 @@ export default function Maintenance({ boatId }) {
   const [date, setDate] = useState(new Date().toISOString().slice(0, 10));
   const [description, setDescription] = useState("");
   const [busy, setBusy] = useState(false);
-  const fileRef = useRef();
+  const [file, setFile] = useState(null);
 
   const [editing, setEditing] = useState(null);
   const [editTitle, setEditTitle] = useState("");
   const [editDate, setEditDate] = useState("");
   const [editDescription, setEditDescription] = useState("");
-  const editFileRef = useRef();
+  const [editFile, setEditFile] = useState(null);
 
   async function load() {
     setRecords(await api.listMaintenance(boatId));
@@ -35,11 +36,11 @@ export default function Maintenance({ boatId }) {
         title: title.trim(),
         date,
         description: description.trim(),
-        receipt: fileRef.current?.files[0] || null,
+        receipt: file,
       });
       setTitle("");
       setDescription("");
-      if (fileRef.current) fileRef.current.value = "";
+      setFile(null);
       load();
     } finally {
       setBusy(false);
@@ -57,6 +58,7 @@ export default function Maintenance({ boatId }) {
     setEditTitle(rec.title || "");
     setEditDate(String(rec.date).slice(0, 10));
     setEditDescription(rec.description || "");
+    setEditFile(null);
   }
 
   async function saveEdit() {
@@ -65,7 +67,7 @@ export default function Maintenance({ boatId }) {
       title: editTitle.trim(),
       date: editDate,
       description: editDescription.trim(),
-      receipt: editFileRef.current?.files[0] || null,
+      receipt: editFile,
     });
     setEditing(null);
     load();
@@ -93,7 +95,7 @@ export default function Maintenance({ boatId }) {
           </div>
           <div className="field">
             <label>Receipt (optional)</label>
-            <input ref={fileRef} type="file" />
+            <Dropzone onFileSelected={setFile} currentFilename={file?.name} />
           </div>
           <button type="submit" disabled={busy}>
             Add entry
@@ -165,12 +167,11 @@ export default function Maintenance({ boatId }) {
                 />
               </div>
               <div className="field">
-                <label>
-                  {editing.receipt_filename
-                    ? `Replace receipt (current: ${editing.receipt_filename})`
-                    : "Attach a receipt (optional)"}
-                </label>
-                <input ref={editFileRef} type="file" />
+                <label>Receipt (optional)</label>
+                <Dropzone
+                  onFileSelected={setEditFile}
+                  currentFilename={editFile?.name || editing.receipt_filename}
+                />
               </div>
             </>
           }
