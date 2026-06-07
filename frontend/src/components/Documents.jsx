@@ -3,6 +3,7 @@ import { api, authedFileUrl } from "../api.js";
 import { formatDateTime } from "../format.js";
 import DetailModal from "./DetailModal.jsx";
 import Dropzone from "./Dropzone.jsx";
+import Markdown from "./Markdown.jsx";
 
 export default function Documents({ boatId }) {
   const [docs, setDocs] = useState([]);

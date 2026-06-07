@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { api, authedFileUrl } from "../api.js";
 import DetailModal from "./DetailModal.jsx";
 import Dropzone from "./Dropzone.jsx";
+import Markdown from "./Markdown.jsx";
 
 export default function Checklist({ kind, boatId, placeholder }) {
   const [items, setItems] = useState([]);
