@@ -1,12 +1,12 @@
 :root {
-  --bg: #f3f6f9;
+  --bg: #edf2f7;
   --card: #ffffff;
-  --primary: #0b6e99;
-  --primary-dark: #095372;
-  --border: #d9e2ec;
-  --text: #1f2933;
-  --muted: #627d98;
-  --danger: #c0392b;
+  --primary: #2b6cb0;
+  --primary-dark: #2c5282;
+  --border: #e2e8f0;
+  --text: #2d3748;
+  --muted: #718096;
+  --danger: #e53e3e;
 }
 
 * {
@@ -15,7 +15,7 @@
 
 body {
   margin: 0;
-  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  font-family: "Inter", system-ui, -apple-system, sans-serif;
   background: var(--bg);
   color: var(--text);
 }
@@ -26,12 +26,13 @@ a {
 }
 
 .topbar {
-  background: var(--primary);
+  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
   color: #fff;
-  padding: 16px 24px;
+  padding: 20px 30px;
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 16px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
 }
 
 .topbar h1 {
@@ -62,15 +63,15 @@ a {
 .boat-card {
   background: var(--card);
   border: 1px solid var(--border);
-  border-radius: 10px;
-  padding: 18px;
+  border-radius: 12px;
+  padding: 20px;
   cursor: pointer;
-  transition: box-shadow 0.15s, transform 0.05s;
+  transition: box-shadow 0.2s ease, transform 0.1s ease;
 }
 
 .boat-card:hover {
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
-  transform: translateY(-1px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  transform: translateY(-2px);
 }
 
 .boat-card h3 {
@@ -84,12 +85,14 @@ a {
 
 button {
   font: inherit;
+  font-weight: 500;
   cursor: pointer;
   border: none;
-  border-radius: 6px;
-  padding: 8px 14px;
+  border-radius: 8px;
+  padding: 10px 18px;
   background: var(--primary);
   color: #fff;
+  transition: background-color 0.15s ease;
 }
 
 button:hover {
@@ -130,10 +133,20 @@ textarea {
   width: 100%;
   min-width: 0;
   max-width: 100%;
-  padding: 8px 10px;
+  padding: 10px 14px;
   border: 1px solid var(--border);
-  border-radius: 6px;
-  background: #fff;
+  border-radius: 8px;
+  background: #f8fafc;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+input[type="text"]:focus,
+input[type="password"]:focus,
+input[type="date"]:focus,
+textarea:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(43, 108, 176, 0.2);
 }
 
 /* iOS gives date inputs an intrinsic size and ignores width:100% unless the
@@ -167,24 +180,33 @@ textarea {
 
 .tabs {
   display: flex;
-  gap: 4px;
+  gap: 8px;
   flex-wrap: wrap;
-  margin-bottom: 16px;
+  margin-bottom: 24px;
+  border-bottom: 2px solid var(--border);
 }
 
 .tab {
-  padding: 8px 16px;
-  border-radius: 6px 6px 0 0;
-  background: #e4ebf1;
+  padding: 10px 20px;
+  border-radius: 8px 8px 0 0;
+  background: transparent;
   color: var(--muted);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin-bottom: -2px;
+  border-bottom: 2px solid transparent;
+}
+
+.tab:hover {
+  color: var(--text);
+  background: rgba(0,0,0,0.02);
 }
 
 .tab.active {
-  background: var(--card);
+  background: transparent;
   color: var(--primary);
   font-weight: 600;
-  border: 1px solid var(--border);
-  border-bottom: none;
+  border-bottom: 2px solid var(--primary);
 }
 
 .list-item {
