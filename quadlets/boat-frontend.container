@@ -4,6 +4,7 @@ Description=Boat Frontend (nginx)
 [Container]
 ContainerName=boat-frontend
 Image=ghcr.io/sebag90/boat-frontend:latest
+AutoUpdate=registry
 
 Pod=boat.pod
 

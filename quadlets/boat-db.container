@@ -5,6 +5,7 @@ Description=Boat Postgres
 ContainerName=boat-db
 Image=docker.io/library/postgres:16
 Volume=boat-db.volume:/var/lib/postgresql/data
+AutoUpdate=registry
 
 HealthCmd=pg_isready -U boat
 HealthInterval=10s
