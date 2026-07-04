@@ -40,11 +40,9 @@ jobs:
         with:
           images: ${{ env.REGISTRY }}/${{ env.BACKEND_IMAGE_NAME }}
           tags: |
-            type=ref,event=branch
-            type=semver,pattern={{version}}
+            type=raw,value=latest
             type=sha,format=short
-            # Default to "latest" tag when pushing to main/master branch
-            type=raw,value=latest,enable=${{ github.ref == format('refs/heads/{0}', github.event.repository.default_branch) }}
+            type=ref,event=tag
 
       # --- BUILD & PUSH BACKEND ---
       - name: Build and Push Backend Container
@@ -65,11 +63,9 @@ jobs:
         with:
           images: ${{ env.REGISTRY }}/${{ env.FRONTEND_IMAGE_NAME }}
           tags: |
-            type=ref,event=branch
-            type=semver,pattern={{version}}
+            type=raw,value=latest
             type=sha,format=short
-            # Default to "latest" tag when pushing to main/master branch
-            type=raw,value=latest,enable=${{ github.ref == format('refs/heads/{0}', github.event.repository.default_branch) }}
+            type=ref,event=tag
 
       # --- BUILD & PUSH FRONTEND ---
       - name: Build and Push Frontend Container
