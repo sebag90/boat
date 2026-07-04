@@ -141,6 +141,80 @@
                 opacity: 1;
             }
         }
+
+        /* Markdown Styling over Tailwind CSS Reset */
+        .markdown-content {
+            font-family: 'Montserrat', sans-serif;
+            line-height: 1.6;
+        }
+        .markdown-content ul {
+            list-style-type: disc !important;
+            padding-left: 1.5rem !important;
+            margin-top: 0.5rem !important;
+            margin-bottom: 0.5rem !important;
+        }
+        .markdown-content ol {
+            list-style-type: decimal !important;
+            padding-left: 1.5rem !important;
+            margin-top: 0.5rem !important;
+            margin-bottom: 0.5rem !important;
+        }
+        .markdown-content li {
+            margin-top: 0.25rem !important;
+            margin-bottom: 0.25rem !important;
+            display: list-item !important;
+        }
+        .markdown-content a {
+            color: #134074 !important; /* marine-500 */
+            font-weight: 600 !important;
+            text-decoration: underline !important;
+            transition: color 0.15s ease;
+        }
+        .markdown-content a:hover {
+            color: #0B2545 !important; /* marine-700 */
+        }
+        .markdown-content p {
+            margin-bottom: 0.75rem !important;
+        }
+        .markdown-content p:last-child {
+            margin-bottom: 0 !important;
+        }
+        .markdown-content h1 {
+            font-size: 1.35rem !important;
+            font-weight: 800 !important;
+            margin-top: 1.25rem !important;
+            margin-bottom: 0.5rem !important;
+            color: #0B2545 !important;
+        }
+        .markdown-content h2 {
+            font-size: 1.2rem !important;
+            font-weight: 700 !important;
+            margin-top: 1.15rem !important;
+            margin-bottom: 0.5rem !important;
+            color: #0B2545 !important;
+        }
+        .markdown-content h3 {
+            font-size: 1.05rem !important;
+            font-weight: 700 !important;
+            margin-top: 1rem !important;
+            margin-bottom: 0.5rem !important;
+            color: #0B2545 !important;
+        }
+        .markdown-content code {
+            background-color: #EEF4F8 !important;
+            color: #0E3057 !important;
+            padding: 0.15rem 0.35rem !important;
+            border-radius: 0.25rem !important;
+            font-family: monospace !important;
+            font-size: 90% !important;
+        }
+        .markdown-content blockquote {
+            border-left: 4px solid #8DA9C4 !important;
+            padding-left: 1rem !important;
+            color: #547B9E !important;
+            font-style: italic !important;
+            margin: 1rem 0 !important;
+        }
     </style>
 </head>
 <body class="bg-[#F8FAFC] text-marine-800 font-sans min-h-screen selection:bg-sand-300 selection:text-marine-900">
@@ -1126,7 +1200,7 @@
                     <!-- Render Description correctly parsed as Markdown (Revision 4) -->
                     <div class="space-y-1.5">
                         <h4 class="text-xs font-bold text-marine-600 uppercase tracking-wider">Log Description</h4>
-                        <div class="prose prose-sm prose-marine bg-[#F8FAFC] border border-marine-100 p-5 rounded-xl min-h-[100px] overflow-y-auto max-h-64 font-mono text-xs text-marine-800"
+                        <div class="markdown-content bg-[#F8FAFC] border border-marine-100 p-5 rounded-xl min-h-[100px] overflow-y-auto max-h-64 text-sm text-marine-800"
                             v-html="renderMarkdown(activePopup.type === 'todo' ? activePopup.entry.text : activePopup.entry.description)">
                         </div>
                     </div>
