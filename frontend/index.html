@@ -58,6 +58,9 @@
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <!-- Lucide Icons CDN -->
     <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Leaflet CSS & JS for Nautical Straight-Line Waypoint Tracks -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     
     <style>
         [v-cloak] { display: none !important; }
@@ -1298,12 +1301,12 @@
                                 </table>
                             </div>
 
-                            <!-- Google Maps Route Preview Embed -->
+                            <!-- Nautical Track Map (Straight Line Overlay) -->
                             <div class="space-y-2">
                                 <div class="flex items-center justify-between">
                                     <span class="text-xs font-bold text-marine-700 uppercase tracking-wider flex items-center">
-                                        <svg class="w-4 h-4 mr-1 text-red-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 6.75V15m6-6v8.25m.503 3.498l4.875-2.437c.381-.19.622-.58.622-1.006V4.82c0-.836-.88-1.38-1.628-1.006l-3.869 1.934c-.317.159-.69.159-1.006 0L9.503 3.812a1.875 1.875 0 00-1.006 0L3.622 5.816C3.24 6.007 3 6.396 3 6.822v11.858c0 .836.88 1.38 1.628 1.006l3.869-1.934c.317-.159.69-.159 1.006 0l4.994 2.497c.317.158.69.158 1.006 0z"/></svg>
-                                        Google Maps Route Preview
+                                        <svg class="w-4 h-4 mr-1 text-marine-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 6.75V15m6-6v8.25m.503 3.498l4.875-2.437c.381-.19.622-.58.622-1.006V4.82c0-.836-.88-1.38-1.628-1.006l-3.869 1.934c-.317.159-.69.159-1.006 0L9.503 3.812a1.875 1.875 0 00-1.006 0L3.622 5.816C3.24 6.007 3 6.396 3 6.822v11.858c0 .836.88 1.38 1.628 1.006l3.869-1.934c.317-.159.69-.159 1.006 0l4.994 2.497c.317.158.69.158 1.006 0z"/></svg>
+                                        Voyage Route Track (Straight Lines)
                                     </span>
                                     <a :href="getGoogleMapsDirectionsUrl(activePopup.entry.waypoints)" target="_blank"
                                         class="text-xs bg-marine-100 hover:bg-marine-200 text-marine-800 font-bold px-3 py-1 rounded-lg inline-flex items-center space-x-1">
@@ -1311,9 +1314,8 @@
                                         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25"/></svg>
                                     </a>
                                 </div>
-                                <div class="border-2 border-marine-200 rounded-xl overflow-hidden bg-marine-100 shadow-sm">
-                                    <iframe :src="getGoogleMapsEmbedUrl(activePopup.entry.waypoints)" class="w-full h-80 border-none" loading="lazy"></iframe>
-                                </div>
+                                <div id="logMap" class="w-full h-80 rounded-xl border-2 border-marine-200 overflow-hidden shadow-inner z-10"></div>
+                            </div>
                             </div>
                         </div>
                         <div v-else class="text-xs text-marine-400 italic bg-marine-50/50 p-4 rounded-xl border border-marine-100">
@@ -1699,6 +1701,55 @@
                 return `${mins}m`;
             };
 
+            let leafletMaps = {};
+
+            const renderWaypointsMap = (waypoints, elementId = 'logMap') => {
+                if (!waypoints || waypoints.length === 0) return;
+
+                setTimeout(() => {
+                    const container = document.getElementById(elementId);
+                    if (!container) return;
+
+                    if (leafletMaps[elementId]) {
+                        leafletMaps[elementId].remove();
+                        delete leafletMaps[elementId];
+                    }
+
+                    const latLons = waypoints.map(w => [w.latitude, w.longitude]);
+
+                    const map = L.map(elementId);
+                    leafletMaps[elementId] = map;
+
+                    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                        maxZoom: 19,
+                        attribution: '© OpenStreetMap'
+                    }).addTo(map);
+
+                    waypoints.forEach((wp, idx) => {
+                        const marker = L.marker([wp.latitude, wp.longitude]).addTo(map);
+                        const timeStr = formatDateTime(wp.timestamp);
+                        marker.bindPopup(`<b>Waypoint #${idx + 1}</b><br>${timeStr}<br>Lat: ${wp.latitude}<br>Lon: ${wp.longitude}`);
+                    });
+
+                    if (latLons.length > 1) {
+                        const polyline = L.polyline(latLons, {
+                            color: '#134074',
+                            weight: 4,
+                            opacity: 0.85,
+                            dashArray: '6, 6'
+                        }).addTo(map);
+
+                        map.fitBounds(polyline.getBounds(), { padding: [30, 30] });
+                    } else if (latLons.length === 1) {
+                        map.setView(latLons[0], 12);
+                    }
+
+                    setTimeout(() => {
+                        if (map) map.invalidateSize();
+                    }, 200);
+                }, 100);
+            };
+
             const getGoogleMapsEmbedUrl = (waypoints) => {
                 if (!waypoints || waypoints.length === 0) return '';
                 if (waypoints.length === 1) {
@@ -1753,6 +1804,11 @@
                             name: `Waypoint ${targetList.length + 1}`
                         });
                         capturingLocation.value = false;
+                        if (targetList === newLog.waypoints) {
+                            renderWaypointsMap(newLog.waypoints, 'newLogMap');
+                        } else if (targetList === editForm.value.waypoints) {
+                            renderWaypointsMap(editForm.value.waypoints, 'editLogMap');
+                        }
                     },
                     (error) => {
                         console.error(error);
@@ -1816,6 +1872,7 @@
                                 if (!logEntries.value[idx].waypoints) logEntries.value[idx].waypoints = [];
                                 logEntries.value[idx].waypoints.push(newWp);
                             }
+                            renderWaypointsMap(activePopup.value.entry.waypoints, 'logMap');
                         } catch (e) {
                             locationError.value = 'Failed to save waypoint to log.';
                         } finally {
@@ -1844,6 +1901,7 @@
                     if (idx !== -1 && logEntries.value[idx].waypoints) {
                         logEntries.value[idx].waypoints = logEntries.value[idx].waypoints.filter(w => w.id !== wpId);
                     }
+                    renderWaypointsMap(activePopup.value.entry.waypoints, 'logMap');
                 } catch (e) {}
             };
             const formatDate = (dateStr) => {
@@ -2320,8 +2378,9 @@
                     entry: JSON.parse(JSON.stringify(entry)), // Deep copy original
                     editMode: false
                 };
-                if (type === 'logbook' && !activePopup.value.entry.waypoints) {
-                    activePopup.value.entry.waypoints = [];
+                if (type === 'logbook') {
+                    if (!activePopup.value.entry.waypoints) activePopup.value.entry.waypoints = [];
+                    renderWaypointsMap(activePopup.value.entry.waypoints, 'logMap');
                 }
 
                 // Prepare prefilled edit form model
@@ -2417,6 +2476,9 @@
 
                     activePopup.value.entry = updated;
                     activePopup.value.editMode = false;
+                    if (type === 'logbook') {
+                        renderWaypointsMap(updated.waypoints || [], 'logMap');
+                    }
                     alert('Entry saved successfully.');
                 } catch (e) {
                 } finally {
