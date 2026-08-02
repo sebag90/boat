@@ -1390,38 +1390,38 @@
                 </div>
 
                 <!-- EDITING MODE VIEW (REVISIONS 3, 4) -->
-                <form v-else @submit.prevent="savePopupEdit" class="space-y-5">
+                <form v-else @submit.prevent="savePopupEdit" class="space-y-5 px-1 sm:px-2">
                     
                     <!-- A. Edit fields for LOG BOOK -->
                     <div v-if="activePopup.type === 'logbook'" class="space-y-4">
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <div class="space-y-1">
                                 <label class="block text-xs font-bold text-marine-600 uppercase tracking-wider">Trip Date</label>
-                                <input v-model="editForm.date" type="date" required class="block w-full px-3 py-2 border border-marine-200 rounded-lg text-sm">
+                                <input v-model="editForm.date" type="date" required class="block w-full px-3.5 py-2.5 border border-marine-200 rounded-lg text-sm focus:ring-2 focus:ring-marine-500 transition bg-marine-50/20">
                             </div>
                             <div class="space-y-1">
                                 <label class="block text-xs font-bold text-marine-600 uppercase tracking-wider">Crew List</label>
-                                <input v-model="editForm.crew" type="text" class="block w-full px-3 py-2 border border-marine-200 rounded-lg text-sm">
+                                <input v-model="editForm.crew" type="text" class="block w-full px-3.5 py-2.5 border border-marine-200 rounded-lg text-sm focus:ring-2 focus:ring-marine-500 transition bg-marine-50/20">
                             </div>
                             <div class="space-y-1">
                                 <label class="block text-xs font-bold text-marine-600 uppercase tracking-wider">Start Port</label>
-                                <input v-model="editForm.start" type="text" class="block w-full px-3 py-2 border border-marine-200 rounded-lg text-sm">
+                                <input v-model="editForm.start" type="text" class="block w-full px-3.5 py-2.5 border border-marine-200 rounded-lg text-sm focus:ring-2 focus:ring-marine-500 transition bg-marine-50/20">
                             </div>
                             <div class="space-y-1">
                                 <label class="block text-xs font-bold text-marine-600 uppercase tracking-wider">Goal Port</label>
-                                <input v-model="editForm.goal" type="text" class="block w-full px-3 py-2 border border-marine-200 rounded-lg text-sm">
+                                <input v-model="editForm.goal" type="text" class="block w-full px-3.5 py-2.5 border border-marine-200 rounded-lg text-sm focus:ring-2 focus:ring-marine-500 transition bg-marine-50/20">
                             </div>
                         </div>
                         <div class="space-y-1">
                             <label class="block text-xs font-bold text-marine-600 uppercase tracking-wider">Cruise Notes (Markdown)</label>
-                            <textarea v-model="editForm.description" rows="5" class="block w-full px-3 py-2 border border-marine-200 rounded-lg text-sm font-mono text-xs"></textarea>
+                            <textarea v-model="editForm.description" rows="5" class="block w-full px-3.5 py-2.5 border border-marine-200 rounded-lg text-sm font-mono text-xs focus:ring-2 focus:ring-marine-500 transition bg-marine-50/20"></textarea>
                         </div>
                         <!-- Waypoints Editor in Edit Mode -->
                         <div class="space-y-2 border-t border-marine-100 pt-3">
                             <div class="flex items-center justify-between">
                                 <label class="block text-xs font-bold text-marine-600 uppercase tracking-wider">Waypoints</label>
                                 <button type="button" @click="captureCurrentLocation(editForm.waypoints)" :disabled="capturingLocation"
-                                    class="text-xs bg-marine-100 hover:bg-marine-200 text-marine-800 font-bold px-2.5 py-1 rounded-lg flex items-center space-x-1 transition active:scale-95 disabled:opacity-50">
+                                    class="text-xs bg-marine-100 hover:bg-marine-200 text-marine-800 font-bold px-3 py-1.5 rounded-lg flex items-center space-x-1 transition active:scale-95 disabled:opacity-50">
                                     <svg class="w-3.5 h-3.5 text-marine-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z"/></svg>
                                     <span>{{ capturingLocation ? 'Locating...' : '📍 Add Current Location' }}</span>
                                 </button>
@@ -1429,7 +1429,7 @@
                             <p v-if="locationError" class="text-xs text-red-600 bg-red-50 p-2 rounded">{{ locationError }}</p>
 
                             <div v-if="editForm.waypoints && editForm.waypoints.length > 0" class="space-y-2 max-h-40 overflow-y-auto pr-1">
-                                <div v-for="(wp, idx) in editForm.waypoints" :key="idx" class="bg-marine-50/80 p-2 rounded-lg border border-marine-100 text-xs flex items-center justify-between">
+                                <div v-for="(wp, idx) in editForm.waypoints" :key="idx" class="bg-marine-50/80 p-2.5 rounded-lg border border-marine-100 text-xs flex items-center justify-between">
                                     <div>
                                         <span class="font-bold text-marine-800 mr-1.5">#{{ idx + 1 }}</span>
                                         <span class="font-mono text-marine-700 text-[11px]">{{ wp.latitude }}, {{ wp.longitude }}</span>
@@ -1449,16 +1449,16 @@
                     <div v-if="activePopup.type === 'documents'" class="space-y-4">
                         <div class="space-y-1">
                             <label class="block text-xs font-bold text-marine-600 uppercase tracking-wider">Document Title</label>
-                            <input v-model="editForm.title" type="text" required class="block w-full px-3 py-2 border border-marine-200 rounded-lg text-sm">
+                            <input v-model="editForm.title" type="text" required class="block w-full px-3.5 py-2.5 border border-marine-200 rounded-lg text-sm focus:ring-2 focus:ring-marine-500 transition bg-marine-50/20">
                         </div>
                         <div class="space-y-1">
                             <label class="block text-xs font-bold text-marine-600 uppercase tracking-wider">Replace Document File (Optional)</label>
-                            <input type="file" @change="handleEditFileChange" class="block w-full px-3 py-2 border border-marine-200 rounded-lg text-xs bg-marine-50/20">
+                            <input type="file" @change="handleEditFileChange" class="block w-full px-3.5 py-2.5 border border-marine-200 rounded-lg text-xs bg-marine-50/20">
                             <p class="text-[10px] text-marine-400 font-mono italic" v-if="activePopup.entry.filename">Currently: {{ activePopup.entry.filename }}</p>
                         </div>
                         <div class="space-y-1">
                             <label class="block text-xs font-bold text-marine-600 uppercase tracking-wider">Notes (Markdown)</label>
-                            <textarea v-model="editForm.description" rows="5" class="block w-full px-3 py-2 border border-marine-200 rounded-lg text-sm font-mono text-xs"></textarea>
+                            <textarea v-model="editForm.description" rows="5" class="block w-full px-3.5 py-2.5 border border-marine-200 rounded-lg text-sm font-mono text-xs focus:ring-2 focus:ring-marine-500 transition bg-marine-50/20"></textarea>
                         </div>
                     </div>
 
@@ -1467,21 +1467,21 @@
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <div class="space-y-1">
                                 <label class="block text-xs font-bold text-marine-600 uppercase tracking-wider">Service Task</label>
-                                <input v-model="editForm.title" type="text" required class="block w-full px-3 py-2 border border-marine-200 rounded-lg text-sm">
+                                <input v-model="editForm.title" type="text" required class="block w-full px-3.5 py-2.5 border border-marine-200 rounded-lg text-sm focus:ring-2 focus:ring-marine-500 transition bg-marine-50/20">
                             </div>
                             <div class="space-y-1">
                                 <label class="block text-xs font-bold text-marine-600 uppercase tracking-wider">Service Date</label>
-                                <input v-model="editForm.date" type="date" required class="block w-full px-3 py-2 border border-marine-200 rounded-lg text-sm">
+                                <input v-model="editForm.date" type="date" required class="block w-full px-3.5 py-2.5 border border-marine-200 rounded-lg text-sm focus:ring-2 focus:ring-marine-500 transition bg-marine-50/20">
                             </div>
                         </div>
                         <div class="space-y-1">
                             <label class="block text-xs font-bold text-marine-600 uppercase tracking-wider">Replace Invoice/Receipt (Optional)</label>
-                            <input type="file" @change="handleEditFileChange" class="block w-full px-3 py-2 border border-marine-200 rounded-lg text-xs bg-marine-50/20">
+                            <input type="file" @change="handleEditFileChange" class="block w-full px-3.5 py-2.5 border border-marine-200 rounded-lg text-xs bg-marine-50/20">
                             <p class="text-[10px] text-marine-400 font-mono italic" v-if="activePopup.entry.receipt_filename">Currently: {{ activePopup.entry.receipt_filename }}</p>
                         </div>
                         <div class="space-y-1">
                             <label class="block text-xs font-bold text-marine-600 uppercase tracking-wider">Maintenance Notes (Markdown)</label>
-                            <textarea v-model="editForm.description" rows="5" class="block w-full px-3 py-2 border border-marine-200 rounded-lg text-sm font-mono text-xs"></textarea>
+                            <textarea v-model="editForm.description" rows="5" class="block w-full px-3.5 py-2.5 border border-marine-200 rounded-lg text-sm font-mono text-xs focus:ring-2 focus:ring-marine-500 transition bg-marine-50/20"></textarea>
                         </div>
                     </div>
 
@@ -1489,7 +1489,7 @@
                     <div v-if="activePopup.type === 'todo'" class="space-y-4">
                         <div class="space-y-1">
                             <label class="block text-xs font-bold text-marine-600 uppercase tracking-wider">Task Description</label>
-                            <textarea v-model="editForm.text" rows="3" required class="block w-full px-3 py-2 border border-marine-200 rounded-lg text-sm font-mono text-xs"></textarea>
+                            <textarea v-model="editForm.text" rows="3" required class="block w-full px-3.5 py-2.5 border border-marine-200 rounded-lg text-sm font-mono text-xs focus:ring-2 focus:ring-marine-500 transition bg-marine-50/20"></textarea>
                         </div>
                         <div class="flex items-center space-x-3 bg-marine-50 p-3 rounded-lg border border-marine-100">
                             <input v-model="editForm.done" type="checkbox" id="editTodoDone" class="w-5 h-5 rounded border-marine-300 text-marine-600 focus:ring-marine-500">
@@ -1497,7 +1497,7 @@
                         </div>
                         <div class="space-y-1">
                             <label class="block text-xs font-bold text-marine-600 uppercase tracking-wider">Replace/Upload Attachment (Optional)</label>
-                            <input type="file" @change="handleEditFileChange" class="block w-full px-3 py-2 border border-marine-200 rounded-lg text-xs bg-marine-50/20">
+                            <input type="file" @change="handleEditFileChange" class="block w-full px-3.5 py-2.5 border border-marine-200 rounded-lg text-xs bg-marine-50/20">
                             <p class="text-[10px] text-marine-400 font-mono italic" v-if="activePopup.entry.file_filename">Currently: {{ activePopup.entry.file_filename }}</p>
                         </div>
                     </div>
@@ -1507,11 +1507,11 @@
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <div class="space-y-1">
                                 <label class="block text-xs font-bold text-marine-600 uppercase tracking-wider">Item Name</label>
-                                <input v-model="editForm.name" type="text" required class="block w-full px-3 py-2 border border-marine-200 rounded-lg text-sm">
+                                <input v-model="editForm.name" type="text" required class="block w-full px-3.5 py-2.5 border border-marine-200 rounded-lg text-sm focus:ring-2 focus:ring-marine-500 transition bg-marine-50/20">
                             </div>
                             <div class="space-y-1">
                                 <label class="block text-xs font-bold text-marine-600 uppercase tracking-wider">Shop Web Link</label>
-                                <input v-model="editForm.link" type="url" class="block w-full px-3 py-2 border border-marine-200 rounded-lg text-sm font-mono text-xs">
+                                <input v-model="editForm.link" type="url" class="block w-full px-3.5 py-2.5 border border-marine-200 rounded-lg text-sm font-mono text-xs focus:ring-2 focus:ring-marine-500 transition bg-marine-50/20">
                             </div>
                         </div>
                         <div class="flex items-center space-x-3 bg-marine-50 p-3 rounded-lg border border-marine-100">
@@ -1520,12 +1520,12 @@
                         </div>
                         <div class="space-y-1">
                             <label class="block text-xs font-bold text-marine-600 uppercase tracking-wider">Replace/Upload Attachment (Optional)</label>
-                            <input type="file" @change="handleEditFileChange" class="block w-full px-3 py-2 border border-marine-200 rounded-lg text-xs bg-marine-50/20">
+                            <input type="file" @change="handleEditFileChange" class="block w-full px-3.5 py-2.5 border border-marine-200 rounded-lg text-xs bg-marine-50/20">
                             <p class="text-[10px] text-marine-400 font-mono italic" v-if="activePopup.entry.file_filename">Currently: {{ activePopup.entry.file_filename }}</p>
                         </div>
                         <div class="space-y-1">
                             <label class="block text-xs font-bold text-marine-600 uppercase tracking-wider">Item Description (Markdown)</label>
-                            <textarea v-model="editForm.description" rows="3" class="block w-full px-3 py-2 border border-marine-200 rounded-lg text-sm font-mono text-xs"></textarea>
+                            <textarea v-model="editForm.description" rows="3" class="block w-full px-3.5 py-2.5 border border-marine-200 rounded-lg text-sm font-mono text-xs focus:ring-2 focus:ring-marine-500 transition bg-marine-50/20"></textarea>
                         </div>
                     </div>
 
