@@ -1145,26 +1145,26 @@
     </div>
 
     <!-- 5. CENTRAL ENTRY VIEW & EDIT DIALOG MODAL (REVISIONS 3, 4) -->
-    <div v-if="activePopup" class="fixed inset-0 bg-marine-950/85 backdrop-blur-sm flex items-center justify-center p-4 z-50 overflow-y-auto">
-        <div class="bg-white rounded-2xl shadow-2xl border border-marine-100 max-w-2xl w-full slide-up overflow-hidden my-8">
+    <div v-if="activePopup" @click.self="closePopup" class="fixed inset-0 bg-marine-950/85 backdrop-blur-sm flex items-center justify-center p-2 sm:p-4 z-50 overflow-y-auto">
+        <div class="bg-white rounded-2xl shadow-2xl border border-marine-100 max-w-2xl w-full slide-up flex flex-col max-h-[92vh] overflow-hidden my-auto">
             
             <!-- POPUP HEADER -->
-            <div class="bg-gradient-to-r from-marine-700 to-marine-900 px-6 py-5 text-white flex items-center justify-between">
+            <div class="bg-gradient-to-r from-marine-700 to-marine-900 px-4 py-3.5 sm:px-6 sm:py-5 text-white flex items-center justify-between flex-shrink-0">
                 <div>
                     <span class="text-[10px] uppercase font-bold tracking-widest text-sand-400 bg-white/10 px-2 py-0.5 rounded">
                         {{ activePopup.type }} ENTRY
                     </span>
-                    <h3 class="font-serif text-lg font-bold mt-1">
+                    <h3 class="font-serif text-base sm:text-lg font-bold mt-0.5 sm:mt-1">
                         {{ activePopup.editMode ? 'Modify Ship Entry' : 'Log Details' }}
                     </h3>
                 </div>
-                <button @click="closePopup" class="text-marine-300 hover:text-white transition">
+                <button @click="closePopup" title="Close (Esc)" class="text-marine-300 hover:text-white transition p-1">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
                 </button>
             </div>
 
             <!-- POPUP BODY -->
-            <div class="p-6 md:p-8 overflow-y-auto max-h-[80vh]">
+            <div class="p-4 sm:p-6 md:p-8 overflow-y-auto flex-1 space-y-5">
 
                 <!-- READ ONLY MODE VIEW (REVISION 4) -->
                 <div v-if="!activePopup.editMode" class="space-y-6">
@@ -1240,24 +1240,24 @@
 
                         <div v-if="activePopup.entry.waypoints && activePopup.entry.waypoints.length > 0" class="space-y-4">
                             <!-- Voyage Summary Banner -->
-                            <div v-if="activePopup.entry.waypoints.length >= 2" class="grid grid-cols-2 sm:grid-cols-4 gap-3 bg-marine-900 text-white p-4 rounded-xl shadow-inner text-center">
+                            <div v-if="activePopup.entry.waypoints.length >= 2" class="grid grid-cols-2 sm:grid-cols-4 gap-2 bg-marine-900 text-white p-3 sm:p-4 rounded-xl shadow-inner text-center">
                                 <div>
                                     <p class="text-[10px] text-marine-300 uppercase font-bold tracking-wider">Total Distance</p>
-                                    <p class="text-base font-black text-sand-400 mt-0.5">{{ calculateVoyageSummary(activePopup.entry.waypoints).totalDistanceNM.toFixed(2) }} NM</p>
+                                    <p class="text-sm sm:text-base font-black text-sand-400 mt-0.5">{{ calculateVoyageSummary(activePopup.entry.waypoints).totalDistanceNM.toFixed(2) }} NM</p>
                                     <p class="text-[10px] text-marine-200">({{ calculateVoyageSummary(activePopup.entry.waypoints).totalDistanceKm.toFixed(1) }} km)</p>
                                 </div>
                                 <div>
                                     <p class="text-[10px] text-marine-300 uppercase font-bold tracking-wider">Duration</p>
-                                    <p class="text-base font-black text-white mt-0.5">{{ formatDuration(calculateVoyageSummary(activePopup.entry.waypoints).totalDurationMs) }}</p>
+                                    <p class="text-sm sm:text-base font-black text-white mt-0.5">{{ formatDuration(calculateVoyageSummary(activePopup.entry.waypoints).totalDurationMs) }}</p>
                                 </div>
                                 <div>
                                     <p class="text-[10px] text-marine-300 uppercase font-bold tracking-wider">Avg Speed</p>
-                                    <p class="text-base font-black text-sand-400 mt-0.5">{{ calculateVoyageSummary(activePopup.entry.waypoints).avgSpeedKnots.toFixed(1) }} kt</p>
+                                    <p class="text-sm sm:text-base font-black text-sand-400 mt-0.5">{{ calculateVoyageSummary(activePopup.entry.waypoints).avgSpeedKnots.toFixed(1) }} kt</p>
                                     <p class="text-[10px] text-marine-200">({{ calculateVoyageSummary(activePopup.entry.waypoints).avgSpeedKmh.toFixed(1) }} km/h)</p>
                                 </div>
                                 <div>
                                     <p class="text-[10px] text-marine-300 uppercase font-bold tracking-wider">Waypoints</p>
-                                    <p class="text-base font-black text-white mt-0.5">{{ activePopup.entry.waypoints.length }}</p>
+                                    <p class="text-sm sm:text-base font-black text-white mt-0.5">{{ activePopup.entry.waypoints.length }}</p>
                                 </div>
                             </div>
 
@@ -1314,7 +1314,7 @@
                                         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25"/></svg>
                                     </a>
                                 </div>
-                                <div id="logMap" class="w-full h-80 rounded-xl border-2 border-marine-200 overflow-hidden shadow-inner z-10"></div>
+                                <div id="logMap" class="w-full h-60 sm:h-80 rounded-xl border-2 border-marine-200 overflow-hidden shadow-inner z-10"></div>
                             </div>
                             </div>
                         </div>
@@ -1717,7 +1717,11 @@
 
                     const latLons = waypoints.map(w => [w.latitude, w.longitude]);
 
-                    const map = L.map(elementId);
+                    const map = L.map(elementId, {
+                        scrollWheelZoom: false,
+                        dragging: !L.Browser.mobile,
+                        tap: false
+                    });
                     leafletMaps[elementId] = map;
 
                     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -2378,6 +2382,7 @@
                     entry: JSON.parse(JSON.stringify(entry)), // Deep copy original
                     editMode: false
                 };
+                document.body.classList.add('overflow-hidden');
                 if (type === 'logbook') {
                     if (!activePopup.value.entry.waypoints) activePopup.value.entry.waypoints = [];
                     renderWaypointsMap(activePopup.value.entry.waypoints, 'logMap');
@@ -2394,6 +2399,7 @@
             const closePopup = () => {
                 activePopup.value = null;
                 editFile.value = null;
+                document.body.classList.remove('overflow-hidden');
             };
 
             const handleEditFileChange = (e) => {
@@ -2573,6 +2579,13 @@
                     const dropdown = document.getElementById('boatSelectorContainer');
                     if (dropdown && !dropdown.contains(e.target)) {
                         showBoatDropdown.value = false;
+                    }
+                });
+
+                window.addEventListener('keydown', (e) => {
+                    if (e.key === 'Escape') {
+                        if (activePopup.value) closePopup();
+                        if (showCreateBoatModal.value) closeCreateBoatModal();
                     }
                 });
             });
