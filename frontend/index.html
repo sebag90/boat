@@ -1145,16 +1145,16 @@
     </div>
 
     <!-- 5. CENTRAL ENTRY VIEW & EDIT DIALOG MODAL (REVISIONS 3, 4) -->
-    <div v-if="activePopup" @click.self="closePopup" class="fixed inset-0 bg-marine-950/85 backdrop-blur-sm flex items-center justify-center p-2 sm:p-4 z-50 overflow-y-auto">
-        <div class="bg-white rounded-2xl shadow-2xl border border-marine-100 max-w-2xl w-full slide-up flex flex-col max-h-[92vh] overflow-hidden my-auto">
+    <div v-if="activePopup" @click.self="closePopup" class="fixed inset-0 bg-marine-950/85 backdrop-blur-sm z-50 overflow-y-auto p-3 sm:p-6 flex items-start justify-center">
+        <div class="bg-white rounded-2xl shadow-2xl border border-marine-100 max-w-2xl w-full slide-up overflow-hidden my-auto sm:my-8">
             
             <!-- POPUP HEADER -->
-            <div class="bg-gradient-to-r from-marine-700 to-marine-900 px-4 py-3.5 sm:px-6 sm:py-5 text-white flex items-center justify-between flex-shrink-0">
+            <div class="bg-gradient-to-r from-marine-700 to-marine-900 px-5 py-4 text-white flex items-center justify-between flex-shrink-0">
                 <div>
                     <span class="text-[10px] uppercase font-bold tracking-widest text-sand-400 bg-white/10 px-2 py-0.5 rounded">
                         {{ activePopup.type }} ENTRY
                     </span>
-                    <h3 class="font-serif text-base sm:text-lg font-bold mt-0.5 sm:mt-1">
+                    <h3 class="font-serif text-lg font-bold mt-1">
                         {{ activePopup.editMode ? 'Modify Ship Entry' : 'Log Details' }}
                     </h3>
                 </div>
@@ -1164,7 +1164,7 @@
             </div>
 
             <!-- POPUP BODY -->
-            <div class="p-4 sm:p-6 md:p-8 overflow-y-auto flex-1 space-y-5">
+            <div class="p-5 sm:p-8 space-y-6">
 
                 <!-- READ ONLY MODE VIEW (REVISION 4) -->
                 <div v-if="!activePopup.editMode" class="space-y-6">
@@ -1306,15 +1306,16 @@
                                 <div class="flex items-center justify-between">
                                     <span class="text-xs font-bold text-marine-700 uppercase tracking-wider flex items-center">
                                         <svg class="w-4 h-4 mr-1 text-marine-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 6.75V15m6-6v8.25m.503 3.498l4.875-2.437c.381-.19.622-.58.622-1.006V4.82c0-.836-.88-1.38-1.628-1.006l-3.869 1.934c-.317.159-.69.159-1.006 0L9.503 3.812a1.875 1.875 0 00-1.006 0L3.622 5.816C3.24 6.007 3 6.396 3 6.822v11.858c0 .836.88 1.38 1.628 1.006l3.869-1.934c.317-.159.69-.159 1.006 0l4.994 2.497c.317.158.69.158 1.006 0z"/></svg>
-                                        Voyage Route Track (Straight Lines)
+                                        Voyage Route Track
                                     </span>
-                                    <a :href="getGoogleMapsDirectionsUrl(activePopup.entry.waypoints)" target="_blank"
+                                    <a v-if="activePopup.entry.waypoints && activePopup.entry.waypoints.length > 0"
+                                        :href="getGoogleMapsDirectionsUrl(activePopup.entry.waypoints)" target="_blank"
                                         class="text-xs bg-marine-100 hover:bg-marine-200 text-marine-800 font-bold px-3 py-1 rounded-lg inline-flex items-center space-x-1">
                                         <span>Open in Google Maps</span>
                                         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25"/></svg>
                                     </a>
                                 </div>
-                                <div id="logMap" class="w-full h-60 sm:h-80 rounded-xl border-2 border-marine-200 overflow-hidden shadow-inner z-10"></div>
+                                <div id="logMap" class="w-full h-64 sm:h-80 rounded-xl border-2 border-marine-200 overflow-hidden shadow-inner bg-marine-50"></div>
                             </div>
                             </div>
                         </div>
@@ -1551,7 +1552,7 @@
 
 <!-- Vue 3 App Logic -->
 <script>
-    const { createApp, ref, reactive, onMounted, watch, computed } = Vue;
+    const { createApp, ref, reactive, onMounted, watch, computed, nextTick } = Vue;
 
     createApp({
         setup() {
@@ -1704,54 +1705,54 @@
             let leafletMaps = {};
 
             const renderWaypointsMap = (waypoints, elementId = 'logMap') => {
-                if (!waypoints || waypoints.length === 0) return;
+                nextTick(() => {
+                    setTimeout(() => {
+                        const container = document.getElementById(elementId);
+                        if (!container) return;
 
-                setTimeout(() => {
-                    const container = document.getElementById(elementId);
-                    if (!container) return;
+                        if (leafletMaps[elementId]) {
+                            leafletMaps[elementId].remove();
+                            delete leafletMaps[elementId];
+                        }
 
-                    if (leafletMaps[elementId]) {
-                        leafletMaps[elementId].remove();
-                        delete leafletMaps[elementId];
-                    }
+                        const map = L.map(elementId, { scrollWheelZoom: false });
+                        leafletMaps[elementId] = map;
 
-                    const latLons = waypoints.map(w => [w.latitude, w.longitude]);
-
-                    const map = L.map(elementId, {
-                        scrollWheelZoom: false,
-                        dragging: !L.Browser.mobile,
-                        tap: false
-                    });
-                    leafletMaps[elementId] = map;
-
-                    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                        maxZoom: 19,
-                        attribution: '© OpenStreetMap'
-                    }).addTo(map);
-
-                    waypoints.forEach((wp, idx) => {
-                        const marker = L.marker([wp.latitude, wp.longitude]).addTo(map);
-                        const timeStr = formatDateTime(wp.timestamp);
-                        marker.bindPopup(`<b>Waypoint #${idx + 1}</b><br>${timeStr}<br>Lat: ${wp.latitude}<br>Lon: ${wp.longitude}`);
-                    });
-
-                    if (latLons.length > 1) {
-                        const polyline = L.polyline(latLons, {
-                            color: '#134074',
-                            weight: 4,
-                            opacity: 0.85,
-                            dashArray: '6, 6'
+                        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                            maxZoom: 19,
+                            attribution: '© OpenStreetMap'
                         }).addTo(map);
 
-                        map.fitBounds(polyline.getBounds(), { padding: [30, 30] });
-                    } else if (latLons.length === 1) {
-                        map.setView(latLons[0], 12);
-                    }
+                        if (waypoints && waypoints.length > 0) {
+                            const latLons = waypoints.map(w => [w.latitude, w.longitude]);
 
-                    setTimeout(() => {
-                        if (map) map.invalidateSize();
-                    }, 200);
-                }, 100);
+                            waypoints.forEach((wp, idx) => {
+                                const marker = L.marker([wp.latitude, wp.longitude]).addTo(map);
+                                const timeStr = formatDateTime(wp.timestamp);
+                                marker.bindPopup(`<b>Waypoint #${idx + 1}</b><br>${timeStr}<br>Lat: ${wp.latitude}<br>Lon: ${wp.longitude}`);
+                            });
+
+                            if (latLons.length > 1) {
+                                const polyline = L.polyline(latLons, {
+                                    color: '#134074',
+                                    weight: 4,
+                                    opacity: 0.85,
+                                    dashArray: '6, 6'
+                                }).addTo(map);
+
+                                map.fitBounds(polyline.getBounds(), { padding: [30, 30] });
+                            } else if (latLons.length === 1) {
+                                map.setView(latLons[0], 12);
+                            }
+                        } else {
+                            map.setView([43.7384, 7.4246], 9);
+                        }
+
+                        setTimeout(() => {
+                            if (map) map.invalidateSize();
+                        }, 150);
+                    }, 50);
+                });
             };
 
             const getGoogleMapsEmbedUrl = (waypoints) => {
@@ -2382,7 +2383,7 @@
                     entry: JSON.parse(JSON.stringify(entry)), // Deep copy original
                     editMode: false
                 };
-                document.body.classList.add('overflow-hidden');
+                document.body.style.overflow = 'hidden';
                 if (type === 'logbook') {
                     if (!activePopup.value.entry.waypoints) activePopup.value.entry.waypoints = [];
                     renderWaypointsMap(activePopup.value.entry.waypoints, 'logMap');
@@ -2399,7 +2400,7 @@
             const closePopup = () => {
                 activePopup.value = null;
                 editFile.value = null;
-                document.body.classList.remove('overflow-hidden');
+                document.body.style.overflow = '';
             };
 
             const handleEditFileChange = (e) => {
