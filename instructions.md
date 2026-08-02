@@ -84,3 +84,6 @@ add the possibility to upload images both for the to-do list and the shopping li
 adjust the attached documents of the todo and shopping list to behave exactly like in the documents and maintenance tabs:
 * users can upload any kind of files, not only jpeg
 * upon clicking on a saved entry in the list, do not preview the attached file and make it cliccable so that it opens in a new page
+
+## 13:
+let's improve the logbook: we introduce waypoints: with a click of a button we can use the current position of the device and add a waypoint with the location. at the end there will be a preview with google maps showing the route connecting all waypoints. Between waypoints the website will calculate automatically the distance and the speed (based on the timestamp).

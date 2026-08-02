@@ -42,12 +42,32 @@ class MaintenanceOut(BaseModel):
         from_attributes = True
 
 
+class WaypointCreate(BaseModel):
+    latitude: float
+    longitude: float
+    timestamp: datetime | None = None
+    name: str | None = None
+
+
+class WaypointOut(BaseModel):
+    id: int
+    log_id: int
+    latitude: float
+    longitude: float
+    timestamp: datetime
+    name: str | None = None
+
+    class Config:
+        from_attributes = True
+
+
 class LogCreate(BaseModel):
     date: date
     crew: str = ""
     start: str = ""
     goal: str = ""
     description: str = ""
+    waypoints: list[WaypointCreate] = []
 
 
 class LogOut(BaseModel):
@@ -58,6 +78,7 @@ class LogOut(BaseModel):
     goal: str
     description: str
     created_at: datetime
+    waypoints: list[WaypointOut] = []
 
     class Config:
         from_attributes = True

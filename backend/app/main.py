@@ -1,5 +1,5 @@
 import io
-from datetime import date
+from datetime import date, datetime
 
 from fastapi import FastAPI, Depends, HTTPException, UploadFile, File, Form
 from fastapi.middleware.cors import CORSMiddleware
@@ -455,7 +455,18 @@ def list_logbook(boat_id: int, db: Session = Depends(get_db)):
 @app.post("/api/boats/{boat_id}/logbook", response_model=schemas.LogOut)
 def add_log(boat_id: int, payload: schemas.LogCreate, db: Session = Depends(get_db)):
     get_boat(boat_id, db)
-    entry = models.LogEntry(boat_id=boat_id, **payload.model_dump())
+    data = payload.model_dump(exclude={"waypoints"})
+    entry = models.LogEntry(boat_id=boat_id, **data)
+    for wp in payload.waypoints:
+        ts = wp.timestamp if wp.timestamp else datetime.utcnow()
+        entry.waypoints.append(
+            models.Waypoint(
+                latitude=wp.latitude,
+                longitude=wp.longitude,
+                timestamp=ts,
+                name=wp.name,
+            )
+        )
     db.add(entry)
     db.commit()
     db.refresh(entry)
@@ -467,8 +478,22 @@ def update_log(entry_id: int, payload: schemas.LogCreate, db: Session = Depends(
     entry = db.get(models.LogEntry, entry_id)
     if not entry:
         raise HTTPException(404, "Entry not found")
-    for key, value in payload.model_dump().items():
+    data = payload.model_dump(exclude={"waypoints"})
+    for key, value in data.items():
         setattr(entry, key, value)
+    
+    if payload.waypoints is not None:
+        entry.waypoints.clear()
+        for wp in payload.waypoints:
+            ts = wp.timestamp if wp.timestamp else datetime.utcnow()
+            entry.waypoints.append(
+                models.Waypoint(
+                    latitude=wp.latitude,
+                    longitude=wp.longitude,
+                    timestamp=ts,
+                    name=wp.name,
+                )
+            )
     db.commit()
     db.refresh(entry)
     return entry
@@ -480,6 +505,37 @@ def delete_log(entry_id: int, db: Session = Depends(get_db)):
     if not entry:
         raise HTTPException(404, "Entry not found")
     db.delete(entry)
+    db.commit()
+    return {"ok": True}
+
+
+@app.post("/api/logbook/{entry_id}/waypoints", response_model=schemas.WaypointOut)
+def add_waypoint(
+    entry_id: int, payload: schemas.WaypointCreate, db: Session = Depends(get_db)
+):
+    entry = db.get(models.LogEntry, entry_id)
+    if not entry:
+        raise HTTPException(404, "Log entry not found")
+    ts = payload.timestamp if payload.timestamp else datetime.utcnow()
+    wp = models.Waypoint(
+        log_id=entry_id,
+        latitude=payload.latitude,
+        longitude=payload.longitude,
+        timestamp=ts,
+        name=payload.name,
+    )
+    db.add(wp)
+    db.commit()
+    db.refresh(wp)
+    return wp
+
+
+@app.delete("/api/waypoints/{waypoint_id}")
+def delete_waypoint(waypoint_id: int, db: Session = Depends(get_db)):
+    wp = db.get(models.Waypoint, waypoint_id)
+    if not wp:
+        raise HTTPException(404, "Waypoint not found")
+    db.delete(wp)
     db.commit()
     return {"ok": True}
 

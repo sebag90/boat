@@ -531,8 +531,41 @@
                                 </div>
                                 <div class="space-y-1">
                                     <label class="block text-xs font-bold text-marine-600 uppercase tracking-wider">Voyage Description (Markdown allowed)</label>
-                                    <textarea v-model="newLog.description" rows="4" placeholder="How was the sea state? Engine hours? Fuel levels?"
+                                    <textarea v-model="newLog.description" rows="3" placeholder="How was the sea state? Engine hours? Fuel levels?"
                                         class="block w-full px-3 py-2.5 border border-marine-200 rounded-lg text-sm focus:ring-2 focus:ring-marine-500 focus:border-marine-500 transition bg-marine-50/20 font-mono"></textarea>
+                                </div>
+
+                                <!-- Waypoints Section -->
+                                <div class="space-y-2 border-t border-marine-100 pt-3">
+                                    <div class="flex items-center justify-between">
+                                        <label class="block text-xs font-bold text-marine-600 uppercase tracking-wider">Waypoints</label>
+                                        <button type="button" @click="captureCurrentLocation(newLog.waypoints)" :disabled="capturingLocation"
+                                            class="text-xs bg-marine-100 hover:bg-marine-200 text-marine-800 font-bold px-2.5 py-1 rounded-lg flex items-center space-x-1 transition active:scale-95 disabled:opacity-50">
+                                            <svg class="w-3.5 h-3.5 text-marine-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z"/></svg>
+                                            <span>{{ capturingLocation ? 'Locating...' : '📍 Add Current Location' }}</span>
+                                        </button>
+                                    </div>
+                                    <p v-if="locationError" class="text-xs text-red-600 bg-red-50 p-2 rounded">{{ locationError }}</p>
+
+                                    <div v-if="newLog.waypoints.length > 0" class="space-y-2 max-h-40 overflow-y-auto pr-1">
+                                        <div v-for="(wp, idx) in newLog.waypoints" :key="idx" class="bg-marine-50/80 p-2 rounded-lg border border-marine-100 text-xs flex items-center justify-between">
+                                            <div>
+                                                <span class="font-bold text-marine-800 mr-1.5">#{{ idx + 1 }}</span>
+                                                <span class="font-mono text-marine-700 text-[11px]">{{ wp.latitude }}, {{ wp.longitude }}</span>
+                                                <div class="text-[10px] text-marine-500 mt-0.5" v-if="idx > 0">
+                                                    Leg: {{ calculateLegStats(newLog.waypoints[idx-1], wp).distanceNM.toFixed(2) }} NM @ {{ calculateLegStats(newLog.waypoints[idx-1], wp).speedKnots.toFixed(1) }} kt
+                                                </div>
+                                            </div>
+                                            <button type="button" @click="newLog.waypoints.splice(idx, 1)" class="text-red-500 hover:text-red-700 p-1 font-bold">
+                                                ✕
+                                            </button>
+                                        </div>
+                                        <div v-if="newLog.waypoints.length >= 2" class="bg-sand-50 p-2 rounded text-[11px] text-sand-800 font-semibold border border-sand-200 flex justify-between">
+                                            <span>Total: {{ calculateVoyageSummary(newLog.waypoints).totalDistanceNM.toFixed(2) }} NM</span>
+                                            <span>Avg: {{ calculateVoyageSummary(newLog.waypoints).avgSpeedKnots.toFixed(1) }} kt</span>
+                                        </div>
+                                    </div>
+                                    <p v-else class="text-[11px] text-marine-400 italic">No waypoints recorded yet. Click above to record current location.</p>
                                 </div>
                                 <button type="submit"
                                     class="w-full bg-gradient-to-r from-marine-600 to-marine-800 hover:from-marine-700 hover:to-marine-900 text-white font-bold py-3 px-4 rounded-xl shadow hover:shadow-md active:scale-[0.99] transition duration-150 flex items-center justify-center space-x-2">
@@ -581,6 +614,15 @@
                                     <div class="flex items-center text-xs text-marine-400 space-x-4 border-t border-marine-50 pt-3">
                                         <span v-if="entry.start"><strong>From:</strong> {{ entry.start }}</span>
                                         <span v-if="entry.goal"><strong>To:</strong> {{ entry.goal }}</span>
+                                    </div>
+                                    <!-- Waypoint Badge on Log card -->
+                                    <div v-if="entry.waypoints && entry.waypoints.length > 0" class="flex items-center space-x-2 text-[11px] text-marine-600 bg-marine-50 border border-marine-100 rounded-lg px-2.5 py-1">
+                                        <svg class="w-3.5 h-3.5 text-marine-500 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z"/></svg>
+                                        <span class="font-bold">{{ entry.waypoints.length }} Waypoint{{ entry.waypoints.length > 1 ? 's' : '' }}</span>
+                                        <span class="text-marine-300">•</span>
+                                        <span>{{ calculateVoyageSummary(entry.waypoints).totalDistanceNM.toFixed(1) }} NM ({{ calculateVoyageSummary(entry.waypoints).totalDistanceKm.toFixed(1) }} km)</span>
+                                        <span class="text-marine-300">•</span>
+                                        <span>Avg {{ calculateVoyageSummary(entry.waypoints).avgSpeedKnots.toFixed(1) }} kt</span>
                                     </div>
                                 </div>
                             </div>
@@ -1178,6 +1220,107 @@
                         </div>
                     </div>
 
+                    <!-- WAYPOINTS & GOOGLE MAPS ROUTE PREVIEW (REVISION 13) -->
+                    <div v-if="activePopup.type === 'logbook'" class="space-y-4 border-t border-marine-100 pt-4">
+                        <div class="flex items-center justify-between">
+                            <h4 class="text-xs font-bold text-marine-600 uppercase tracking-wider flex items-center space-x-1.5">
+                                <svg class="w-4 h-4 text-marine-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z"/></svg>
+                                <span>Voyage Waypoints & Route</span>
+                            </h4>
+                            <button type="button" @click="addWaypointToActiveLog" :disabled="capturingLocation"
+                                class="bg-sand-500 hover:bg-sand-600 text-marine-900 font-bold px-3 py-1.5 rounded-lg text-xs flex items-center space-x-1 shadow-sm transition active:scale-95 disabled:opacity-50">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg>
+                                <span>{{ capturingLocation ? 'Locating...' : '📍 Add Waypoint with Current Location' }}</span>
+                            </button>
+                        </div>
+                        <p v-if="locationError" class="text-xs text-red-600 bg-red-50 p-2 rounded">{{ locationError }}</p>
+
+                        <div v-if="activePopup.entry.waypoints && activePopup.entry.waypoints.length > 0" class="space-y-4">
+                            <!-- Voyage Summary Banner -->
+                            <div v-if="activePopup.entry.waypoints.length >= 2" class="grid grid-cols-2 sm:grid-cols-4 gap-3 bg-marine-900 text-white p-4 rounded-xl shadow-inner text-center">
+                                <div>
+                                    <p class="text-[10px] text-marine-300 uppercase font-bold tracking-wider">Total Distance</p>
+                                    <p class="text-base font-black text-sand-400 mt-0.5">{{ calculateVoyageSummary(activePopup.entry.waypoints).totalDistanceNM.toFixed(2) }} NM</p>
+                                    <p class="text-[10px] text-marine-200">({{ calculateVoyageSummary(activePopup.entry.waypoints).totalDistanceKm.toFixed(1) }} km)</p>
+                                </div>
+                                <div>
+                                    <p class="text-[10px] text-marine-300 uppercase font-bold tracking-wider">Duration</p>
+                                    <p class="text-base font-black text-white mt-0.5">{{ formatDuration(calculateVoyageSummary(activePopup.entry.waypoints).totalDurationMs) }}</p>
+                                </div>
+                                <div>
+                                    <p class="text-[10px] text-marine-300 uppercase font-bold tracking-wider">Avg Speed</p>
+                                    <p class="text-base font-black text-sand-400 mt-0.5">{{ calculateVoyageSummary(activePopup.entry.waypoints).avgSpeedKnots.toFixed(1) }} kt</p>
+                                    <p class="text-[10px] text-marine-200">({{ calculateVoyageSummary(activePopup.entry.waypoints).avgSpeedKmh.toFixed(1) }} km/h)</p>
+                                </div>
+                                <div>
+                                    <p class="text-[10px] text-marine-300 uppercase font-bold tracking-wider">Waypoints</p>
+                                    <p class="text-base font-black text-white mt-0.5">{{ activePopup.entry.waypoints.length }}</p>
+                                </div>
+                            </div>
+
+                            <!-- Waypoints Table & Leg Speed/Distance -->
+                            <div class="overflow-x-auto border border-marine-200 rounded-xl bg-white shadow-sm">
+                                <table class="w-full text-left text-xs">
+                                    <thead class="bg-marine-50 text-marine-700 font-bold border-b border-marine-200">
+                                        <tr>
+                                            <th class="p-2.5">#</th>
+                                            <th class="p-2.5">Time</th>
+                                            <th class="p-2.5">Position (Lat, Lon)</th>
+                                            <th class="p-2.5">Leg Distance</th>
+                                            <th class="p-2.5">Leg Speed</th>
+                                            <th class="p-2.5 text-right">Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="divide-y divide-marine-100">
+                                        <tr v-for="(wp, idx) in activePopup.entry.waypoints" :key="wp.id || idx" class="hover:bg-marine-50/50">
+                                            <td class="p-2.5 font-bold text-marine-800">{{ idx + 1 }}</td>
+                                            <td class="p-2.5 text-marine-600">{{ formatDateTime(wp.timestamp) }}</td>
+                                            <td class="p-2.5 font-mono text-marine-800">{{ wp.latitude.toFixed(5) }}, {{ wp.longitude.toFixed(5) }}</td>
+                                            <td class="p-2.5">
+                                                <span v-if="idx > 0" class="font-semibold text-marine-700">
+                                                    {{ calculateLegStats(activePopup.entry.waypoints[idx-1], wp).distanceNM.toFixed(2) }} NM
+                                                </span>
+                                                <span v-else class="text-marine-400 italic">Start</span>
+                                            </td>
+                                            <td class="p-2.5">
+                                                <span v-if="idx > 0" class="font-semibold text-marine-700">
+                                                    {{ calculateLegStats(activePopup.entry.waypoints[idx-1], wp).speedKnots.toFixed(1) }} kt
+                                                </span>
+                                                <span v-else class="text-marine-400 italic">-</span>
+                                            </td>
+                                            <td class="p-2.5 text-right">
+                                                <button type="button" @click="deleteWaypointFromActiveLog(wp.id, idx)" class="text-red-500 hover:text-red-700 font-bold">
+                                                    Delete
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <!-- Google Maps Route Preview Embed -->
+                            <div class="space-y-2">
+                                <div class="flex items-center justify-between">
+                                    <span class="text-xs font-bold text-marine-700 uppercase tracking-wider flex items-center">
+                                        <svg class="w-4 h-4 mr-1 text-red-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 6.75V15m6-6v8.25m.503 3.498l4.875-2.437c.381-.19.622-.58.622-1.006V4.82c0-.836-.88-1.38-1.628-1.006l-3.869 1.934c-.317.159-.69.159-1.006 0L9.503 3.812a1.875 1.875 0 00-1.006 0L3.622 5.816C3.24 6.007 3 6.396 3 6.822v11.858c0 .836.88 1.38 1.628 1.006l3.869-1.934c.317-.159.69-.159 1.006 0l4.994 2.497c.317.158.69.158 1.006 0z"/></svg>
+                                        Google Maps Route Preview
+                                    </span>
+                                    <a :href="getGoogleMapsDirectionsUrl(activePopup.entry.waypoints)" target="_blank"
+                                        class="text-xs bg-marine-100 hover:bg-marine-200 text-marine-800 font-bold px-3 py-1 rounded-lg inline-flex items-center space-x-1">
+                                        <span>Open in Google Maps</span>
+                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25"/></svg>
+                                    </a>
+                                </div>
+                                <div class="border-2 border-marine-200 rounded-xl overflow-hidden bg-marine-100 shadow-sm">
+                                    <iframe :src="getGoogleMapsEmbedUrl(activePopup.entry.waypoints)" class="w-full h-80 border-none" loading="lazy"></iframe>
+                                </div>
+                            </div>
+                        </div>
+                        <div v-else class="text-xs text-marine-400 italic bg-marine-50/50 p-4 rounded-xl border border-marine-100">
+                            No waypoints recorded for this voyage. Click "Add Waypoint with Current Location" above to capture location points and view route preview.
+                        </div>
+                    </div>
+
                     <!-- ATTACHMENTS (PDF READER & CLICCABLE FILE FOR MOBILE REVISIONS 8, 12) -->
                     <div v-if="hasAttachment(activePopup)" class="space-y-3.5 border-t border-marine-100 pt-5">
                         <h4 class="text-xs font-bold text-marine-600 uppercase tracking-wider">Ship's Document Lock</h4>
@@ -1269,6 +1412,33 @@
                         <div class="space-y-1">
                             <label class="block text-xs font-bold text-marine-600 uppercase tracking-wider">Cruise Notes (Markdown)</label>
                             <textarea v-model="editForm.description" rows="5" class="block w-full px-3 py-2 border border-marine-200 rounded-lg text-sm font-mono text-xs"></textarea>
+                        </div>
+                        <!-- Waypoints Editor in Edit Mode -->
+                        <div class="space-y-2 border-t border-marine-100 pt-3">
+                            <div class="flex items-center justify-between">
+                                <label class="block text-xs font-bold text-marine-600 uppercase tracking-wider">Waypoints</label>
+                                <button type="button" @click="captureCurrentLocation(editForm.waypoints)" :disabled="capturingLocation"
+                                    class="text-xs bg-marine-100 hover:bg-marine-200 text-marine-800 font-bold px-2.5 py-1 rounded-lg flex items-center space-x-1 transition active:scale-95 disabled:opacity-50">
+                                    <svg class="w-3.5 h-3.5 text-marine-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z"/></svg>
+                                    <span>{{ capturingLocation ? 'Locating...' : '📍 Add Current Location' }}</span>
+                                </button>
+                            </div>
+                            <p v-if="locationError" class="text-xs text-red-600 bg-red-50 p-2 rounded">{{ locationError }}</p>
+
+                            <div v-if="editForm.waypoints && editForm.waypoints.length > 0" class="space-y-2 max-h-40 overflow-y-auto pr-1">
+                                <div v-for="(wp, idx) in editForm.waypoints" :key="idx" class="bg-marine-50/80 p-2 rounded-lg border border-marine-100 text-xs flex items-center justify-between">
+                                    <div>
+                                        <span class="font-bold text-marine-800 mr-1.5">#{{ idx + 1 }}</span>
+                                        <span class="font-mono text-marine-700 text-[11px]">{{ wp.latitude }}, {{ wp.longitude }}</span>
+                                        <div class="text-[10px] text-marine-500 mt-0.5" v-if="idx > 0">
+                                            Leg: {{ calculateLegStats(editForm.waypoints[idx-1], wp).distanceNM.toFixed(2) }} NM @ {{ calculateLegStats(editForm.waypoints[idx-1], wp).speedKnots.toFixed(1) }} kt
+                                        </div>
+                                    </div>
+                                    <button type="button" @click="editForm.waypoints.splice(idx, 1)" class="text-red-500 hover:text-red-700 p-1 font-bold">
+                                        ✕
+                                    </button>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
@@ -1424,7 +1594,7 @@
                 return `${yyyy}-${mm}-${dd}`;
             };
 
-            const newLog = reactive({ date: getTodayDateString(), crew: '', start: '', goal: '', description: '' });
+            const newLog = reactive({ date: getTodayDateString(), crew: '', start: '', goal: '', description: '', waypoints: [] });
             const newDoc = reactive({ title: '', description: '', file: null });
             const newMaint = reactive({ title: '', date: getTodayDateString(), description: '', receipt: null });
             const newTodo = reactive({ text: '', file: null });
@@ -1451,7 +1621,231 @@
                 { id: 'settings', name: 'Settings', icon: `<svg class="w-full h-full" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.325.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 011.37.49l1.296 2.247a1.125 1.125 0 01-.26 1.43l-1.003.828c-.293.241-.438.613-.43.992a7.723 7.723 0 010 .255c-.008.378.137.75.43.991l1.004.827c.424.35.534.955.26 1.43l-1.298 2.247a1.125 1.125 0 01-1.369.491l-1.217-.456c-.355-.133-.75-.072-1.076.124a6.47 6.47 0 01-.22.128c-.331.183-.581.495-.644.869l-.213 1.281c-.09.543-.56.94-1.11.94h-2.594c-.55 0-1.019-.398-1.11-.94l-.213-1.281c-.062-.374-.312-.686-.644-.87a6.52 6.52 0 01-.22-.127c-.325-.196-.72-.257-1.076-.124l-1.217.456a1.125 1.125 0 01-1.369-.49l-1.297-2.247a1.125 1.125 0 01.26-1.43l1.004-.827c.292-.24.437-.613.43-.991a6.932 6.932 0 010-.255c.007-.38-.138-.751-.43-.992l-1.004-.827a1.125 1.125 0 01-.26-1.43l1.297-2.247a1.125 1.125 0 011.37-.491l1.216.456c.356.133.751.072 1.076-.124.072-.044.146-.086.22-.128.332-.183.582-.495.645-.869L9.594 3.94z" /><circle cx="12" cy="12" r="3" stroke-linecap="round" stroke-linejoin="round"/></svg>` }
             ];
 
-            // UTILITIES: Date Formatter (DD-MM-YYYY) (Revision 5)
+            // ---------- WAYPOINTS & GEOLOCATION (Revision 13) ----------
+            const capturingLocation = ref(false);
+            const locationError = ref('');
+
+            const calculateDistanceNM = (lat1, lon1, lat2, lon2) => {
+                const R = 3440.065; // Earth radius in Nautical Miles
+                const dLat = (lat2 - lat1) * Math.PI / 180;
+                const dLon = (lon2 - lon1) * Math.PI / 180;
+                const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+                          Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+                          Math.sin(dLon / 2) * Math.sin(dLon / 2);
+                const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+                return R * c;
+            };
+
+            const calculateLegStats = (wp1, wp2) => {
+                if (!wp1 || !wp2) return { distanceNM: 0, distanceKm: 0, durationMs: 0, speedKnots: 0, speedKmh: 0 };
+                const distNM = calculateDistanceNM(wp1.latitude, wp1.longitude, wp2.latitude, wp2.longitude);
+                const distKm = distNM * 1.852;
+
+                const t1 = new Date(wp1.timestamp).getTime();
+                const t2 = new Date(wp2.timestamp).getTime();
+                const diffMs = Math.max(0, t2 - t1);
+                const hours = diffMs / (1000 * 60 * 60);
+
+                let speedKnots = 0;
+                let speedKmh = 0;
+                if (hours > 0) {
+                    speedKnots = distNM / hours;
+                    speedKmh = distKm / hours;
+                }
+
+                return {
+                    distanceNM: distNM,
+                    distanceKm: distKm,
+                    durationMs: diffMs,
+                    speedKnots: speedKnots,
+                    speedKmh: speedKmh
+                };
+            };
+
+            const calculateVoyageSummary = (waypoints) => {
+                if (!waypoints || waypoints.length < 2) {
+                    return { totalDistanceNM: 0, totalDistanceKm: 0, totalDurationMs: 0, avgSpeedKnots: 0, avgSpeedKmh: 0 };
+                }
+                let totalNM = 0;
+                for (let i = 0; i < waypoints.length - 1; i++) {
+                    const stats = calculateLegStats(waypoints[i], waypoints[i + 1]);
+                    totalNM += stats.distanceNM;
+                }
+                const totalKm = totalNM * 1.852;
+                const tStart = new Date(waypoints[0].timestamp).getTime();
+                const tEnd = new Date(waypoints[waypoints.length - 1].timestamp).getTime();
+                const totalMs = Math.max(0, tEnd - tStart);
+                const totalHours = totalMs / (1000 * 60 * 60);
+                const avgKnots = totalHours > 0 ? (totalNM / totalHours) : 0;
+                const avgKmh = totalHours > 0 ? (totalKm / totalHours) : 0;
+
+                return {
+                    totalDistanceNM: totalNM,
+                    totalDistanceKm: totalKm,
+                    totalDurationMs: totalMs,
+                    avgSpeedKnots: avgKnots,
+                    avgSpeedKmh: avgKmh
+                };
+            };
+
+            const formatDuration = (ms) => {
+                if (isNaN(ms) || ms <= 0) return '0m';
+                const totalMins = Math.floor(ms / (1000 * 60));
+                const hrs = Math.floor(totalMins / 60);
+                const mins = totalMins % 60;
+                if (hrs > 0) {
+                    return `${hrs}h ${mins}m`;
+                }
+                return `${mins}m`;
+            };
+
+            const getGoogleMapsEmbedUrl = (waypoints) => {
+                if (!waypoints || waypoints.length === 0) return '';
+                if (waypoints.length === 1) {
+                    return `https://maps.google.com/maps?q=${waypoints[0].latitude},${waypoints[0].longitude}&z=13&output=embed`;
+                }
+                const origin = `${waypoints[0].latitude},${waypoints[0].longitude}`;
+                const destination = `${waypoints[waypoints.length - 1].latitude},${waypoints[waypoints.length - 1].longitude}`;
+                let waypointsParam = '';
+                if (waypoints.length > 2) {
+                    const mids = waypoints.slice(1, -1).map(w => `${w.latitude},${w.longitude}`).join('+to:');
+                    waypointsParam = `+to:${mids}`;
+                }
+                return `https://maps.google.com/maps?saddr=${origin}&daddr=${destination}${waypointsParam}&output=embed`;
+            };
+
+            const getGoogleMapsDirectionsUrl = (waypoints) => {
+                if (!waypoints || waypoints.length === 0) return '#';
+                if (waypoints.length === 1) {
+                    return `https://www.google.com/maps/search/?api=1&query=${waypoints[0].latitude},${waypoints[0].longitude}`;
+                }
+                const origin = `${waypoints[0].latitude},${waypoints[0].longitude}`;
+                const destination = `${waypoints[waypoints.length - 1].latitude},${waypoints[waypoints.length - 1].longitude}`;
+                let url = `https://www.google.com/maps/dir/?api=1&origin=${encodeURIComponent(origin)}&destination=${encodeURIComponent(destination)}`;
+                if (waypoints.length > 2) {
+                    const waypointsStr = waypoints.slice(1, -1).map(w => `${w.latitude},${w.longitude}`).join('|');
+                    url += `&waypoints=${encodeURIComponent(waypointsStr)}`;
+                }
+                return url;
+            };
+
+            const captureCurrentLocation = (targetList) => {
+                if (!targetList) return;
+                capturingLocation.value = true;
+                locationError.value = '';
+
+                if (!navigator.geolocation) {
+                    locationError.value = 'Geolocation is not supported by your browser';
+                    capturingLocation.value = false;
+                    return;
+                }
+
+                navigator.geolocation.getCurrentPosition(
+                    (position) => {
+                        const lat = Number(position.coords.latitude.toFixed(6));
+                        const lon = Number(position.coords.longitude.toFixed(6));
+                        const nowIso = new Date().toISOString();
+                        
+                        targetList.push({
+                            latitude: lat,
+                            longitude: lon,
+                            timestamp: nowIso,
+                            name: `Waypoint ${targetList.length + 1}`
+                        });
+                        capturingLocation.value = false;
+                    },
+                    (error) => {
+                        console.error(error);
+                        switch (error.code) {
+                            case error.PERMISSION_DENIED:
+                                locationError.value = 'Location permission denied.';
+                                break;
+                            case error.POSITION_UNAVAILABLE:
+                                locationError.value = 'Location information unavailable.';
+                                break;
+                            case error.TIMEOUT:
+                                locationError.value = 'Location request timed out.';
+                                break;
+                            default:
+                                locationError.value = 'Error fetching position.';
+                                break;
+                        }
+                        capturingLocation.value = false;
+                    },
+                    { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+                );
+            };
+
+            const addWaypointToActiveLog = () => {
+                if (!activePopup.value || !activePopup.value.entry) return;
+                capturingLocation.value = true;
+                locationError.value = '';
+
+                if (!navigator.geolocation) {
+                    locationError.value = 'Geolocation is not supported by your browser';
+                    capturingLocation.value = false;
+                    return;
+                }
+
+                navigator.geolocation.getCurrentPosition(
+                    async (position) => {
+                        const lat = Number(position.coords.latitude.toFixed(6));
+                        const lon = Number(position.coords.longitude.toFixed(6));
+                        const nowIso = new Date().toISOString();
+                        const logId = activePopup.value.entry.id;
+
+                        try {
+                            const res = await request(`/api/logbook/${logId}/waypoints`, {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({
+                                    latitude: lat,
+                                    longitude: lon,
+                                    timestamp: nowIso,
+                                    name: `Waypoint ${(activePopup.value.entry.waypoints || []).length + 1}`
+                                })
+                            });
+                            const newWp = await res.json();
+                            if (!activePopup.value.entry.waypoints) {
+                                activePopup.value.entry.waypoints = [];
+                            }
+                            activePopup.value.entry.waypoints.push(newWp);
+                            
+                            const idx = logEntries.value.findIndex(l => l.id === logId);
+                            if (idx !== -1) {
+                                if (!logEntries.value[idx].waypoints) logEntries.value[idx].waypoints = [];
+                                logEntries.value[idx].waypoints.push(newWp);
+                            }
+                        } catch (e) {
+                            locationError.value = 'Failed to save waypoint to log.';
+                        } finally {
+                            capturingLocation.value = false;
+                        }
+                    },
+                    (error) => {
+                        locationError.value = 'Geolocation error: ' + error.message;
+                        capturingLocation.value = false;
+                    },
+                    { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+                );
+            };
+
+            const deleteWaypointFromActiveLog = async (wpId, index) => {
+                if (!activePopup.value || !activePopup.value.entry || !activePopup.value.entry.waypoints) return;
+                if (!wpId) {
+                    activePopup.value.entry.waypoints.splice(index, 1);
+                    return;
+                }
+                try {
+                    await request(`/api/waypoints/${wpId}`, { method: 'DELETE' });
+                    activePopup.value.entry.waypoints.splice(index, 1);
+                    const logId = activePopup.value.entry.id;
+                    const idx = logEntries.value.findIndex(l => l.id === logId);
+                    if (idx !== -1 && logEntries.value[idx].waypoints) {
+                        logEntries.value[idx].waypoints = logEntries.value[idx].waypoints.filter(w => w.id !== wpId);
+                    }
+                } catch (e) {}
+            };
             const formatDate = (dateStr) => {
                 if (!dateStr) return '';
                 // If it is an ISO Datetime, extract date portion
@@ -1713,6 +2107,7 @@
                     newLog.start = '';
                     newLog.goal = '';
                     newLog.description = '';
+                    newLog.waypoints = [];
                 } catch (e) { }
             };
 
@@ -1925,9 +2320,15 @@
                     entry: JSON.parse(JSON.stringify(entry)), // Deep copy original
                     editMode: false
                 };
+                if (type === 'logbook' && !activePopup.value.entry.waypoints) {
+                    activePopup.value.entry.waypoints = [];
+                }
 
                 // Prepare prefilled edit form model
                 editForm.value = JSON.parse(JSON.stringify(entry));
+                if (type === 'logbook' && !editForm.value.waypoints) {
+                    editForm.value.waypoints = [];
+                }
                 editFile.value = null;
             };
 
@@ -2122,6 +2523,8 @@
                 newBoat, editBoat, newLog, newDoc, newMaint, newTodo, newShop,
                 newDocFileInput, newMaintReceiptInput, newTodoFileInput, newShopFileInput,
                 activePopup, editForm, editFile, tabList,
+                capturingLocation, locationError, calculateDistanceNM, calculateLegStats, calculateVoyageSummary,
+                formatDuration, getGoogleMapsEmbedUrl, getGoogleMapsDirectionsUrl, captureCurrentLocation, addWaypointToActiveLog, deleteWaypointFromActiveLog,
                 formatDate, formatDateTime, renderMarkdown, login, logout, goHome, selectBoat, switchTab,
                 openCreateBoatModal, closeCreateBoatModal, submitCreateBoat, updateCurrentBoat, deleteCurrentBoat,
                 submitLog, submitDocument, handleDocFileChange, submitMaintenance, handleMaintFileChange,

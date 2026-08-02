@@ -1,6 +1,6 @@
 from datetime import datetime, date
 
-from sqlalchemy import String, Text, ForeignKey, DateTime, Date, Boolean, LargeBinary
+from sqlalchemy import String, Text, ForeignKey, DateTime, Date, Boolean, LargeBinary, Float
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from .db import Base
@@ -90,6 +90,24 @@ class LogEntry(Base):
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
 
     boat: Mapped[Boat] = relationship(back_populates="logbook")
+    waypoints: Mapped[list["Waypoint"]] = relationship(
+        back_populates="log_entry",
+        cascade="all, delete-orphan",
+        order_by="Waypoint.timestamp",
+    )
+
+
+class Waypoint(Base):
+    __tablename__ = "waypoints"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    log_id: Mapped[int] = mapped_column(ForeignKey("logbook.id", ondelete="CASCADE"))
+    latitude: Mapped[float] = mapped_column(Float, nullable=False)
+    longitude: Mapped[float] = mapped_column(Float, nullable=False)
+    timestamp: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+    name: Mapped[str | None] = mapped_column(String(200), nullable=True)
+
+    log_entry: Mapped[LogEntry] = relationship(back_populates="waypoints")
 
 
 class ShoppingItem(Base):
