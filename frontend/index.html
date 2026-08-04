@@ -539,15 +539,52 @@
                                 </div>
 
                                 <!-- Waypoints Section -->
-                                <div class="space-y-2 border-t border-marine-100 pt-3">
+                                <div class="space-y-2.5 border-t border-marine-100 pt-3">
                                     <div class="flex items-center justify-between">
-                                        <label class="block text-xs font-bold text-marine-600 uppercase tracking-wider">Waypoints</label>
+                                        <label class="block text-xs font-bold text-marine-600 uppercase tracking-wider">Waypoints & Route</label>
                                         <button type="button" @click="captureCurrentLocation(newLog.waypoints)" :disabled="capturingLocation"
                                             class="text-xs bg-marine-100 hover:bg-marine-200 text-marine-800 font-bold px-2.5 py-1 rounded-lg flex items-center space-x-1 transition active:scale-95 disabled:opacity-50">
                                             <svg class="w-3.5 h-3.5 text-marine-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z"/></svg>
-                                            <span>{{ capturingLocation ? 'Locating...' : '📍 Add Current Location' }}</span>
+                                            <span>{{ capturingLocation ? 'Locating...' : '📍 Add Single Point' }}</span>
                                         </button>
                                     </div>
+
+                                    <!-- Auto-Tracker Control Box -->
+                                    <div class="bg-marine-50/90 rounded-xl p-3 border border-marine-200 space-y-2">
+                                        <div class="flex flex-wrap items-center justify-between gap-2">
+                                            <div class="flex items-center space-x-1.5">
+                                                <span class="text-xs font-bold text-marine-800 uppercase tracking-wider flex items-center">
+                                                    <svg class="w-4 h-4 mr-1 text-marine-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                                                    Auto-Tracker
+                                                </span>
+                                                <select v-model="autoTrackInterval" :disabled="isAutoTracking" class="text-xs border border-marine-200 rounded px-1.5 py-0.5 bg-white font-semibold text-marine-700">
+                                                    <option :value="60">1 min</option>
+                                                    <option :value="120">2 mins</option>
+                                                    <option :value="300">5 mins</option>
+                                                    <option :value="600">10 mins</option>
+                                                </select>
+                                            </div>
+
+                                            <button v-if="!isAutoTracking" type="button" @click="startAutoTracking(newLog.waypoints, false)"
+                                                class="text-xs bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-3 py-1.5 rounded-lg flex items-center space-x-1 shadow transition active:scale-95">
+                                                <span class="w-2 h-2 rounded-full bg-white animate-ping"></span>
+                                                <span>▶ Start Auto-Track</span>
+                                            </button>
+                                            <button v-else type="button" @click="stopAutoTracking"
+                                                class="text-xs bg-red-600 hover:bg-red-700 text-white font-bold px-3 py-1.5 rounded-lg flex items-center space-x-1 shadow transition active:scale-95">
+                                                <span>⏹ Stop Auto-Track</span>
+                                            </button>
+                                        </div>
+
+                                        <div v-if="isAutoTracking" class="text-[11px] font-bold text-emerald-800 bg-emerald-50 border border-emerald-200 p-2 rounded-lg flex items-center justify-between">
+                                            <span class="flex items-center">
+                                                <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 mr-1.5 pulse-light"></span>
+                                                Active — Next point in {{ secondsToNextTrack }}s
+                                            </span>
+                                            <span v-if="lastTrackTime" class="text-[10px] text-emerald-600 font-normal">Last: {{ formatDateTime(lastTrackTime.toISOString()) }}</span>
+                                        </div>
+                                    </div>
+
                                     <p v-if="locationError" class="text-xs text-red-600 bg-red-50 p-2 rounded">{{ locationError }}</p>
 
                                     <div v-if="newLog.waypoints.length > 0" class="space-y-2 max-h-40 overflow-y-auto pr-1">
@@ -1233,9 +1270,46 @@
                             <button type="button" @click="addWaypointToActiveLog" :disabled="capturingLocation"
                                 class="bg-sand-500 hover:bg-sand-600 text-marine-900 font-bold px-3 py-1.5 rounded-lg text-xs flex items-center space-x-1 shadow-sm transition active:scale-95 disabled:opacity-50">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg>
-                                <span>{{ capturingLocation ? 'Locating...' : '📍 Add Waypoint with Current Location' }}</span>
+                                <span>{{ capturingLocation ? 'Locating...' : '📍 Add Single Point' }}</span>
                             </button>
                         </div>
+
+                        <!-- Auto-Tracker Control Box -->
+                        <div class="bg-marine-50/90 rounded-xl p-3 border border-marine-200 space-y-2">
+                            <div class="flex flex-wrap items-center justify-between gap-2">
+                                <div class="flex items-center space-x-1.5">
+                                    <span class="text-xs font-bold text-marine-800 uppercase tracking-wider flex items-center">
+                                        <svg class="w-4 h-4 mr-1 text-marine-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                                        Auto-Tracker
+                                    </span>
+                                    <select v-model="autoTrackInterval" :disabled="isAutoTracking" class="text-xs border border-marine-200 rounded px-1.5 py-0.5 bg-white font-semibold text-marine-700">
+                                        <option :value="60">1 min</option>
+                                        <option :value="120">2 mins</option>
+                                        <option :value="300">5 mins</option>
+                                        <option :value="600">10 mins</option>
+                                    </select>
+                                </div>
+
+                                <button v-if="!isAutoTracking" type="button" @click="startAutoTracking(activePopup.entry.waypoints, true)"
+                                    class="text-xs bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-3 py-1.5 rounded-lg flex items-center space-x-1 shadow transition active:scale-95">
+                                    <span class="w-2 h-2 rounded-full bg-white animate-ping"></span>
+                                    <span>▶ Start Auto-Track</span>
+                                </button>
+                                <button v-else type="button" @click="stopAutoTracking"
+                                    class="text-xs bg-red-600 hover:bg-red-700 text-white font-bold px-3 py-1.5 rounded-lg flex items-center space-x-1 shadow transition active:scale-95">
+                                    <span>⏹ Stop Auto-Track</span>
+                                </button>
+                            </div>
+
+                            <div v-if="isAutoTracking" class="text-[11px] font-bold text-emerald-800 bg-emerald-50 border border-emerald-200 p-2 rounded-lg flex items-center justify-between">
+                                <span class="flex items-center">
+                                    <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 mr-1.5 pulse-light"></span>
+                                    Active — Next point in {{ secondsToNextTrack }}s
+                                </span>
+                                <span v-if="lastTrackTime" class="text-[10px] text-emerald-600 font-normal">Last: {{ formatDateTime(lastTrackTime.toISOString()) }}</span>
+                            </div>
+                        </div>
+
                         <p v-if="locationError" class="text-xs text-red-600 bg-red-50 p-2 rounded">{{ locationError }}</p>
 
                         <div v-if="activePopup.entry.waypoints && activePopup.entry.waypoints.length > 0" class="space-y-4">
@@ -1662,6 +1736,72 @@
                     avgSpeedKnots: avgKnots,
                     avgSpeedKmh: avgKmh
                 };
+            };
+
+            // AUTO-TRACKING STATES (Revision 13 / Auto-Logger)
+            const isAutoTracking = ref(false);
+            const autoTrackInterval = ref(60); // default 60s
+            const secondsToNextTrack = ref(60);
+            const countdownTimer = ref(null);
+            const wakeLockObj = ref(null);
+            const lastTrackTime = ref(null);
+
+            const requestWakeLock = async () => {
+                if ('wakeLock' in navigator) {
+                    try {
+                        wakeLockObj.value = await navigator.wakeLock.request('screen');
+                    } catch (err) {
+                        console.log('Wake lock request skipped/denied:', err);
+                    }
+                }
+            };
+
+            const releaseWakeLock = () => {
+                if (wakeLockObj.value) {
+                    wakeLockObj.value.release().then(() => {
+                        wakeLockObj.value = null;
+                    }).catch(() => {});
+                }
+            };
+
+            const startAutoTracking = (targetList, isExistingLog = false) => {
+                if (isAutoTracking.value) return;
+                
+                isAutoTracking.value = true;
+                requestWakeLock();
+                secondsToNextTrack.value = autoTrackInterval.value;
+
+                // Immediately capture first point
+                if (isExistingLog) {
+                    addWaypointToActiveLog();
+                } else {
+                    captureCurrentLocation(targetList);
+                }
+                lastTrackTime.value = new Date();
+
+                // Start 1-second countdown for next track
+                countdownTimer.value = setInterval(() => {
+                    if (secondsToNextTrack.value > 1) {
+                        secondsToNextTrack.value--;
+                    } else {
+                        secondsToNextTrack.value = autoTrackInterval.value;
+                        if (isExistingLog) {
+                            addWaypointToActiveLog();
+                        } else {
+                            captureCurrentLocation(targetList);
+                        }
+                        lastTrackTime.value = new Date();
+                    }
+                }, 1000);
+            };
+
+            const stopAutoTracking = () => {
+                isAutoTracking.value = false;
+                releaseWakeLock();
+                if (countdownTimer.value) {
+                    clearInterval(countdownTimer.value);
+                    countdownTimer.value = null;
+                }
             };
 
             const formatDuration = (ms) => {
@@ -2135,6 +2275,10 @@
                     // Insert at top since entries are sorted desc
                     logEntries.value.unshift(data);
                     
+                    if (isAutoTracking.value) {
+                        stopAutoTracking();
+                    }
+
                     // Reset Form
                     newLog.date = getTodayDateString();
                     newLog.crew = '';
@@ -2560,6 +2704,12 @@
                         if (showCreateBoatModal.value) closeCreateBoatModal();
                     }
                 });
+
+                document.addEventListener('visibilitychange', () => {
+                    if (isAutoTracking.value && document.visibilityState === 'visible') {
+                        requestWakeLock();
+                    }
+                });
             });
 
             return {
@@ -2572,6 +2722,7 @@
                 activePopup, editForm, editFile, tabList,
                 capturingLocation, locationError, calculateDistanceNM, calculateLegStats, calculateVoyageSummary,
                 formatDuration, getOpenStreetMapUrl, captureCurrentLocation, addWaypointToActiveLog, deleteWaypointFromActiveLog,
+                isAutoTracking, autoTrackInterval, secondsToNextTrack, lastTrackTime, startAutoTracking, stopAutoTracking,
                 formatDate, formatDateTime, renderMarkdown, login, logout, goHome, selectBoat, switchTab,
                 openCreateBoatModal, closeCreateBoatModal, submitCreateBoat, updateCurrentBoat, deleteCurrentBoat,
                 submitLog, submitDocument, handleDocFileChange, submitMaintenance, handleMaintFileChange,
