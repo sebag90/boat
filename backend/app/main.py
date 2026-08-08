@@ -105,21 +105,46 @@ def list_documents(boat_id: int, q: str | None = None, db: Session = Depends(get
 @app.post("/api/boats/{boat_id}/documents", response_model=schemas.DocumentOut)
 async def create_document(
     boat_id: int,
-    title: str = Form(...),
+    title: str = Form(""),
     description: str = Form(""),
     file: UploadFile | None = File(None),
+    files: list[UploadFile] | None = File(None),
     db: Session = Depends(get_db),
 ):
     get_boat(boat_id, db)
-    doc = models.Document(boat_id=boat_id, title=title, description=description)
-    if file is not None:
-        doc.data = await file.read()
-        doc.filename = file.filename or "file"
-        doc.content_type = file.content_type or "application/octet-stream"
-    db.add(doc)
+    all_files: list[UploadFile] = []
+    if files:
+        all_files.extend(files)
+    if file is not None and file not in all_files and file.filename:
+        all_files.append(file)
+
+    if not all_files:
+        doc = models.Document(boat_id=boat_id, title=title or "Untitled Document", description=description)
+        db.add(doc)
+        db.commit()
+        db.refresh(doc)
+        return doc
+
+    created_docs = []
+    for idx, f in enumerate(all_files):
+        doc_title = title if title else (f.filename or f"Document {idx + 1}")
+        if len(all_files) > 1 and title and idx > 0:
+            doc_title = f"{title} ({idx + 1})"
+        doc = models.Document(
+            boat_id=boat_id,
+            title=doc_title,
+            description=description,
+            data=await f.read(),
+            filename=f.filename or "file",
+            content_type=f.content_type or "application/octet-stream",
+        )
+        db.add(doc)
+        created_docs.append(doc)
+
     db.commit()
-    db.refresh(doc)
-    return doc
+    for doc in created_docs:
+        db.refresh(doc)
+    return created_docs[0]
 
 
 @app.get("/api/documents/{doc_id}/download")
@@ -185,18 +210,46 @@ async def add_maintenance(
     date: date = Form(...),
     description: str = Form(""),
     receipt: UploadFile | None = File(None),
+    files: list[UploadFile] | None = File(None),
     db: Session = Depends(get_db),
 ):
     get_boat(boat_id, db)
-    record = models.Maintenance(
-        boat_id=boat_id, title=title, date=date, description=description
-    )
-    if receipt is not None:
-        record.receipt_data = await receipt.read()
-        record.receipt_filename = receipt.filename
-        record.receipt_content_type = receipt.content_type or "application/octet-stream"
-    db.add(record)
+    all_files: list[UploadFile] = []
+    if files:
+        all_files.extend(files)
+    if receipt is not None and receipt not in all_files and receipt.filename:
+        all_files.append(receipt)
+
+    if not all_files:
+        record = models.Maintenance(
+            boat_id=boat_id, title=title, date=date, description=description
+        )
+        db.add(record)
+        db.commit()
+        db.refresh(record)
+        return record
+
+    created_records = []
+    for idx, f in enumerate(all_files):
+        rec_title = title if title else (f.filename or f"Service Job {idx + 1}")
+        if len(all_files) > 1 and title and idx > 0:
+            rec_title = f"{title} ({idx + 1})"
+        record = models.Maintenance(
+            boat_id=boat_id,
+            title=rec_title,
+            date=date,
+            description=description,
+            receipt_data=await f.read(),
+            receipt_filename=f.filename or "file",
+            receipt_content_type=f.content_type or "application/octet-stream",
+        )
+        db.add(record)
+        created_records.append(record)
+
     db.commit()
+    for r in created_records:
+        db.refresh(r)
+    return created_records[0]
     db.refresh(record)
     return record
 
@@ -300,15 +353,42 @@ async def add_todo(
     boat_id: int,
     text: str = Form(...),
     file: UploadFile | None = File(None),
+    files: list[UploadFile] | None = File(None),
     db: Session = Depends(get_db)
 ):
     get_boat(boat_id, db)
-    item = models.Todo(boat_id=boat_id, text=text)
-    if file is not None:
-        item.file_data = await file.read()
-        item.file_filename = file.filename
-        item.file_content_type = file.content_type or "application/octet-stream"
-    db.add(item)
+    all_files: list[UploadFile] = []
+    if files:
+        all_files.extend(files)
+    if file is not None and file not in all_files and file.filename:
+        all_files.append(file)
+
+    if not all_files:
+        item = models.Todo(boat_id=boat_id, text=text)
+        db.add(item)
+        db.commit()
+        db.refresh(item)
+        return item
+
+    created_todos = []
+    for idx, f in enumerate(all_files):
+        todo_text = text if text else (f.filename or f"Task {idx + 1}")
+        if len(all_files) > 1 and text and idx > 0:
+            todo_text = f"{text} ({idx + 1})"
+        item = models.Todo(
+            boat_id=boat_id,
+            text=todo_text,
+            file_data=await f.read(),
+            file_filename=f.filename or "file",
+            file_content_type=f.content_type or "application/octet-stream",
+        )
+        db.add(item)
+        created_todos.append(item)
+
+    db.commit()
+    for t in created_todos:
+        db.refresh(t)
+    return created_todos[0]
     db.commit()
     db.refresh(item)
     return item
@@ -374,20 +454,49 @@ async def add_shopping(
     description: str = Form(""),
     link: str = Form(""),
     file: UploadFile | None = File(None),
+    files: list[UploadFile] | None = File(None),
     db: Session = Depends(get_db)
 ):
     get_boat(boat_id, db)
-    item = models.ShoppingItem(
-        boat_id=boat_id,
-        name=name,
-        description=description,
-        link=link,
-    )
-    if file is not None:
-        item.file_data = await file.read()
-        item.file_filename = file.filename
-        item.file_content_type = file.content_type or "application/octet-stream"
-    db.add(item)
+    all_files: list[UploadFile] = []
+    if files:
+        all_files.extend(files)
+    if file is not None and file not in all_files and file.filename:
+        all_files.append(file)
+
+    if not all_files:
+        item = models.ShoppingItem(
+            boat_id=boat_id,
+            name=name,
+            description=description,
+            link=link,
+        )
+        db.add(item)
+        db.commit()
+        db.refresh(item)
+        return item
+
+    created_items = []
+    for idx, f in enumerate(all_files):
+        item_name = name if name else (f.filename or f"Item {idx + 1}")
+        if len(all_files) > 1 and name and idx > 0:
+            item_name = f"{name} ({idx + 1})"
+        item = models.ShoppingItem(
+            boat_id=boat_id,
+            name=item_name,
+            description=description,
+            link=link,
+            file_data=await f.read(),
+            file_filename=f.filename or "file",
+            file_content_type=f.content_type or "application/octet-stream",
+        )
+        db.add(item)
+        created_items.append(item)
+
+    db.commit()
+    for i in created_items:
+        db.refresh(i)
+    return created_items[0]
     db.commit()
     db.refresh(item)
     return item

@@ -306,8 +306,12 @@
             </div>
             <div class="space-y-1">
               <label class="block text-xs font-bold text-marine-600 uppercase tracking-wider">Replace Document File (Optional)</label>
-              <input type="file" @change="$emit('fileChange', $event)" class="block w-full px-3.5 py-2.5 border border-marine-200 rounded-lg text-xs bg-marine-50/20">
-              <p class="text-[10px] text-marine-400 font-mono italic" v-if="activePopup.entry.filename">Currently: {{ activePopup.entry.filename }}</p>
+              <FileUploadDropzone
+                :multiple="false"
+                @change="$emit('fileChange', $event)"
+                hint="Upload a new file to replace existing attachment"
+              />
+              <p class="text-[10px] text-marine-400 font-mono italic mt-1" v-if="activePopup.entry.filename">Currently: {{ activePopup.entry.filename }}</p>
             </div>
             <div class="space-y-1">
               <label class="block text-xs font-bold text-marine-600 uppercase tracking-wider">Notes (Markdown)</label>
@@ -329,8 +333,12 @@
             </div>
             <div class="space-y-1">
               <label class="block text-xs font-bold text-marine-600 uppercase tracking-wider">Replace Invoice/Receipt (Optional)</label>
-              <input type="file" @change="$emit('fileChange', $event)" class="block w-full px-3.5 py-2.5 border border-marine-200 rounded-lg text-xs bg-marine-50/20">
-              <p class="text-[10px] text-marine-400 font-mono italic" v-if="activePopup.entry.receipt_filename">Currently: {{ activePopup.entry.receipt_filename }}</p>
+              <FileUploadDropzone
+                :multiple="false"
+                @change="$emit('fileChange', $event)"
+                hint="Upload a new receipt or invoice to replace existing"
+              />
+              <p class="text-[10px] text-marine-400 font-mono italic mt-1" v-if="activePopup.entry.receipt_filename">Currently: {{ activePopup.entry.receipt_filename }}</p>
             </div>
             <div class="space-y-1">
               <label class="block text-xs font-bold text-marine-600 uppercase tracking-wider">Maintenance Notes (Markdown)</label>
@@ -350,8 +358,12 @@
             </div>
             <div class="space-y-1">
               <label class="block text-xs font-bold text-marine-600 uppercase tracking-wider">Replace/Upload Attachment (Optional)</label>
-              <input type="file" @change="$emit('fileChange', $event)" class="block w-full px-3.5 py-2.5 border border-marine-200 rounded-lg text-xs bg-marine-50/20">
-              <p class="text-[10px] text-marine-400 font-mono italic" v-if="activePopup.entry.file_filename">Currently: {{ activePopup.entry.file_filename }}</p>
+              <FileUploadDropzone
+                :multiple="false"
+                @change="$emit('fileChange', $event)"
+                hint="Upload a new image or attachment"
+              />
+              <p class="text-[10px] text-marine-400 font-mono italic mt-1" v-if="activePopup.entry.file_filename">Currently: {{ activePopup.entry.file_filename }}</p>
             </div>
           </div>
 
@@ -373,8 +385,12 @@
             </div>
             <div class="space-y-1">
               <label class="block text-xs font-bold text-marine-600 uppercase tracking-wider">Replace/Upload Attachment (Optional)</label>
-              <input type="file" @change="$emit('fileChange', $event)" class="block w-full px-3.5 py-2.5 border border-marine-200 rounded-lg text-xs bg-marine-50/20">
-              <p class="text-[10px] text-marine-400 font-mono italic" v-if="activePopup.entry.file_filename">Currently: {{ activePopup.entry.file_filename }}</p>
+              <FileUploadDropzone
+                :multiple="false"
+                @change="$emit('fileChange', $event)"
+                hint="Upload a new image or attachment"
+              />
+              <p class="text-[10px] text-marine-400 font-mono italic mt-1" v-if="activePopup.entry.file_filename">Currently: {{ activePopup.entry.file_filename }}</p>
             </div>
             <div class="space-y-1">
               <label class="block text-xs font-bold text-marine-600 uppercase tracking-wider">Item Description (Markdown)</label>
@@ -404,6 +420,7 @@
 
 <script setup>
 import { ref, watch } from 'vue'
+import FileUploadDropzone from './FileUploadDropzone.vue'
 import WaypointsMap from './WaypointsMap.vue'
 import {
   formatDate,

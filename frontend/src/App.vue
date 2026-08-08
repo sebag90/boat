@@ -224,10 +224,10 @@ const shoppingItems = ref([])
 const docSearchQuery = ref('')
 
 // NEW ENTRY FORMS MODEL
-const newDoc = reactive({ title: '', description: '', file: null })
-const newMaint = reactive({ title: '', date: getTodayDateString(), description: '', receipt: null })
-const newTodo = reactive({ text: '', file: null })
-const newShop = reactive({ name: '', description: '', link: '', file: null })
+const newDoc = reactive({ title: '', description: '', files: [], file: null })
+const newMaint = reactive({ title: '', date: getTodayDateString(), description: '', files: [], receipt: null })
+const newTodo = reactive({ text: '', files: [], file: null })
+const newShop = reactive({ name: '', description: '', link: '', files: [], file: null })
 
 // EDIT POPUP STATE
 const activePopup = ref(null)
@@ -518,16 +518,17 @@ const submitDocument = async () => {
     const fd = new FormData()
     fd.append('title', newDoc.title)
     fd.append('description', newDoc.description || '')
-    if (newDoc.file) fd.append('file', newDoc.file)
+    const filesList = Array.isArray(newDoc.files) ? newDoc.files : (newDoc.file ? [newDoc.file] : [])
+    filesList.forEach(f => fd.append('files', f))
 
-    const res = await request(`/api/boats/${currentBoat.value.id}/documents`, {
+    await request(`/api/boats/${currentBoat.value.id}/documents`, {
       method: 'POST',
       body: fd
     })
-    const data = await res.json()
-    documents.value.unshift(data)
+    await fetchDocuments()
     newDoc.title = ''
     newDoc.description = ''
+    newDoc.files = []
     newDoc.file = null
   } catch (e) { }
 }
@@ -538,18 +539,18 @@ const submitMaintenance = async () => {
     fd.append('title', newMaint.title)
     fd.append('date', newMaint.date)
     fd.append('description', newMaint.description || '')
-    if (newMaint.receipt) fd.append('file', newMaint.receipt)
+    const filesList = Array.isArray(newMaint.files) ? newMaint.files : (newMaint.receipt ? [newMaint.receipt] : [])
+    filesList.forEach(f => fd.append('files', f))
 
-    const res = await request(`/api/boats/${currentBoat.value.id}/maintenance`, {
+    await request(`/api/boats/${currentBoat.value.id}/maintenance`, {
       method: 'POST',
       body: fd
     })
-    const data = await res.json()
-    maintenanceRecords.value.push(data)
-    maintenanceRecords.value.sort((a, b) => new Date(b.date) - new Date(a.date))
+    await fetchMaintenance()
     newMaint.title = ''
     newMaint.date = getTodayDateString()
     newMaint.description = ''
+    newMaint.files = []
     newMaint.receipt = null
   } catch (e) { }
 }
@@ -558,15 +559,16 @@ const submitTodo = async () => {
   try {
     const fd = new FormData()
     fd.append('text', newTodo.text)
-    if (newTodo.file) fd.append('file', newTodo.file)
+    const filesList = Array.isArray(newTodo.files) ? newTodo.files : (newTodo.file ? [newTodo.file] : [])
+    filesList.forEach(f => fd.append('files', f))
 
-    const res = await request(`/api/boats/${currentBoat.value.id}/todos`, {
+    await request(`/api/boats/${currentBoat.value.id}/todos`, {
       method: 'POST',
       body: fd
     })
-    const data = await res.json()
-    todoItems.value.unshift(data)
+    await fetchTodos()
     newTodo.text = ''
+    newTodo.files = []
     newTodo.file = null
   } catch (e) { }
 }
@@ -591,17 +593,18 @@ const submitShopping = async () => {
     fd.append('name', newShop.name)
     fd.append('description', newShop.description || '')
     fd.append('link', newShop.link || '')
-    if (newShop.file) fd.append('file', newShop.file)
+    const filesList = Array.isArray(newShop.files) ? newShop.files : (newShop.file ? [newShop.file] : [])
+    filesList.forEach(f => fd.append('files', f))
 
-    const res = await request(`/api/boats/${currentBoat.value.id}/shopping`, {
+    await request(`/api/boats/${currentBoat.value.id}/shopping`, {
       method: 'POST',
       body: fd
     })
-    const data = await res.json()
-    shoppingItems.value.unshift(data)
+    await fetchShopping()
     newShop.name = ''
     newShop.description = ''
     newShop.link = ''
+    newShop.files = []
     newShop.file = null
   } catch (e) { }
 }
