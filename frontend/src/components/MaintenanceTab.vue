@@ -5,18 +5,18 @@
     <div class="bg-white p-6 rounded-2xl shadow-sm border border-marine-100 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
       <div class="space-y-1">
         <div class="flex items-center space-x-2">
-          <h3 class="font-serif text-2xl font-extrabold text-marine-900">Service &amp; Maintenance History</h3>
+          <h3 class="font-serif text-2xl font-extrabold text-marine-900">{{ t('maint_title') }}</h3>
           <span class="text-xs bg-marine-100 text-marine-800 font-bold px-2.5 py-0.5 rounded-full border border-marine-200">
-            {{ maintenanceRecords.length }} {{ maintenanceRecords.length === 1 ? 'Record' : 'Records' }}
+            {{ maintenanceRecords.length }}
           </span>
         </div>
-        <p class="text-xs text-marine-500">Track oil changes, impeller replacements, repairs, and service receipts</p>
+        <p class="text-xs text-marine-500">{{ t('maint_subtitle') }}</p>
       </div>
 
       <button @click="showCreateModal = true"
         class="w-full sm:w-auto bg-gradient-to-r from-marine-600 to-marine-800 hover:from-marine-700 hover:to-marine-900 text-white font-bold py-3 px-6 rounded-xl shadow-md hover:shadow-lg active:scale-95 transition flex items-center justify-center space-x-2 text-sm flex-shrink-0">
         <svg class="w-5 h-5 text-sand-400" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg>
-        <span>Log Maintenance Job</span>
+        <span>{{ t('log_maint_job') }}</span>
       </button>
     </div>
 
@@ -26,15 +26,15 @@
         <svg class="w-8 h-8" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M11.42 15.17L17.25 21A1.5 1.5 0 0019.5 18.75l-5.83-5.83M11.42 15.17l2.42-2.42M11.42 15.17L6 10.25M13.84 12.75l2.42-2.42m0 0l-5.83-5.83A1.5 1.5 0 008.25 6.75l5.83 5.83z"/></svg>
       </div>
       <div>
-        <h4 class="text-marine-900 font-bold text-lg">No Maintenance Logged Yet</h4>
+        <h4 class="text-marine-900 font-bold text-lg">{{ t('no_maint_logged') }}</h4>
         <p class="text-marine-500 font-medium text-xs mt-1 max-w-sm mx-auto">
-          Keep your vessel shipshape! Record engine services, gear replacements, and store invoice receipts.
+          {{ t('no_maint_sub') }}
         </p>
       </div>
       <button @click="showCreateModal = true"
         class="inline-flex items-center space-x-2 bg-marine-700 hover:bg-marine-800 text-white font-bold py-2.5 px-5 rounded-xl shadow text-xs transition">
         <svg class="w-4 h-4 text-sand-400" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg>
-        <span>Log First Service Job</span>
+        <span>{{ t('log_first_maint') }}</span>
       </button>
     </div>
 
@@ -137,6 +137,7 @@
 <script setup>
 import { ref } from 'vue'
 import FileUploadDropzone from './FileUploadDropzone.vue'
+import { t } from '../services/i18n'
 import { formatDate } from '../services/api'
 
 const props = defineProps({

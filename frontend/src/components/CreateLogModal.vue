@@ -6,7 +6,7 @@
       <div class="bg-gradient-to-r from-marine-700 to-marine-900 px-6 py-4 text-white flex items-center justify-between">
         <h3 class="font-serif text-lg font-bold flex items-center space-x-2">
           <svg class="w-5 h-5 text-sand-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" /></svg>
-          <span>Record New Passage</span>
+          <span>{{ t('voyage_passage') }}</span>
         </h3>
         <button @click="handleClose" class="text-marine-300 hover:text-white transition p-1">
           <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
@@ -19,28 +19,28 @@
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <!-- Date Field -->
           <div class="space-y-1 min-w-0">
-            <label class="block text-xs font-bold text-marine-700 uppercase tracking-wider">Date of Passage *</label>
+            <label class="block text-xs font-bold text-marine-700 uppercase tracking-wider">{{ t('date_of_passage') }} *</label>
             <input v-model="form.date" type="date" required
               class="w-full max-w-full min-w-0 box-border px-3.5 py-2.5 border border-marine-200 rounded-lg text-sm focus:ring-2 focus:ring-marine-500 transition bg-marine-50/20">
           </div>
 
           <!-- Crew Field -->
           <div class="space-y-1 min-w-0">
-            <label class="block text-xs font-bold text-marine-700 uppercase tracking-wider">Crew Members</label>
+            <label class="block text-xs font-bold text-marine-700 uppercase tracking-wider">{{ t('crew_members') }}</label>
             <input v-model="form.crew" type="text" placeholder="e.g. Skipper & Mate"
               class="w-full max-w-full min-w-0 box-border px-3.5 py-2.5 border border-marine-200 rounded-lg text-sm focus:ring-2 focus:ring-marine-500 transition bg-marine-50/20">
           </div>
 
           <!-- Start Port -->
           <div class="space-y-1 min-w-0">
-            <label class="block text-xs font-bold text-marine-700 uppercase tracking-wider">Start Port</label>
+            <label class="block text-xs font-bold text-marine-700 uppercase tracking-wider">{{ t('start_port') }}</label>
             <input v-model="form.start" type="text" placeholder="e.g. Monaco Port Hercules"
               class="w-full max-w-full min-w-0 box-border px-3.5 py-2.5 border border-marine-200 rounded-lg text-sm focus:ring-2 focus:ring-marine-500 transition bg-marine-50/20">
           </div>
 
           <!-- Goal Port -->
           <div class="space-y-1 min-w-0">
-            <label class="block text-xs font-bold text-marine-700 uppercase tracking-wider">Goal / Destination</label>
+            <label class="block text-xs font-bold text-marine-700 uppercase tracking-wider">{{ t('goal_destination') }}</label>
             <input v-model="form.goal" type="text" placeholder="e.g. Calvi, Corsica"
               class="w-full max-w-full min-w-0 box-border px-3.5 py-2.5 border border-marine-200 rounded-lg text-sm focus:ring-2 focus:ring-marine-500 transition bg-marine-50/20">
           </div>
@@ -48,7 +48,7 @@
 
         <!-- Description -->
         <div class="space-y-1">
-          <label class="block text-xs font-bold text-marine-700 uppercase tracking-wider">Voyage Notes &amp; Observations</label>
+          <label class="block text-xs font-bold text-marine-700 uppercase tracking-wider">{{ t('voyage_notes') }}</label>
           <textarea v-model="form.description" rows="3" placeholder="Weather, sea state, engine hours, sails used..."
             class="w-full max-w-full min-w-0 box-border px-3.5 py-2.5 border border-marine-200 rounded-lg text-sm focus:ring-2 focus:ring-marine-500 transition bg-marine-50/20 font-sans"></textarea>
         </div>
@@ -56,12 +56,12 @@
         <!-- Option to record starting waypoint -->
         <div class="bg-marine-50/80 p-3.5 rounded-xl border border-marine-200 flex items-center justify-between gap-3">
           <div class="text-xs text-marine-700">
-            <span class="font-bold block text-marine-900">📍 Initial GPS Waypoint</span>
-            <span class="text-[11px] text-marine-500">Capture current location as start point upon creation</span>
+            <span class="font-bold block text-marine-900">📍 {{ t('initial_gps_waypoint') }}</span>
+            <span class="text-[11px] text-marine-500">{{ t('capture_gps_sub') }}</span>
           </div>
           <button type="button" @click="captureGps" :disabled="capturing"
             class="text-xs bg-sand-500 hover:bg-sand-600 text-marine-950 font-bold px-3 py-1.5 rounded-lg border border-sand-600 shadow-sm transition active:scale-95 disabled:opacity-50 flex items-center space-x-1 flex-shrink-0">
-            <span>{{ capturing ? 'Locating...' : (initialGps ? '✓ Location Captured' : '📍 Get GPS Location') }}</span>
+            <span>{{ capturing ? t('locating') : (initialGps ? '✓ ' + t('location_captured') : '📍 ' + t('get_gps_location')) }}</span>
           </button>
         </div>
 
@@ -87,6 +87,7 @@
 
 <script setup>
 import { ref, reactive, watch } from 'vue'
+import { t } from '../services/i18n'
 import { getTodayDateString } from '../services/api'
 
 const props = defineProps({ show: Boolean })

@@ -5,18 +5,18 @@
     <div class="bg-white p-6 rounded-2xl shadow-sm border border-marine-100 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
       <div class="space-y-1">
         <div class="flex items-center space-x-2">
-          <h3 class="font-serif text-2xl font-extrabold text-marine-900">Ship's To-Do List</h3>
+          <h3 class="font-serif text-2xl font-extrabold text-marine-900">{{ t('todo_title') }}</h3>
           <span class="text-xs bg-marine-100 text-marine-800 font-bold px-2.5 py-0.5 rounded-full border border-marine-200">
-            {{ todoItems.filter(t => !t.done).length }} Pending / {{ todoItems.length }} Total
+            {{ todoItems.filter(t => !t.done).length }} {{ t('pending') }} / {{ todoItems.length }} {{ t('total') }}
           </span>
         </div>
-        <p class="text-xs text-marine-500">Manage vessel maintenance tasks, deck checklists, and safety checks</p>
+        <p class="text-xs text-marine-500">{{ t('todo_subtitle') }}</p>
       </div>
 
       <button @click="showCreateModal = true"
         class="w-full sm:w-auto bg-gradient-to-r from-marine-600 to-marine-800 hover:from-marine-700 hover:to-marine-900 text-white font-bold py-3 px-6 rounded-xl shadow-md hover:shadow-lg active:scale-95 transition flex items-center justify-center space-x-2 text-sm flex-shrink-0">
         <svg class="w-5 h-5 text-sand-400" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg>
-        <span>Add To-Do Task</span>
+        <span>{{ t('add_todo_task') }}</span>
       </button>
     </div>
 
@@ -26,15 +26,15 @@
         <svg class="w-8 h-8" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h3.75M9 15h3.375M9 9h3.375M11.4 3h1.2c1.9 0 3.4 1.5 3.4 3.4v12.2c0 1.9-1.5 3.4-3.4 3.4h-1.2C9.5 22 8 20.5 8 18.6V6.4C8 4.5 9.5 3 11.4 3z"/></svg>
       </div>
       <div>
-        <h4 class="text-marine-900 font-bold text-lg">All Tasks Completed!</h4>
+        <h4 class="text-marine-900 font-bold text-lg">{{ t('no_todos') }}</h4>
         <p class="text-marine-500 font-medium text-xs mt-1 max-w-sm mx-auto">
-          All clear on deck. Add new tasks, inspection items, or gear checks to your fleet list.
+          {{ t('no_todos_sub') }}
         </p>
       </div>
       <button @click="showCreateModal = true"
         class="inline-flex items-center space-x-2 bg-marine-700 hover:bg-marine-800 text-white font-bold py-2.5 px-5 rounded-xl shadow text-xs transition">
         <svg class="w-4 h-4 text-sand-400" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg>
-        <span>Add First Task</span>
+        <span>{{ t('add_first_task') }}</span>
       </button>
     </div>
 
@@ -123,6 +123,7 @@
 <script setup>
 import { ref } from 'vue'
 import FileUploadDropzone from './FileUploadDropzone.vue'
+import { t } from '../services/i18n'
 import { formatDate } from '../services/api'
 
 const props = defineProps({

@@ -11,6 +11,13 @@
       <div class="bg-white/95 backdrop-blur-md rounded-2xl shadow-2xl border border-marine-100 overflow-hidden">
         <!-- Card Header -->
         <div class="bg-gradient-to-br from-marine-700 to-marine-900 px-8 py-8 text-center text-white relative">
+          <!-- Language Switcher in Login Header -->
+          <button @click="toggleLocale" type="button"
+            title="Switch Language / Cambia Lingua"
+            class="absolute top-4 right-4 flex items-center space-x-1 px-2.5 py-1 bg-white/10 hover:bg-white/20 border border-white/20 rounded-lg text-xs font-bold text-sand-300 transition active:scale-95">
+            <span>{{ currentLocale === 'en' ? '🇬🇧 EN' : '🇮🇹 IT' }}</span>
+          </button>
+
           <div class="w-20 h-20 bg-gradient-to-br from-sand-400 to-sand-600 rounded-full mx-auto flex items-center justify-center shadow-lg border-4 border-white mb-4">
             <svg class="w-10 h-10 text-marine-900" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
               <circle cx="12" cy="12" r="6" />
@@ -33,7 +40,7 @@
           </div>
 
           <div class="space-y-1.5">
-            <label class="block text-xs font-bold text-marine-700 uppercase tracking-wider">Skipper ID / Username</label>
+            <label class="block text-xs font-bold text-marine-700 uppercase tracking-wider">{{ t('username') }}</label>
             <div class="relative">
               <input v-model="username" type="text" required placeholder="admin"
                 class="block w-full pl-10 pr-4 py-3 border border-marine-200 rounded-xl text-sm focus:ring-2 focus:ring-marine-500 focus:border-marine-500 bg-marine-50/30 transition">
@@ -44,7 +51,7 @@
           </div>
 
           <div class="space-y-1.5">
-            <label class="block text-xs font-bold text-marine-700 uppercase tracking-wider">Passkey Code</label>
+            <label class="block text-xs font-bold text-marine-700 uppercase tracking-wider">{{ t('password') }}</label>
             <div class="relative">
               <input v-model="password" type="password" required placeholder="••••••••"
                 class="block w-full pl-10 pr-4 py-3 border border-marine-200 rounded-xl text-sm focus:ring-2 focus:ring-marine-500 focus:border-marine-500 bg-marine-50/30 transition">
@@ -57,7 +64,7 @@
           <button type="submit" :disabled="authLoading"
             class="w-full bg-gradient-to-r from-marine-600 via-marine-700 to-marine-800 hover:from-marine-700 hover:to-marine-900 text-white font-bold py-3.5 px-4 rounded-xl shadow-lg hover:shadow-xl active:scale-[0.99] transition duration-150 flex items-center justify-center space-x-2 text-sm disabled:opacity-50">
             <span v-if="authLoading" class="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent"></span>
-            <span>{{ authLoading ? 'Authenticating...' : 'Board Vessel' }}</span>
+            <span>{{ authLoading ? t('authenticating') : t('sign_in') }}</span>
           </button>
         </form>
 
@@ -82,6 +89,7 @@
 
 <script setup>
 import { ref } from 'vue'
+import { currentLocale, toggleLocale, t } from '../services/i18n'
 
 const props = defineProps({
   authLoading: Boolean,

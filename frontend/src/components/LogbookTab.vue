@@ -5,25 +5,25 @@
     <div class="bg-white p-6 rounded-2xl shadow-sm border border-marine-100 flex flex-col md:flex-row md:items-center justify-between gap-4">
       <div class="space-y-1">
         <div class="flex items-center space-x-2">
-          <h3 class="font-serif text-2xl font-extrabold text-marine-900">Ship's Log Book</h3>
+          <h3 class="font-serif text-2xl font-extrabold text-marine-900">{{ t('logbook_title') }}</h3>
           <span class="text-xs bg-marine-100 text-marine-800 font-bold px-2.5 py-0.5 rounded-full border border-marine-200">
-            {{ logEntries.length }} {{ logEntries.length === 1 ? 'Voyage' : 'Voyages' }}
+            {{ logEntries.length }}
           </span>
         </div>
-        <p class="text-xs text-marine-500">Record sea passages, auto-track GPS waypoints, and calculate nautical miles &amp; speeds</p>
+        <p class="text-xs text-marine-500">{{ t('logbook_subtitle') }}</p>
       </div>
 
       <div class="flex flex-wrap items-center gap-3">
         <!-- Total Nautical Miles Summary Pill -->
         <div v-if="totalNauticalMiles > 0" class="bg-sand-100/80 border border-sand-300/60 px-4 py-2 rounded-xl text-left hidden sm:block">
-          <span class="text-[10px] uppercase font-bold text-sand-800 tracking-wider block">Total Distance Logged</span>
+          <span class="text-[10px] uppercase font-bold text-sand-800 tracking-wider block">{{ t('total_distance_logged') }}</span>
           <span class="text-sm font-extrabold text-marine-900">{{ totalNauticalMiles.toFixed(1) }} NM</span>
         </div>
 
         <button @click="$emit('openCreateModal')"
           class="w-full sm:w-auto bg-gradient-to-r from-marine-600 to-marine-800 hover:from-marine-700 hover:to-marine-900 text-white font-bold py-3 px-6 rounded-xl shadow-md hover:shadow-lg active:scale-95 transition flex items-center justify-center space-x-2 text-sm">
           <svg class="w-5 h-5 text-sand-400" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg>
-          <span>Record New Voyage</span>
+          <span>{{ t('record_new_voyage') }}</span>
         </button>
       </div>
     </div>
@@ -46,15 +46,15 @@
         <svg class="w-8 h-8" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" /></svg>
       </div>
       <div>
-        <h4 class="text-marine-900 font-bold text-lg">No Voyages Recorded Yet</h4>
+        <h4 class="text-marine-900 font-bold text-lg">{{ t('no_voyages_recorded') }}</h4>
         <p class="text-marine-500 font-medium text-xs mt-1 max-w-sm mx-auto">
-          Start building your vessel's logbook! Record passage origins, destinations, crew members, and live GPS waypoints.
+          {{ t('no_voyages_sub') }}
         </p>
       </div>
       <button @click="$emit('openCreateModal')"
         class="inline-flex items-center space-x-2 bg-marine-700 hover:bg-marine-800 text-white font-bold py-2.5 px-5 rounded-xl shadow text-xs transition">
         <svg class="w-4 h-4 text-sand-400" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg>
-        <span>Record First Voyage</span>
+        <span>{{ t('record_first_voyage') }}</span>
       </button>
     </div>
 
@@ -115,6 +115,7 @@
 
 <script setup>
 import { ref, computed } from 'vue'
+import { t } from '../services/i18n'
 import { formatDate, calculateVoyageSummary } from '../services/api'
 
 const props = defineProps({

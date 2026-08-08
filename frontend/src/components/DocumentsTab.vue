@@ -5,24 +5,24 @@
     <div class="bg-white p-6 rounded-2xl shadow-sm border border-marine-100 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
       <div class="space-y-1">
         <div class="flex items-center space-x-2">
-          <h3 class="font-serif text-2xl font-extrabold text-marine-900">Ship's Document Locker</h3>
+          <h3 class="font-serif text-2xl font-extrabold text-marine-900">{{ t('documents_title') }}</h3>
           <span class="text-xs bg-marine-100 text-marine-800 font-bold px-2.5 py-0.5 rounded-full border border-marine-200">
-            {{ documents.length }} {{ documents.length === 1 ? 'Document' : 'Documents' }}
+            {{ documents.length }}
           </span>
         </div>
-        <p class="text-xs text-marine-500">Store maintenance manuals, vessel registration, safety certs &amp; operating guides</p>
+        <p class="text-xs text-marine-500">{{ t('documents_subtitle') }}</p>
       </div>
 
       <button @click="showCreateModal = true"
         class="w-full sm:w-auto bg-gradient-to-r from-marine-600 to-marine-800 hover:from-marine-700 hover:to-marine-900 text-white font-bold py-3 px-6 rounded-xl shadow-md hover:shadow-lg active:scale-95 transition flex items-center justify-center space-x-2 text-sm flex-shrink-0">
         <svg class="w-5 h-5 text-sand-400" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg>
-        <span>Store New Document</span>
+        <span>{{ t('store_new_document') }}</span>
       </button>
     </div>
 
     <!-- Search / Filter Bar -->
     <div class="relative">
-      <input :value="docSearchQuery" @input="$emit('updateSearchQuery', $event.target.value)" type="text" placeholder="🔍 Case-insensitive search title, notes or filename..."
+      <input :value="docSearchQuery" @input="$emit('updateSearchQuery', $event.target.value)" type="text" :placeholder="'🔍 ' + t('search_documents')"
         class="w-full pl-10 pr-4 py-3 border border-marine-200 rounded-xl text-xs bg-white shadow-sm focus:ring-2 focus:ring-marine-500 transition">
       <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-marine-400">
         <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"/></svg>
@@ -35,15 +35,15 @@
         <svg class="w-8 h-8" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z"/></svg>
       </div>
       <div>
-        <h4 class="text-marine-900 font-bold text-lg">No Documents Found</h4>
+        <h4 class="text-marine-900 font-bold text-lg">{{ t('no_documents_found') }}</h4>
         <p class="text-marine-500 font-medium text-xs mt-1 max-w-sm mx-auto">
-          No documents match your filter in the ship's locker. Click below to add manuals, guides, or certificates.
+          {{ t('no_documents_sub') }}
         </p>
       </div>
       <button @click="showCreateModal = true"
         class="inline-flex items-center space-x-2 bg-marine-700 hover:bg-marine-800 text-white font-bold py-2.5 px-5 rounded-xl shadow text-xs transition">
         <svg class="w-4 h-4 text-sand-400" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg>
-        <span>Store First Document</span>
+        <span>{{ t('store_first_document') }}</span>
       </button>
     </div>
 
@@ -139,6 +139,7 @@
 <script setup>
 import { ref } from 'vue'
 import FileUploadDropzone from './FileUploadDropzone.vue'
+import { t } from '../services/i18n'
 import { formatDateTime } from '../services/api'
 
 const props = defineProps({

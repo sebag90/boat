@@ -5,18 +5,18 @@
     <div class="bg-white p-6 rounded-2xl shadow-sm border border-marine-100 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
       <div class="space-y-1">
         <div class="flex items-center space-x-2">
-          <h3 class="font-serif text-2xl font-extrabold text-marine-900">Shopping Cargo List</h3>
+          <h3 class="font-serif text-2xl font-extrabold text-marine-900">{{ t('shopping_title') }}</h3>
           <span class="text-xs bg-marine-100 text-marine-800 font-bold px-2.5 py-0.5 rounded-full border border-marine-200">
-            {{ shoppingItems.filter(s => !s.done).length }} To Buy / {{ shoppingItems.length }} Total
+            {{ shoppingItems.filter(s => !s.done).length }} {{ t('to_buy') }} / {{ shoppingItems.length }} {{ t('total') }}
           </span>
         </div>
-        <p class="text-xs text-marine-500">Track required vessel gear, chandlery parts, and provision orders</p>
+        <p class="text-xs text-marine-500">{{ t('shopping_subtitle') }}</p>
       </div>
 
       <button @click="showCreateModal = true"
         class="w-full sm:w-auto bg-gradient-to-r from-marine-600 to-marine-800 hover:from-marine-700 hover:to-marine-900 text-white font-bold py-3 px-6 rounded-xl shadow-md hover:shadow-lg active:scale-95 transition flex items-center justify-center space-x-2 text-sm flex-shrink-0">
         <svg class="w-5 h-5 text-sand-400" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg>
-        <span>Add Item to Buy</span>
+        <span>{{ t('add_cargo_item') }}</span>
       </button>
     </div>
 
@@ -26,15 +26,15 @@
         <svg class="w-8 h-8" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 00-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 00-16.536-1.84M7.5 14.25L5.106 5.272M6 20.25a.75.75 0 11-1.5 0 .75.75 0 011.5 0zm12.75 0a.75.75 0 11-1.5 0 .75.75 0 011.5 0z"/></svg>
       </div>
       <div>
-        <h4 class="text-marine-900 font-bold text-lg">Cargo Hold Fully Stocked!</h4>
+        <h4 class="text-marine-900 font-bold text-lg">{{ t('no_shopping') }}</h4>
         <p class="text-marine-500 font-medium text-xs mt-1 max-w-sm mx-auto">
-          No items on the shopping list. Ready for sailing! Add items to buy before your next voyage.
+          {{ t('no_shopping_sub') }}
         </p>
       </div>
       <button @click="showCreateModal = true"
         class="inline-flex items-center space-x-2 bg-marine-700 hover:bg-marine-800 text-white font-bold py-2.5 px-5 rounded-xl shadow text-xs transition">
         <svg class="w-4 h-4 text-sand-400" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg>
-        <span>Add First Cargo Item</span>
+        <span>{{ t('add_first_cargo') }}</span>
       </button>
     </div>
 
@@ -140,6 +140,7 @@
 <script setup>
 import { ref } from 'vue'
 import FileUploadDropzone from './FileUploadDropzone.vue'
+import { t } from '../services/i18n'
 import { formatDate } from '../services/api'
 
 const props = defineProps({

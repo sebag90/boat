@@ -36,7 +36,7 @@
 
         <div class="space-y-1">
           <p class="text-xs font-bold text-marine-800">
-            <span class="text-marine-600 hover:underline">Click to upload</span> or drag and drop
+            <span class="text-marine-600 hover:underline">{{ t('click_to_upload') }}</span> {{ t('or_drag_drop') }}
           </p>
           <p class="text-[11px] text-marine-500 font-medium">
             {{ hint || (multiple ? 'Images, PDFs or documents (Multiple allowed)' : 'Single file upload') }}
@@ -48,13 +48,13 @@
     <!-- Selected Files Preview Grid -->
     <div v-if="filesList.length > 0" class="space-y-2">
       <div class="flex items-center justify-between text-xs font-semibold text-marine-700 px-1">
-        <span>Selected Files ({{ filesList.length }})</span>
+        <span>{{ t('selected_files') }} ({{ filesList.length }})</span>
         <button
           type="button"
           @click.stop="clearAll"
           class="text-xs text-rose-600 hover:text-rose-800 font-bold hover:underline transition"
         >
-          Clear All
+          {{ t('clear_all') }}
         </button>
       </div>
 
@@ -114,6 +114,7 @@
 
 <script setup>
 import { ref, watch, onBeforeUnmount } from 'vue'
+import { t } from '../services/i18n'
 
 const props = defineProps({
   multiple: {

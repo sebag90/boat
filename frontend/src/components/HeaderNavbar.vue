@@ -17,7 +17,15 @@
         </div>
 
         <!-- Right Controls -->
-        <div class="flex items-center space-x-4">
+        <div class="flex items-center space-x-3 sm:space-x-4">
+          <!-- Language Switcher Button/Icon -->
+          <button @click="toggleLocale"
+            title="Switch Language / Cambia Lingua"
+            class="flex items-center space-x-1.5 px-2.5 py-2 bg-marine-900/60 hover:bg-marine-700 border border-marine-600 rounded-lg text-xs font-bold text-sand-400 hover:text-white transition active:scale-95">
+            <span class="text-sm leading-none">{{ currentLocale === 'en' ? '🇬🇧' : '🇮🇹' }}</span>
+            <span class="uppercase font-mono tracking-wider text-[11px]">{{ currentLocale === 'en' ? 'EN' : 'IT' }}</span>
+          </button>
+
           <!-- Boat Selector Dropdown -->
           <div class="relative" id="boatSelectorContainer">
             <label class="sr-only">Select Boat</label>
@@ -90,6 +98,8 @@
 </template>
 
 <script setup>
+import { currentLocale, toggleLocale, t } from '../services/i18n'
+
 defineProps({
   boats: Array,
   currentBoat: Object,

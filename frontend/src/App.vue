@@ -40,15 +40,15 @@
               <svg class="w-10 h-10" fill="currentColor" viewBox="0 0 24 24"><path d="M4 18h16l-1.5-3H5.5L4 18M12 2L4.5 14H12V2M13 3.5V14h6L13 3.5Z"/></svg>
             </div>
             <div class="space-y-2">
-              <h2 class="font-serif text-2xl font-extrabold text-marine-900">Welcome Aboard, Skipper!</h2>
+              <h2 class="font-serif text-2xl font-extrabold text-marine-900">{{ t('welcome_skipper') }}</h2>
               <p class="text-marine-600 text-xs">
-                No vessels registered in your fleet yet. Add your first yacht to begin logging voyages, storing manuals, and managing maintenance!
+                {{ t('no_vessels') }}
               </p>
             </div>
             <button @click="openCreateBoatModal"
               class="inline-flex items-center space-x-2 bg-gradient-to-r from-marine-600 to-marine-800 hover:from-marine-700 hover:to-marine-900 text-white font-bold py-3 px-6 rounded-xl shadow-md hover:shadow-lg active:scale-95 transition text-xs">
               <svg class="w-4 h-4 text-sand-400" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg>
-              <span>Register First Yacht</span>
+              <span>{{ t('register_first_vessel') }}</span>
             </button>
           </div>
         </div>
@@ -60,8 +60,8 @@
               <svg class="w-8 h-8" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 15l6-6m0 0l-6-6m6 6H3"/></svg>
             </div>
             <div class="space-y-2">
-              <h3 class="font-serif text-xl font-bold text-marine-800">Select a Vessel from Fleet</h3>
-              <p class="text-marine-500 text-xs">Choose a yacht from the top dropdown selector or register a new boat.</p>
+              <h3 class="font-serif text-xl font-bold text-marine-800">{{ t('select_from_fleet') }}</h3>
+              <p class="text-marine-500 text-xs">{{ t('choose_yacht') }}</p>
             </div>
           </div>
         </div>
@@ -130,11 +130,11 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
           <div class="flex items-center space-x-2">
             <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
-            <span class="font-semibold text-white">Yacht Master Dashboard</span>
+            <span class="font-semibold text-white">{{ t('dashboard_title') }}</span>
             <span class="text-marine-500">|</span>
-            <span>Europe Locale (DD-MM-YYYY)</span>
+            <span>{{ t('locale_europe') }}</span>
           </div>
-          <p class="text-marine-400">&copy; Shipboard Logbook &amp; Fleet Locker</p>
+          <p class="text-marine-400">&copy; {{ t('copyright') }}</p>
         </div>
       </footer>
 
@@ -196,7 +196,7 @@ import {
   getTodayDateString
 } from './services/api'
 
-// AUTH STATES
+import { currentLocale, t } from './services/i18n'
 const authenticated = ref(false)
 const authLoading = ref(false)
 const authError = ref(null)
@@ -233,14 +233,14 @@ const newShop = reactive({ name: '', description: '', link: '', files: [], file:
 const activePopup = ref(null)
 const editFile = ref(null)
 
-const tabList = [
-  { id: 'logbook', name: 'Log Book', icon: `<svg class="w-full h-full" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" /></svg>` },
-  { id: 'documents', name: 'Documents Locker', icon: `<svg class="w-full h-full" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" /></svg>` },
-  { id: 'maintenance', name: 'Maintenance', icon: `<svg class="w-full h-full" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M11.42 15.17L17.25 21A1.5 1.5 0 0019.5 18.75l-5.83-5.83M11.42 15.17l2.42-2.42M11.42 15.17L6 10.25M13.84 12.75l2.42-2.42m0 0l-5.83-5.83A1.5 1.5 0 008.25 6.75l5.83 5.83z" /></svg>` },
-  { id: 'todo', name: 'To-Do list', icon: `<svg class="w-full h-full" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h3.75M9 15h3.375M9 9h3.375M11.4 3h1.2c1.9 0 3.4 1.5 3.4 3.4v12.2c0 1.9-1.5 3.4-3.4 3.4h-1.2C9.5 22 8 20.5 8 18.6V6.4C8 4.5 9.5 3 11.4 3z" /></svg>` },
-  { id: 'shopping', name: 'Shopping Cargo', icon: `<svg class="w-full h-full" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 00-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 00-16.536-1.84M7.5 14.25L5.106 5.272M6 20.25a.75.75 0 11-1.5 0 .75.75 0 011.5 0zm12.75 0a.75.75 0 11-1.5 0 .75.75 0 011.5 0z" /></svg>` },
-  { id: 'settings', name: 'Settings', icon: `<svg class="w-full h-full" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.325.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 011.37.49l1.296 2.247a1.125 1.125 0 01-.26 1.43l-1.003.828c-.293.241-.438.613-.43.992a7.723 7.723 0 010 .255c-.008.378.137.75.43.991l1.004.827c.424.35.534.955.26 1.43l-1.298 2.247a1.125 1.125 0 01-1.369.491l-1.217-.456c-.355-.133-.75-.072-1.076.124a6.47 6.47 0 01-.22.128c-.331.183-.581.495-.644.869l-.213 1.281c-.09.543-.56.94-1.11.94h-2.594c-.55 0-1.019-.398-1.11-.94l-.213-1.281c-.062-.374-.312-.686-.644-.87a6.52 6.52 0 01-.22-.127c-.325-.196-.72-.257-1.076-.124l-1.217.456a1.125 1.125 0 01-1.369-.49l-1.297-2.247a1.125 1.125 0 01.26-1.43l1.004-.827c.292-.24.437-.613.43-.991a6.932 6.932 0 010-.255c.007-.38-.138-.751-.43-.992l-1.004-.827a1.125 1.125 0 01-.26-1.43l1.297-2.247a1.125 1.125 0 011.37-.491l1.216.456c.356.133.751.072 1.076-.124.072-.044.146-.086.22-.128.332-.183.582-.495.645-.869L9.594 3.94z" /><circle cx="12" cy="12" r="3" stroke-linecap="round" stroke-linejoin="round"/></svg>` }
-]
+const tabList = computed(() => [
+  { id: 'logbook', name: t('nav_logbook'), icon: `<svg class="w-full h-full" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" /></svg>` },
+  { id: 'documents', name: t('nav_documents'), icon: `<svg class="w-full h-full" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" /></svg>` },
+  { id: 'maintenance', name: t('nav_maintenance'), icon: `<svg class="w-full h-full" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M11.42 15.17L17.25 21A1.5 1.5 0 0019.5 18.75l-5.83-5.83M11.42 15.17l2.42-2.42M11.42 15.17L6 10.25M13.84 12.75l2.42-2.42m0 0l-5.83-5.83A1.5 1.5 0 008.25 6.75l5.83 5.83z" /></svg>` },
+  { id: 'todo', name: t('nav_todo'), icon: `<svg class="w-full h-full" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h3.75M9 15h3.375M9 9h3.375M11.4 3h1.2c1.9 0 3.4 1.5 3.4 3.4v12.2c0 1.9-1.5 3.4-3.4 3.4h-1.2C9.5 22 8 20.5 8 18.6V6.4C8 4.5 9.5 3 11.4 3z" /></svg>` },
+  { id: 'shopping', name: t('nav_shopping'), icon: `<svg class="w-full h-full" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 00-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 00-16.536-1.84M7.5 14.25L5.106 5.272M6 20.25a.75.75 0 11-1.5 0 .75.75 0 011.5 0zm12.75 0a.75.75 0 11-1.5 0 .75.75 0 011.5 0z" /></svg>` },
+  { id: 'settings', name: t('nav_settings'), icon: `<svg class="w-full h-full" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.325.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 011.37.49l1.296 2.247a1.125 1.125 0 01-.26 1.43l-1.003.828c-.293.241-.438.613-.43.992a7.723 7.723 0 010 .255c-.008.378.137.75.43.991l1.004.827c.424.35.534.955.26 1.43l-1.298 2.247a1.125 1.125 0 01-1.369.491l-1.217-.456c-.355-.133-.75-.072-1.076.124a6.47 6.47 0 01-.22.128c-.331.183-.581.495-.644.869l-.213 1.281c-.09.543-.56.94-1.11.94h-2.594c-.55 0-1.019-.398-1.11-.94l-.213-1.281c-.062-.374-.312-.686-.644-.87a6.52 6.52 0 01-.22-.127c-.325-.196-.72-.257-1.076-.124l-1.217.456a1.125 1.125 0 01-1.369-.49l-1.297-2.247a1.125 1.125 0 01.26-1.43l1.004-.827c.292-.24.437-.613.43-.991a6.932 6.932 0 010-.255c.007-.38-.138-.751-.43-.992l-1.004-.827a1.125 1.125 0 01-.26-1.43l1.297-2.247a1.125 1.125 0 011.37-.491l1.216.456c.356.133.751.072 1.076-.124.072-.044.146-.086.22-.128.332-.183.582-.495.645-.869L9.594 3.94z" /><circle cx="12" cy="12" r="3" stroke-linecap="round" stroke-linejoin="round"/></svg>` }
+])
 
 const filteredDocuments = computed(() => {
   if (!docSearchQuery.value) return documents.value
