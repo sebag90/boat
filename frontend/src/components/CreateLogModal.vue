@@ -27,21 +27,21 @@
           <!-- Crew Field -->
           <div class="space-y-1 min-w-0">
             <label class="block text-xs font-bold text-marine-700 uppercase tracking-wider">{{ t('crew_members') }}</label>
-            <input v-model="form.crew" type="text" placeholder="e.g. Skipper & Mate"
+            <input v-model="form.crew" type="text" :placeholder="t('ph_crew')"
               class="w-full max-w-full min-w-0 box-border px-3.5 py-2.5 border border-marine-200 rounded-lg text-sm focus:ring-2 focus:ring-marine-500 transition bg-marine-50/20">
           </div>
 
           <!-- Start Port -->
           <div class="space-y-1 min-w-0">
             <label class="block text-xs font-bold text-marine-700 uppercase tracking-wider">{{ t('start_port') }}</label>
-            <input v-model="form.start" type="text" placeholder="e.g. Monaco Port Hercules"
+            <input v-model="form.start" type="text" :placeholder="t('ph_start')"
               class="w-full max-w-full min-w-0 box-border px-3.5 py-2.5 border border-marine-200 rounded-lg text-sm focus:ring-2 focus:ring-marine-500 transition bg-marine-50/20">
           </div>
 
           <!-- Goal Port -->
           <div class="space-y-1 min-w-0">
             <label class="block text-xs font-bold text-marine-700 uppercase tracking-wider">{{ t('goal_destination') }}</label>
-            <input v-model="form.goal" type="text" placeholder="e.g. Calvi, Corsica"
+            <input v-model="form.goal" type="text" :placeholder="t('ph_goal')"
               class="w-full max-w-full min-w-0 box-border px-3.5 py-2.5 border border-marine-200 rounded-lg text-sm focus:ring-2 focus:ring-marine-500 transition bg-marine-50/20">
           </div>
         </div>
@@ -49,7 +49,7 @@
         <!-- Description -->
         <div class="space-y-1">
           <label class="block text-xs font-bold text-marine-700 uppercase tracking-wider">{{ t('voyage_notes') }}</label>
-          <textarea v-model="form.description" rows="3" placeholder="Weather, sea state, engine hours, sails used..."
+          <textarea v-model="form.description" rows="3" :placeholder="t('ph_voyage_notes')"
             class="w-full max-w-full min-w-0 box-border px-3.5 py-2.5 border border-marine-200 rounded-lg text-sm focus:ring-2 focus:ring-marine-500 transition bg-marine-50/20 font-sans"></textarea>
         </div>
 
@@ -71,11 +71,11 @@
         <div class="pt-3 flex space-x-3 justify-end border-t border-marine-100">
           <button type="button" @click="handleClose"
             class="px-4 py-2.5 border border-marine-200 rounded-lg hover:bg-marine-50 text-sm font-semibold text-marine-600 transition">
-            Cancel
+            {{ t('cancel') }}
           </button>
           <button type="submit" :disabled="submitting"
             class="bg-gradient-to-r from-marine-600 to-marine-800 hover:from-marine-700 hover:to-marine-900 text-white font-bold py-2.5 px-6 rounded-lg shadow transition text-sm flex items-center space-x-2 disabled:opacity-50">
-            <span>{{ submitting ? 'Saving...' : 'Save Voyage' }}</span>
+            <span>{{ t('save') }}</span>
             <svg class="w-4 h-4 text-sand-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/></svg>
           </button>
         </div>

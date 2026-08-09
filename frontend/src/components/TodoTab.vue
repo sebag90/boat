@@ -56,10 +56,10 @@
               {{ todo.text }}
             </p>
             <div class="flex items-center space-x-2.5 mt-0.5 text-[11px] text-marine-400">
-              <span>Created {{ formatDate(todo.created_at) }}</span>
+              <span>{{ t('created_on') }} {{ formatDate(todo.created_at) }}</span>
               <span v-if="todo.file_filename" class="text-sand-600 bg-sand-50 border border-sand-100 px-1.5 py-0.5 rounded flex items-center">
                 <svg class="w-3 h-3 mr-0.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M18.375 12.739l-7.693 7.693a4.5 4.5 0 01-6.364-6.364l10.94-10.94A3 3 0 1119.5 7.372L8.552 18.32a1.5 1.5 0 01-2.12-2.12l10.14-10.14M16.5 7.5h.008v.008H16.5V7.5z"/></svg>
-                Attachment
+                {{ t('attachment_badge') }}
               </span>
             </div>
           </div>
@@ -79,7 +79,7 @@
         <div class="bg-gradient-to-r from-marine-700 to-marine-900 px-6 py-4 text-white flex items-center justify-between">
           <h3 class="font-serif text-lg font-bold flex items-center space-x-2">
             <svg class="w-5 h-5 text-sand-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg>
-            <span>Add To-Do Task</span>
+            <span>{{ t('add_todo_task') }}</span>
           </h3>
           <button @click="showCreateModal = false" class="text-marine-300 hover:text-white transition p-1">
             <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
@@ -88,28 +88,28 @@
 
         <form @submit.prevent="handleSubmit" class="p-6 space-y-4">
           <div class="space-y-1">
-            <label class="block text-xs font-bold text-marine-700 uppercase tracking-wider">Task Description * (Markdown allowed)</label>
-            <textarea v-model="newTodo.text" rows="3" required placeholder="e.g. Inspect bilge pump float switch, check anchor chain links..."
+            <label class="block text-xs font-bold text-marine-700 uppercase tracking-wider">{{ t('task_description') }} *</label>
+            <textarea v-model="newTodo.text" rows="3" required :placeholder="t('ph_todo_text')"
               class="block w-full px-3.5 py-2.5 border border-marine-200 rounded-lg text-sm focus:ring-2 focus:ring-marine-500 transition bg-marine-50/20 font-mono"></textarea>
           </div>
 
           <div class="space-y-1">
-            <label class="block text-xs font-bold text-marine-700 uppercase tracking-wider">Upload Attachments / Images (Optional)</label>
+            <label class="block text-xs font-bold text-marine-700 uppercase tracking-wider">{{ t('upload_attachments') }}</label>
             <FileUploadDropzone
               v-model="newTodo.files"
               accept="image/*,.pdf,.doc,.docx"
-              hint="Upload multiple images or attachments"
+              :hint="t('upload_dropzone_hint_multi')"
             />
           </div>
 
           <div class="pt-3 flex space-x-3 justify-end border-t border-marine-100">
             <button type="button" @click="showCreateModal = false"
               class="px-4 py-2.5 border border-marine-200 rounded-lg hover:bg-marine-50 text-sm font-semibold text-marine-600 transition">
-              Cancel
+              {{ t('cancel') }}
             </button>
             <button type="submit"
               class="bg-gradient-to-r from-marine-600 to-marine-800 hover:from-marine-700 hover:to-marine-900 text-white font-bold py-2.5 px-6 rounded-lg shadow transition text-sm flex items-center space-x-2">
-              <span>Add Task</span>
+              <span>{{ t('add_task_btn') }}</span>
             </button>
           </div>
         </form>

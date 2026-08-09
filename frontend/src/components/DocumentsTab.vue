@@ -73,9 +73,9 @@
         </div>
 
         <div class="pt-3 border-t border-marine-100/60 flex items-center justify-between text-xs">
-          <span class="text-marine-400 italic">Click to view &amp; edit</span>
+          <span class="text-marine-400 italic">{{ t('click_view_edit') }}</span>
           <span class="text-marine-600 font-bold flex items-center group-hover:translate-x-1 transition duration-150">
-            Details &rarr;
+            {{ t('details_arrow') }}
           </span>
         </div>
 
@@ -89,7 +89,7 @@
         <div class="bg-gradient-to-r from-marine-700 to-marine-900 px-6 py-4 text-white flex items-center justify-between">
           <h3 class="font-serif text-lg font-bold flex items-center space-x-2">
             <svg class="w-5 h-5 text-sand-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg>
-            <span>Store New Document</span>
+            <span>{{ t('store_new_document') }}</span>
           </h3>
           <button @click="showCreateModal = false" class="text-marine-300 hover:text-white transition p-1">
             <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
@@ -98,34 +98,34 @@
 
         <form @submit.prevent="handleSubmit" class="p-6 space-y-4">
           <div class="space-y-1">
-            <label class="block text-xs font-bold text-marine-700 uppercase tracking-wider">Document Title *</label>
-            <input v-model="newDoc.title" type="text" required placeholder="e.g. Engine Maintenance Manual 2026"
+            <label class="block text-xs font-bold text-marine-700 uppercase tracking-wider">{{ t('doc_title') }} *</label>
+            <input v-model="newDoc.title" type="text" required :placeholder="t('ph_doc_title')"
               class="block w-full px-3.5 py-2.5 border border-marine-200 rounded-lg text-sm focus:ring-2 focus:ring-marine-500 transition bg-marine-50/20">
           </div>
 
           <div class="space-y-1">
-            <label class="block text-xs font-bold text-marine-700 uppercase tracking-wider">Upload Files / Images (PDF, Docs, Images)</label>
+            <label class="block text-xs font-bold text-marine-700 uppercase tracking-wider">{{ t('doc_files') }}</label>
             <FileUploadDropzone
               v-model="newDoc.files"
               accept="image/*,.pdf,.doc,.docx,.txt"
-              hint="Upload multiple images, PDFs or documents"
+              :hint="t('upload_dropzone_hint_multi')"
             />
           </div>
 
           <div class="space-y-1">
-            <label class="block text-xs font-bold text-marine-700 uppercase tracking-wider">Notes &amp; Details (Markdown allowed)</label>
-            <textarea v-model="newDoc.description" rows="4" placeholder="Operating instructions, page references, safety procedures..."
+            <label class="block text-xs font-bold text-marine-700 uppercase tracking-wider">{{ t('notes_details') }}</label>
+            <textarea v-model="newDoc.description" rows="4" :placeholder="t('ph_doc_notes')"
               class="block w-full px-3.5 py-2.5 border border-marine-200 rounded-lg text-sm focus:ring-2 focus:ring-marine-500 transition bg-marine-50/20 font-mono"></textarea>
           </div>
 
           <div class="pt-3 flex space-x-3 justify-end border-t border-marine-100">
             <button type="button" @click="showCreateModal = false"
               class="px-4 py-2.5 border border-marine-200 rounded-lg hover:bg-marine-50 text-sm font-semibold text-marine-600 transition">
-              Cancel
+              {{ t('cancel') }}
             </button>
             <button type="submit"
               class="bg-gradient-to-r from-marine-600 to-marine-800 hover:from-marine-700 hover:to-marine-900 text-white font-bold py-2.5 px-6 rounded-lg shadow transition text-sm flex items-center space-x-2">
-              <span>Store Document</span>
+              <span>{{ t('store_document_btn') }}</span>
             </button>
           </div>
         </form>

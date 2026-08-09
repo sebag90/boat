@@ -56,14 +56,14 @@
               {{ shop.name }}
             </p>
             <div class="flex items-center space-x-2.5 mt-0.5 text-[11px] text-marine-400">
-              <span>Added {{ formatDate(shop.created_at) }}</span>
+              <span>{{ t('added_on') }} {{ formatDate(shop.created_at) }}</span>
               <span v-if="shop.file_filename" class="text-sand-600 bg-sand-50 border border-sand-100 px-1.5 py-0.5 rounded flex items-center">
                 <svg class="w-3 h-3 mr-0.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M18.375 12.739l-7.693 7.693a4.5 4.5 0 01-6.364-6.364l10.94-10.94A3 3 0 1119.5 7.372L8.552 18.32a1.5 1.5 0 01-2.12-2.12l10.14-10.14M16.5 7.5h.008v.008H16.5V7.5z"/></svg>
-                Attachment
+                {{ t('attachment_badge') }}
               </span>
               <a v-if="shop.link" :href="shop.link" target="_blank" @click.stop
                 class="text-marine-500 hover:text-marine-700 underline flex items-center">
-                Shop Link
+                {{ t('shop_link') }}
                 <svg class="w-2.5 h-2.5 ml-0.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25"/></svg>
               </a>
             </div>
@@ -84,7 +84,7 @@
         <div class="bg-gradient-to-r from-marine-700 to-marine-900 px-6 py-4 text-white flex items-center justify-between">
           <h3 class="font-serif text-lg font-bold flex items-center space-x-2">
             <svg class="w-5 h-5 text-sand-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg>
-            <span>Add Item to Buy</span>
+            <span>{{ t('add_cargo_item') }}</span>
           </h3>
           <button @click="showCreateModal = false" class="text-marine-300 hover:text-white transition p-1">
             <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
@@ -93,40 +93,40 @@
 
         <form @submit.prevent="handleSubmit" class="p-6 space-y-4">
           <div class="space-y-1">
-            <label class="block text-xs font-bold text-marine-700 uppercase tracking-wider">Item Name *</label>
-            <input v-model="newShop.name" type="text" required placeholder="e.g. VHF Radio Antenna Mount"
+            <label class="block text-xs font-bold text-marine-700 uppercase tracking-wider">{{ t('item_name') }} *</label>
+            <input v-model="newShop.name" type="text" required :placeholder="t('ph_shop_name')"
               class="block w-full px-3.5 py-2.5 border border-marine-200 rounded-lg text-sm focus:ring-2 focus:ring-marine-500 transition bg-marine-50/20">
           </div>
 
           <div class="space-y-1">
-            <label class="block text-xs font-bold text-marine-700 uppercase tracking-wider">Shop Web Link (Optional)</label>
-            <input v-model="newShop.link" type="url" placeholder="https://www.chandlery.com/product/..."
+            <label class="block text-xs font-bold text-marine-700 uppercase tracking-wider">{{ t('shop_web_link') }}</label>
+            <input v-model="newShop.link" type="url" :placeholder="t('ph_shop_link')"
               class="block w-full px-3.5 py-2.5 border border-marine-200 rounded-lg text-sm font-mono text-xs focus:ring-2 focus:ring-marine-500 transition bg-marine-50/20">
           </div>
 
           <div class="space-y-1">
-            <label class="block text-xs font-bold text-marine-700 uppercase tracking-wider">Upload Images / Files (Optional)</label>
+            <label class="block text-xs font-bold text-marine-700 uppercase tracking-wider">{{ t('upload_images_files') }}</label>
             <FileUploadDropzone
               v-model="newShop.files"
               accept="image/*,.pdf,.doc,.docx"
-              hint="Upload multiple images or attachments"
+              :hint="t('upload_dropzone_hint_multi')"
             />
           </div>
 
           <div class="space-y-1">
-            <label class="block text-xs font-bold text-marine-700 uppercase tracking-wider">Description &amp; Specifications (Markdown allowed)</label>
-            <textarea v-model="newShop.description" rows="3" placeholder="Specs, dimensions, or urgency levels..."
+            <label class="block text-xs font-bold text-marine-700 uppercase tracking-wider">{{ t('item_description') }}</label>
+            <textarea v-model="newShop.description" rows="3" :placeholder="t('ph_shop_notes')"
               class="block w-full px-3.5 py-2.5 border border-marine-200 rounded-lg text-sm focus:ring-2 focus:ring-marine-500 transition bg-marine-50/20 font-mono"></textarea>
           </div>
 
           <div class="pt-3 flex space-x-3 justify-end border-t border-marine-100">
             <button type="button" @click="showCreateModal = false"
               class="px-4 py-2.5 border border-marine-200 rounded-lg hover:bg-marine-50 text-sm font-semibold text-marine-600 transition">
-              Cancel
+              {{ t('cancel') }}
             </button>
             <button type="submit"
               class="bg-gradient-to-r from-marine-600 to-marine-800 hover:from-marine-700 hover:to-marine-900 text-white font-bold py-2.5 px-6 rounded-lg shadow transition text-sm flex items-center space-x-2">
-              <span>Add Cargo Item</span>
+              <span>{{ t('add_cargo_btn') }}</span>
             </button>
           </div>
         </form>

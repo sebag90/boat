@@ -36,22 +36,22 @@
               </span>
             </div>
 
-            <button @click="editMode = true"
-              class="text-xs bg-marine-100 hover:bg-marine-200 text-marine-800 font-bold py-1.5 px-3.5 rounded-lg transition flex items-center space-x-1.5">
-              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L6.832 19.82a4.5 4.5 0 01-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 011.13-1.897L16.863 4.487zm0 0L19.5 7.125" /></svg>
-              <span>Edit Log Info</span>
-            </button>
+          <button @click="editMode = true"
+            class="text-xs bg-marine-100 hover:bg-marine-200 text-marine-800 font-bold py-1.5 px-3.5 rounded-lg transition flex items-center space-x-1.5">
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L6.832 19.82a4.5 4.5 0 01-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 011.13-1.897L16.863 4.487zm0 0L19.5 7.125" /></svg>
+            <span>{{ t('edit') }}</span>
+          </button>
           </div>
 
           <!-- Port Route Banner -->
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 bg-marine-50/70 p-4 rounded-xl border border-marine-100 text-sm">
             <div>
-              <span class="text-xs text-marine-400 font-bold uppercase tracking-wider block">Departure Port</span>
-              <span class="font-bold text-marine-900 text-base">{{ entry.start || 'Unspecified Origin' }}</span>
+              <span class="text-xs text-marine-400 font-bold uppercase tracking-wider block">{{ t('start_port') }}</span>
+              <span class="font-bold text-marine-900 text-base">{{ entry.start || '—' }}</span>
             </div>
             <div>
-              <span class="text-xs text-marine-400 font-bold uppercase tracking-wider block">Destination Port</span>
-              <span class="font-bold text-marine-900 text-base">{{ entry.goal || 'Unspecified Goal' }}</span>
+              <span class="text-xs text-marine-400 font-bold uppercase tracking-wider block">{{ t('goal_destination') }}</span>
+              <span class="font-bold text-marine-900 text-base">{{ entry.goal || '—' }}</span>
             </div>
           </div>
 
@@ -75,7 +75,7 @@
               <button type="button" @click="addGpsWaypoint" :disabled="capturingLocation"
                 class="bg-sand-500 hover:bg-sand-600 text-marine-950 font-bold px-3 py-1.5 rounded-lg text-xs flex items-center space-x-1 shadow-sm transition active:scale-95 disabled:opacity-50">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg>
-                <span>{{ capturingLocation ? 'Capturing GPS...' : '📍 Capture Current Location' }}</span>
+                <span>{{ capturingLocation ? t('capturing_gps') : '📍 ' + t('capture_current_location') }}</span>
               </button>
             </div>
 
@@ -84,24 +84,24 @@
               <div class="flex flex-wrap items-center justify-between gap-2">
                 <div class="flex items-center space-x-2">
                   <span class="text-xs font-bold text-marine-800 uppercase tracking-wider">
-                    Auto GPS Logger
+                    {{ t('auto_gps_logger') }}
                   </span>
                   <select v-model="autoTrackInterval" :disabled="isAutoTracking" class="text-xs border border-marine-200 rounded px-2 py-1 bg-white font-semibold text-marine-700">
-                    <option :value="60">Every 1 min</option>
-                    <option :value="120">Every 2 mins</option>
-                    <option :value="300">Every 5 mins</option>
-                    <option :value="600">Every 10 mins</option>
+                    <option :value="60">{{ t('every_1_min') }}</option>
+                    <option :value="120">{{ t('every_2_mins') }}</option>
+                    <option :value="300">{{ t('every_5_mins') }}</option>
+                    <option :value="600">{{ t('every_10_mins') }}</option>
                   </select>
                 </div>
 
                 <button v-if="!isAutoTracking" type="button" @click="startAutoTracking"
                   class="text-xs bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-3 py-1.5 rounded-lg flex items-center space-x-1 shadow transition active:scale-95">
                   <span class="w-2 h-2 rounded-full bg-white animate-ping"></span>
-                  <span>▶ Start Auto-Tracking</span>
+                  <span>▶ {{ t('start_auto_track') }}</span>
                 </button>
                 <button v-else type="button" @click="stopAutoTracking"
                   class="text-xs bg-red-600 hover:bg-red-700 text-white font-bold px-3 py-1.5 rounded-lg flex items-center space-x-1 shadow transition active:scale-95">
-                  <span>⏹ Stop Auto-Tracking</span>
+                  <span>⏹ {{ t('stop_auto_track') }}</span>
                 </button>
               </div>
 
@@ -119,22 +119,22 @@
             <!-- Voyage Distance / Speed Summary Banner -->
             <div v-if="entry.waypoints && entry.waypoints.length >= 2" class="grid grid-cols-2 sm:grid-cols-4 gap-2 bg-marine-900 text-white p-3.5 rounded-xl text-center">
               <div>
-                <p class="text-[10px] uppercase font-bold text-marine-300">Total Distance</p>
+                <p class="text-[10px] uppercase font-bold text-marine-300">{{ t('total_distance') }}</p>
                 <p class="text-sm font-extrabold text-sand-400 mt-0.5">{{ summaryStats.totalDistanceNM.toFixed(2) }} NM</p>
                 <p class="text-[10px] text-marine-400">({{ summaryStats.totalDistanceKm.toFixed(1) }} km)</p>
               </div>
               <div>
-                <p class="text-[10px] uppercase font-bold text-marine-300">Average Speed</p>
+                <p class="text-[10px] uppercase font-bold text-marine-300">{{ t('avg_speed') }}</p>
                 <p class="text-sm font-extrabold text-sand-400 mt-0.5">{{ summaryStats.avgSpeedKnots.toFixed(1) }} knots</p>
                 <p class="text-[10px] text-marine-400">({{ summaryStats.avgSpeedKmh.toFixed(1) }} km/h)</p>
               </div>
               <div>
-                <p class="text-[10px] uppercase font-bold text-marine-300">Passage Time</p>
+                <p class="text-[10px] uppercase font-bold text-marine-300">{{ t('passage_time') }}</p>
                 <p class="text-sm font-extrabold text-sand-400 mt-0.5">{{ formatDuration(summaryStats.totalDurationMs) }}</p>
               </div>
               <div>
-                <p class="text-[10px] uppercase font-bold text-marine-300">Waypoints</p>
-                <p class="text-sm font-extrabold text-sand-400 mt-0.5">{{ entry.waypoints.length }} Recorded</p>
+                <p class="text-[10px] uppercase font-bold text-marine-300">{{ t('waypoints_recorded') }}</p>
+                <p class="text-sm font-extrabold text-sand-400 mt-0.5">{{ entry.waypoints.length }}</p>
               </div>
             </div>
 
@@ -142,11 +142,11 @@
             <div v-if="entry.waypoints && entry.waypoints.length > 0" class="space-y-2">
               <div class="flex items-center justify-between">
                 <span class="text-xs font-bold text-marine-700 uppercase tracking-wider flex items-center">
-                  Route Map
+                  {{ t('route_map') }}
                 </span>
                 <a :href="getOpenStreetMapUrl(entry.waypoints)" target="_blank"
                   class="text-xs bg-marine-100 hover:bg-marine-200 text-marine-800 font-bold px-2.5 py-1 rounded-lg inline-flex items-center space-x-1">
-                  <span>Open map</span>
+                  <span>{{ t('open_map') }}</span>
                   <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25"/></svg>
                 </a>
               </div>
@@ -174,7 +174,7 @@
                       <span v-if="idx > 0" class="font-semibold text-marine-700">
                         {{ calculateLegStats(entry.waypoints[idx-1], wp).distanceNM.toFixed(2) }} NM @ {{ calculateLegStats(entry.waypoints[idx-1], wp).speedKnots.toFixed(1) }} kt
                       </span>
-                      <span v-else class="text-marine-400 italic">Departure Point</span>
+                      <span v-else class="text-marine-400 italic">{{ t('departure_point') }}</span>
                     </td>
                     <td class="p-2.5 text-right">
                       <button type="button" @click="handleDeleteWaypoint(wp.id, idx)" class="text-red-600 hover:text-red-800 font-bold px-1 py-0.5 rounded">
@@ -187,7 +187,7 @@
             </div>
 
             <p v-else class="text-xs text-marine-500 italic bg-marine-50/50 p-4 rounded-xl border border-marine-100 text-center">
-              No waypoints recorded yet. Click "Capture Current Location" to add your first GPS position!
+              {{ t('no_waypoints_sub') }}
             </p>
 
           </div>
@@ -197,12 +197,12 @@
             <button @click="handleDeleteVoyage"
               class="w-full sm:w-auto bg-red-50 hover:bg-red-100 text-red-700 font-bold py-2 px-4 rounded-lg border border-red-200 transition text-xs flex items-center justify-center space-x-1.5 active:scale-95">
               <svg class="w-4 h-4 text-red-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" /></svg>
-              <span>Delete Voyage Entry</span>
+              <span>{{ t('delete_voyage') }}</span>
             </button>
 
             <button @click="$emit('close')"
               class="w-full sm:w-auto px-5 py-2 border border-marine-200 rounded-lg text-xs font-bold text-marine-700 hover:bg-marine-50 transition">
-              Close Window
+              {{ t('close') }}
             </button>
           </div>
 
@@ -254,6 +254,7 @@
 <script setup>
 import { ref, reactive, computed, watch, onUnmounted } from 'vue'
 import WaypointsMap from './WaypointsMap.vue'
+import { t } from '../services/i18n'
 import {
   formatDate,
   formatDateTime,

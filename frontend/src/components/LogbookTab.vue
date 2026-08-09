@@ -31,12 +31,9 @@
     <!-- Search / Filter Bar -->
     <div v-if="logEntries.length > 0" class="flex flex-col sm:flex-row items-center justify-between gap-3 bg-marine-50/50 p-3 rounded-xl border border-marine-100">
       <div class="relative w-full sm:w-80">
-        <input v-model="searchQuery" type="text" placeholder="Search ports, crew, notes..."
+        <input v-model="searchQuery" type="text" :placeholder="t('ph_search_logbook')"
           class="w-full pl-9 pr-3 py-2 border border-marine-200 rounded-lg text-xs bg-white focus:ring-2 focus:ring-marine-500 transition">
         <svg class="w-4 h-4 text-marine-400 absolute left-3 top-2.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"/></svg>
-      </div>
-      <div class="text-xs text-marine-500 font-medium">
-        Showing {{ filteredEntries.length }} of {{ logEntries.length }} entries
       </div>
     </div>
 
@@ -72,7 +69,7 @@
               {{ formatDate(entry.date) }}
             </span>
             <span class="text-[11px] font-bold text-marine-500 bg-marine-50 px-2.5 py-0.5 rounded-md border border-marine-100">
-              {{ entry.crew ? `Crew: ${entry.crew}` : 'Solo Voyage' }}
+              {{ entry.crew ? `${t('crew_label')}: ${entry.crew}` : t('solo_voyage') }}
             </span>
           </div>
 
@@ -98,11 +95,11 @@
                 ({{ getDistance(entry).toFixed(1) }} NM)
               </span>
             </span>
-            <span v-else class="text-[11px] text-marine-400 italic">No GPS waypoints</span>
+            <span v-else class="text-[11px] text-marine-400 italic">{{ t('no_gps_waypoints') }}</span>
           </div>
 
           <span class="text-marine-600 font-bold flex items-center space-x-1 group-hover:translate-x-1 transition duration-150 text-xs">
-            <span>View Log</span>
+            <span>{{ t('view_log') }}</span>
             <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/></svg>
           </span>
         </div>

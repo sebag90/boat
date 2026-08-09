@@ -9,7 +9,7 @@
             {{ activePopup.type }} ENTRY
           </span>
           <h3 class="font-serif text-lg font-bold mt-1">
-            {{ activePopup.editMode ? 'Modify Ship Entry' : 'Log Details' }}
+            {{ activePopup.editMode ? t('modify_entry') : t('log_details') }}
           </h3>
         </div>
         <button @click="$emit('close')" title="Close (Esc)" class="text-marine-300 hover:text-white transition p-1">
@@ -37,7 +37,7 @@
               <span v-if="activePopup.type === 'documents'"
                 class="text-xs font-bold text-marine-600 bg-marine-50 border border-marine-100 px-3 py-1 rounded-full flex items-center">
                 <svg class="w-3.5 h-3.5 mr-1" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-                Uploaded: {{ formatDateTime(activePopup.entry.uploaded_at) }}
+                {{ t('uploaded') }} {{ formatDateTime(activePopup.entry.uploaded_at) }}
               </span>
 
               <!-- Shopping Link Badge -->
@@ -45,14 +45,14 @@
                 :href="activePopup.entry.link" target="_blank"
                 class="text-xs font-bold text-marine-600 bg-marine-100 hover:bg-marine-200 border border-marine-200 px-3 py-1 rounded-full inline-flex items-center">
                 <svg class="w-3.5 h-3.5 mr-1 text-marine-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" /></svg>
-                Purchase Link
+                {{ t('purchase_link') }}
               </a>
 
               <!-- Todo / Shopping Status Badge -->
               <span v-if="activePopup.type === 'todo' || activePopup.type === 'shopping'"
                 class="text-xs font-bold px-3 py-1 rounded-full border"
                 :class="[activePopup.entry.done ? 'bg-emerald-50 border-emerald-200 text-emerald-700' : 'bg-amber-50 border-amber-200 text-amber-700']">
-                {{ activePopup.entry.done ? 'COMPLETED' : 'PENDING' }}
+                {{ activePopup.entry.done ? t('completed') : t('pending_badge') }}
               </span>
             </div>
 
@@ -70,7 +70,7 @@
 
           <!-- Description parsed as Markdown -->
           <div class="space-y-1.5">
-            <h4 class="text-xs font-bold text-marine-600 uppercase tracking-wider">Log Description</h4>
+            <h4 class="text-xs font-bold text-marine-600 uppercase tracking-wider">{{ t('log_description') }}</h4>
             <div class="markdown-content bg-[#F8FAFC] border border-marine-100 p-5 rounded-xl min-h-[100px] overflow-y-auto max-h-64 text-sm text-marine-800"
               v-html="renderMarkdown(activePopup.type === 'todo' ? activePopup.entry.text : activePopup.entry.description)">
             </div>
@@ -224,7 +224,7 @@
               <a :href="getAttachmentUrlWithAuth(currentBoat.id, activePopup.entry, activePopup.type)" target="_blank"
                 class="bg-white hover:bg-marine-100 border border-marine-200 hover:border-marine-300 text-marine-800 font-bold py-2 px-4 rounded-lg text-xs shadow-sm hover:shadow transition flex items-center justify-center space-x-1.5 flex-shrink-0">
                 <svg class="w-4 h-4 text-sand-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25"/></svg>
-                <span>Open Attachment</span>
+                <span>{{ t('open_attachment') }}</span>
               </a>
             </div>
 
@@ -301,15 +301,15 @@
           <!-- Documents Edit -->
           <div v-if="activePopup.type === 'documents'" class="space-y-4">
             <div class="space-y-1">
-              <label class="block text-xs font-bold text-marine-600 uppercase tracking-wider">Document Title</label>
+              <label class="block text-xs font-bold text-marine-600 uppercase tracking-wider">{{ t('doc_title') }}</label>
               <input v-model="editForm.title" type="text" required class="block w-full px-3.5 py-2.5 border border-marine-200 rounded-lg text-sm focus:ring-2 focus:ring-marine-500 transition bg-marine-50/20">
             </div>
             <div class="space-y-1">
-              <label class="block text-xs font-bold text-marine-600 uppercase tracking-wider">Replace Document File (Optional)</label>
+              <label class="block text-xs font-bold text-marine-600 uppercase tracking-wider">{{ t('upload_attachments') }}</label>
               <FileUploadDropzone
                 :multiple="false"
                 @change="$emit('fileChange', $event)"
-                hint="Upload a new file to replace existing attachment"
+                :hint="t('replace_doc_hint')"
               />
               <p class="text-[10px] text-marine-400 font-mono italic mt-1" v-if="activePopup.entry.filename">Currently: {{ activePopup.entry.filename }}</p>
             </div>
@@ -332,11 +332,11 @@
               </div>
             </div>
             <div class="space-y-1">
-              <label class="block text-xs font-bold text-marine-600 uppercase tracking-wider">Replace Invoice/Receipt (Optional)</label>
+              <label class="block text-xs font-bold text-marine-600 uppercase tracking-wider">{{ t('receipt_attachment') }}</label>
               <FileUploadDropzone
                 :multiple="false"
                 @change="$emit('fileChange', $event)"
-                hint="Upload a new receipt or invoice to replace existing"
+                :hint="t('replace_receipt_hint')"
               />
               <p class="text-[10px] text-marine-400 font-mono italic mt-1" v-if="activePopup.entry.receipt_filename">Currently: {{ activePopup.entry.receipt_filename }}</p>
             </div>
@@ -349,19 +349,19 @@
           <!-- Todo Edit -->
           <div v-if="activePopup.type === 'todo'" class="space-y-4">
             <div class="space-y-1">
-              <label class="block text-xs font-bold text-marine-600 uppercase tracking-wider">Task Description</label>
+              <label class="block text-xs font-bold text-marine-600 uppercase tracking-wider">{{ t('task_description') }}</label>
               <textarea v-model="editForm.text" rows="3" required class="block w-full px-3.5 py-2.5 border border-marine-200 rounded-lg text-sm font-mono text-xs focus:ring-2 focus:ring-marine-500 transition bg-marine-50/20"></textarea>
             </div>
             <div class="flex items-center space-x-3 bg-marine-50 p-3 rounded-lg border border-marine-100">
               <input v-model="editForm.done" type="checkbox" id="editTodoDone" class="w-5 h-5 rounded border-marine-300 text-marine-600 focus:ring-marine-500">
-              <label for="editTodoDone" class="text-xs font-bold text-marine-700 uppercase tracking-wide cursor-pointer">Mark Task as Completed</label>
+              <label for="editTodoDone" class="text-xs font-bold text-marine-700 uppercase tracking-wide cursor-pointer">{{ t('mark_completed') }}</label>
             </div>
             <div class="space-y-1">
-              <label class="block text-xs font-bold text-marine-600 uppercase tracking-wider">Replace/Upload Attachment (Optional)</label>
+              <label class="block text-xs font-bold text-marine-600 uppercase tracking-wider">{{ t('upload_attachments') }}</label>
               <FileUploadDropzone
                 :multiple="false"
                 @change="$emit('fileChange', $event)"
-                hint="Upload a new image or attachment"
+                :hint="t('replace_attachment_hint')"
               />
               <p class="text-[10px] text-marine-400 font-mono italic mt-1" v-if="activePopup.entry.file_filename">Currently: {{ activePopup.entry.file_filename }}</p>
             </div>
@@ -371,29 +371,29 @@
           <div v-if="activePopup.type === 'shopping'" class="space-y-4">
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div class="space-y-1">
-                <label class="block text-xs font-bold text-marine-600 uppercase tracking-wider">Item Name</label>
+                <label class="block text-xs font-bold text-marine-600 uppercase tracking-wider">{{ t('item_name') }}</label>
                 <input v-model="editForm.name" type="text" required class="block w-full px-3.5 py-2.5 border border-marine-200 rounded-lg text-sm focus:ring-2 focus:ring-marine-500 transition bg-marine-50/20">
               </div>
               <div class="space-y-1">
-                <label class="block text-xs font-bold text-marine-600 uppercase tracking-wider">Shop Web Link</label>
+                <label class="block text-xs font-bold text-marine-600 uppercase tracking-wider">{{ t('shop_web_link') }}</label>
                 <input v-model="editForm.link" type="url" class="block w-full px-3.5 py-2.5 border border-marine-200 rounded-lg text-sm font-mono text-xs focus:ring-2 focus:ring-marine-500 transition bg-marine-50/20">
               </div>
             </div>
             <div class="flex items-center space-x-3 bg-marine-50 p-3 rounded-lg border border-marine-100">
               <input v-model="editForm.done" type="checkbox" id="editShopDone" class="w-5 h-5 rounded border-marine-300 text-marine-600 focus:ring-marine-500">
-              <label for="editShopDone" class="text-xs font-bold text-marine-700 uppercase tracking-wide cursor-pointer">Mark Item as Purchased</label>
+              <label for="editShopDone" class="text-xs font-bold text-marine-700 uppercase tracking-wide cursor-pointer">{{ t('mark_purchased') }}</label>
             </div>
             <div class="space-y-1">
-              <label class="block text-xs font-bold text-marine-600 uppercase tracking-wider">Replace/Upload Attachment (Optional)</label>
+              <label class="block text-xs font-bold text-marine-600 uppercase tracking-wider">{{ t('upload_attachments') }}</label>
               <FileUploadDropzone
                 :multiple="false"
                 @change="$emit('fileChange', $event)"
-                hint="Upload a new image or attachment"
+                :hint="t('replace_attachment_hint')"
               />
               <p class="text-[10px] text-marine-400 font-mono italic mt-1" v-if="activePopup.entry.file_filename">Currently: {{ activePopup.entry.file_filename }}</p>
             </div>
             <div class="space-y-1">
-              <label class="block text-xs font-bold text-marine-600 uppercase tracking-wider">Item Description (Markdown)</label>
+              <label class="block text-xs font-bold text-marine-600 uppercase tracking-wider">{{ t('item_description') }}</label>
               <textarea v-model="editForm.description" rows="3" class="block w-full px-3.5 py-2.5 border border-marine-200 rounded-lg text-sm font-mono text-xs focus:ring-2 focus:ring-marine-500 transition bg-marine-50/20"></textarea>
             </div>
           </div>
@@ -402,12 +402,12 @@
           <div class="border-t border-marine-100 pt-5 flex space-x-3 justify-end">
             <button type="button" @click="activePopup.editMode = false"
               class="px-5 py-2.5 border border-marine-200 rounded-lg text-sm font-semibold text-marine-600 hover:bg-marine-50 transition">
-              Cancel Edit
+              {{ t('cancel') }}
             </button>
             <button type="submit"
               class="bg-gradient-to-r from-emerald-600 to-emerald-800 hover:from-emerald-700 hover:to-emerald-900 text-white font-bold py-2.5 px-6 rounded-lg shadow transition text-sm flex items-center space-x-1.5">
               <svg class="w-4 h-4 text-emerald-100" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
-              <span>Save Changes</span>
+              <span>{{ t('save_changes') }}</span>
             </button>
           </div>
 
