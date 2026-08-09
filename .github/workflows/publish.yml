@@ -79,25 +79,18 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
-      # --- CLEANUP OLD PACKAGE VERSIONS (KEEP MAX 3) ---
-      - name: Prune Old Backend Container Versions
-        uses: actions/delete-package-versions@v5
-        continue-on-error: true
+  cleanup:
+    name: Cleanup Old Container Versions
+    needs: build-and-push
+    runs-on: ubuntu-latest
+    concurrency:
+      group: cleanup-images
+    permissions:
+      packages: write
+    steps:
+      - name: Cleanup Old GHCR Images
+        uses: step-security/ghcr-cleanup-action@v1
         with:
-          owner: ${{ github.repository_owner }}
-          package-name: 'boat-backend'
-          package-type: 'container'
-          min-versions-to-keep: 3
-          delete-only-untagged-versions: 'false'
-          token: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Prune Old Frontend Container Versions
-        uses: actions/delete-package-versions@v5
-        continue-on-error: true
-        with:
-          owner: ${{ github.repository_owner }}
-          package-name: 'boat-frontend'
-          package-type: 'container'
-          min-versions-to-keep: 3
-          delete-only-untagged-versions: 'false'
+          packages: '${{ github.repository_owner }}/boat-backend,${{ github.repository_owner }}/boat-frontend'
+          keep-n-tagged: 3
           token: ${{ secrets.GITHUB_TOKEN }}
