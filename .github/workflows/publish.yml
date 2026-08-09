@@ -91,6 +91,6 @@ jobs:
       - name: Cleanup Old GHCR Images
         uses: step-security/ghcr-cleanup-action@v1
         with:
-          packages: '${{ github.repository_owner }}/boat-backend,${{ github.repository_owner }}/boat-frontend'
+          packages: 'boat-backend, boat-frontend'
           keep-n-tagged: 3
           token: ${{ secrets.GITHUB_TOKEN }}
