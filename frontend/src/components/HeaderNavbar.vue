@@ -4,37 +4,37 @@
       <div class="flex items-center justify-between h-20">
         
         <!-- Logo / Brand -->
-        <div class="flex items-center space-x-3 cursor-pointer" @click="$emit('goHome')">
-          <div class="w-11 h-11 bg-sand-500 rounded-xl flex items-center justify-center text-marine-900 shadow-lg border border-white/20 transform rotate-3 hover:rotate-0 transition duration-300">
-            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+        <div class="flex items-center space-x-2 sm:space-x-3 cursor-pointer min-w-0" @click="$emit('goHome')">
+          <div class="w-9 h-9 sm:w-11 sm:h-11 bg-sand-500 rounded-xl flex items-center justify-center text-marine-900 shadow-lg border border-white/20 transform rotate-3 hover:rotate-0 transition duration-300 flex-shrink-0">
+            <svg class="w-5 h-5 sm:w-6 sm:h-6" fill="currentColor" viewBox="0 0 24 24">
               <path d="M4 18h16l-1.5-3H5.5L4 18M12 2L4.5 14H12V2M13 3.5V14h6L13 3.5Z" />
             </svg>
           </div>
-          <div>
-            <span class="font-serif text-2xl font-black tracking-wide bg-gradient-to-r from-white to-marine-100 bg-clip-text text-transparent">YACHT MASTER</span>
-            <span class="hidden sm:inline-block ml-2 text-xs uppercase tracking-widest text-sand-400 font-bold px-2 py-0.5 rounded bg-white/10">Shipshape</span>
+          <div class="min-w-0">
+            <span class="font-serif text-lg sm:text-2xl font-black tracking-wide bg-gradient-to-r from-white to-marine-100 bg-clip-text text-transparent truncate block">YACHT MASTER</span>
+            <span class="hidden md:inline-block ml-2 text-xs uppercase tracking-widest text-sand-400 font-bold px-2 py-0.5 rounded bg-white/10">Shipshape</span>
           </div>
         </div>
 
         <!-- Right Controls -->
-        <div class="flex items-center space-x-3 sm:space-x-4">
+        <div class="flex items-center space-x-2 sm:space-x-4 flex-shrink-0">
           <!-- Language Switcher Button/Icon -->
           <button @click="toggleLocale"
             title="Switch Language / Cambia Lingua"
-            class="flex items-center space-x-1.5 px-2.5 py-2 bg-marine-900/60 hover:bg-marine-700 border border-marine-600 rounded-lg text-xs font-bold text-sand-400 hover:text-white transition active:scale-95">
-            <span class="text-sm leading-none">{{ currentLocale === 'en' ? '🇬🇧' : '🇮🇹' }}</span>
-            <span class="uppercase font-mono tracking-wider text-[11px]">{{ currentLocale === 'en' ? 'EN' : 'IT' }}</span>
+            class="flex items-center space-x-1 px-2 py-1.5 sm:px-2.5 sm:py-2 bg-marine-900/60 hover:bg-marine-700 border border-marine-600 rounded-lg text-xs font-bold text-sand-400 hover:text-white transition active:scale-95">
+            <span class="text-xs sm:text-sm leading-none">{{ currentLocale === 'en' ? '🇬🇧' : '🇮🇹' }}</span>
+            <span class="uppercase font-mono tracking-wider text-[10px] sm:text-[11px]">{{ currentLocale === 'en' ? 'EN' : 'IT' }}</span>
           </button>
 
           <!-- Boat Selector Dropdown -->
           <div class="relative" id="boatSelectorContainer">
             <label class="sr-only">Select Boat</label>
-            <div class="flex items-center bg-marine-900/60 border border-marine-600 rounded-lg px-3 py-2 text-sm text-marine-100 hover:text-white transition cursor-pointer"
+            <div class="flex items-center bg-marine-900/60 border border-marine-600 rounded-lg px-2.5 py-1.5 sm:px-3 sm:py-2 text-xs sm:text-sm text-marine-100 hover:text-white transition cursor-pointer"
               @click="$emit('toggleBoatDropdown')">
-              <svg class="w-4 h-4 mr-2 text-sand-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <svg class="w-3.5 h-3.5 sm:w-4 sm:h-4 mr-1 sm:mr-2 text-sand-500 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
               </svg>
-              <span class="font-semibold tracking-wide">
+              <span class="font-semibold tracking-wide max-w-[85px] sm:max-w-[160px] truncate block">
                 {{ currentBoat ? currentBoat.name : 'Select Vessel...' }}
               </span>
             </div>
@@ -64,7 +64,7 @@
           </div>
 
           <!-- User Badge / Logout -->
-          <div class="flex items-center space-x-2 border-l border-marine-700 pl-4">
+          <div class="flex items-center space-x-1.5 sm:space-x-2 border-l border-marine-700 pl-2 sm:pl-4">
             <div class="w-8 h-8 rounded-full bg-sand-500/20 border border-sand-400 flex items-center justify-center text-sand-400 font-bold text-xs uppercase">
               {{ currentUser ? currentUser.substring(0, 2).toUpperCase() : 'SK' }}
             </div>
@@ -79,8 +79,8 @@
     </div>
 
     <!-- TABS BAR -->
-    <div v-if="currentBoat" class="bg-marine-800/80 border-t border-marine-700 backdrop-blur-md overflow-x-auto scrollbar-none">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex space-x-1 sm:space-x-2 min-w-max py-2">
+    <div v-if="currentBoat" class="bg-marine-800/80 border-t border-marine-700 backdrop-blur-md overflow-x-auto scrollbar-none w-full">
+      <div class="max-w-7xl mx-auto px-2 sm:px-6 lg:px-8 flex space-x-1 sm:space-x-2 w-max py-2">
         <button v-for="tab in tabList" :key="tab.id"
           @click="$emit('switchTab', tab.id)"
           class="px-4 py-2.5 rounded-lg text-xs font-bold tracking-wide transition flex items-center space-x-2 border"

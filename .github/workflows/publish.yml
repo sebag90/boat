@@ -78,3 +78,20 @@ jobs:
           labels: ${{ steps.meta-frontend.outputs.labels }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
+
+      # --- CLEANUP OLD PACKAGE VERSIONS (KEEP MAX 3) ---
+      - name: Prune Old Backend Container Versions
+        uses: actions/delete-package-versions@v5
+        with:
+          package-name: 'boat-backend'
+          package-type: 'container'
+          min-versions-to-keep: 3
+          delete-only-untagged-versions: 'false'
+
+      - name: Prune Old Frontend Container Versions
+        uses: actions/delete-package-versions@v5
+        with:
+          package-name: 'boat-frontend'
+          package-type: 'container'
+          min-versions-to-keep: 3
+          delete-only-untagged-versions: 'false'
