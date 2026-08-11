@@ -83,11 +83,20 @@
                 <svg class="w-4 h-4 text-marine-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z"/></svg>
                 <span>Voyage Waypoints &amp; Route</span>
               </h4>
-              <button type="button" @click="$emit('addWaypoint')" :disabled="capturingLocation"
-                class="bg-sand-500 hover:bg-sand-600 text-marine-900 font-bold px-3 py-1.5 rounded-lg text-xs flex items-center space-x-1 shadow-sm transition active:scale-95 disabled:opacity-50">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg>
-                <span>{{ capturingLocation ? 'Locating...' : '📍 Add Single Point' }}</span>
-              </button>
+              <div class="flex items-center space-x-2">
+                <button type="button" @click="triggerTsvUpload" :disabled="importingTsv"
+                  class="bg-marine-100 hover:bg-marine-200 text-marine-800 font-bold px-3 py-1.5 rounded-lg text-xs flex items-center space-x-1 shadow-sm transition active:scale-95 disabled:opacity-50">
+                  <svg class="w-4 h-4 text-marine-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5"/></svg>
+                  <span>{{ importingTsv ? 'Importing...' : '📥 Import File (JSONL / TSV)' }}</span>
+                </button>
+                <input type="file" ref="tsvFileInput" accept=".jsonl,.json,.tsv,.csv,.txt" @change="handleTsvUpload" class="hidden" />
+
+                <button type="button" @click="$emit('addWaypoint')" :disabled="capturingLocation"
+                  class="bg-sand-500 hover:bg-sand-600 text-marine-900 font-bold px-3 py-1.5 rounded-lg text-xs flex items-center space-x-1 shadow-sm transition active:scale-95 disabled:opacity-50">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg>
+                  <span>{{ capturingLocation ? 'Locating...' : '📍 Add Single Point' }}</span>
+                </button>
+              </div>
             </div>
 
             <!-- Auto-Tracker Control Box -->
@@ -433,7 +442,8 @@ import {
   getOpenStreetMapUrl,
   hasAttachment,
   getAttachmentName,
-  getAttachmentUrlWithAuth
+  getAttachmentUrlWithAuth,
+  importWaypoints
 } from '../services/api'
 
 const props = defineProps({
@@ -449,11 +459,35 @@ const props = defineProps({
 
 const emit = defineEmits([
   'close', 'addWaypoint', 'deleteWaypoint', 'startAutoTracking', 'stopAutoTracking',
-  'updateAutoTrackInterval', 'deleteEntry', 'saveEdit', 'fileChange'
+  'updateAutoTrackInterval', 'deleteEntry', 'saveEdit', 'fileChange', 'refreshEntry'
 ])
 
 const editForm = ref({})
 const autoTrackIntervalLocal = ref(props.autoTrackInterval || 60)
+const tsvFileInput = ref(null)
+const importingTsv = ref(false)
+
+const triggerTsvUpload = () => {
+  if (tsvFileInput.value) tsvFileInput.value.click()
+}
+
+const handleTsvUpload = async (e) => {
+  const file = e.target.files[0]
+  if (!file || !props.activePopup || !props.activePopup.entry) return
+  try {
+    importingTsv.value = true
+    const newWps = await importWaypoints(props.activePopup.entry.id, file)
+    if (newWps && props.activePopup.entry.waypoints) {
+      props.activePopup.entry.waypoints.push(...newWps)
+    }
+    emit('refreshEntry')
+  } catch (err) {
+    alert('Failed to import file: ' + err.message)
+  } finally {
+    importingTsv.value = false
+    if (tsvFileInput.value) tsvFileInput.value.value = ''
+  }
+}
 
 watch(() => props.activePopup, (popup) => {
   if (popup && popup.entry) {

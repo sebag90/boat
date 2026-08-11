@@ -156,6 +156,16 @@ export const formatDuration = (ms) => {
   return `${mins}m`;
 };
 
+export const importWaypoints = async (entryId, file) => {
+  const formData = new FormData();
+  formData.append('file', file);
+  const res = await request(`/api/logbook/${entryId}/waypoints/import`, {
+    method: 'POST',
+    body: formData
+  });
+  return await res.json();
+};
+
 export const getOpenStreetMapUrl = (waypoints) => {
   if (!waypoints || waypoints.length === 0) return 'https://geojson.io/';
 
