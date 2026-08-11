@@ -157,16 +157,64 @@ export const formatDuration = (ms) => {
 };
 
 export const getOpenStreetMapUrl = (waypoints) => {
-  if (!waypoints || waypoints.length === 0) return 'https://www.openstreetmap.org/';
-  const first = waypoints[0];
-  if (waypoints.length === 1) {
-    return `https://www.openstreetmap.org/?mlat=${first.latitude}&mlon=${first.longitude}#map=13/${first.latitude}/${first.longitude}`;
+  if (!waypoints || waypoints.length === 0) return 'https://geojson.io/';
+
+  const features = [];
+
+  if (waypoints.length > 1) {
+    features.push({
+      type: 'Feature',
+      properties: {
+        stroke: '#0284c7',
+        'stroke-width': 4,
+        'stroke-opacity': 0.85
+      },
+      geometry: {
+        type: 'LineString',
+        coordinates: waypoints.map(w => [w.longitude, w.latitude])
+      }
+    });
   }
-  let sumLat = 0, sumLon = 0;
-  waypoints.forEach(w => { sumLat += w.latitude; sumLon += w.longitude; });
-  const avgLat = (sumLat / waypoints.length).toFixed(6);
-  const avgLon = (sumLon / waypoints.length).toFixed(6);
-  return `https://www.openstreetmap.org/?mlat=${first.latitude}&mlon=${first.longitude}#map=12/${avgLat}/${avgLon}`;
+
+  waypoints.forEach((w, idx) => {
+    let title = `Waypoint ${idx + 1}`;
+    if (w.name) title += `: ${w.name}`;
+    let color = '#2563eb';
+    let symbol = 'circle';
+    if (idx === 0) {
+      color = '#16a34a';
+      symbol = 'play';
+    } else if (idx === waypoints.length - 1) {
+      color = '#dc2626';
+      symbol = 'stop';
+    }
+
+    features.push({
+      type: 'Feature',
+      properties: {
+        title,
+        'marker-color': color,
+        'marker-size': 'medium',
+        'marker-symbol': symbol
+      },
+      geometry: {
+        type: 'Point',
+        coordinates: [w.longitude, w.latitude]
+      }
+    });
+  });
+
+  const geojson = {
+    type: 'FeatureCollection',
+    features
+  };
+
+  const jsonStr = JSON.stringify(geojson);
+  const bytes = new TextEncoder().encode(jsonStr);
+  const binString = Array.from(bytes, (byte) => String.fromCharCode(byte)).join('');
+  const base64 = btoa(binString);
+
+  return `https://geojson.io/#data=data:application/json;base64,${base64}`;
 };
 
 // Attachment helpers with correct backend endpoints
