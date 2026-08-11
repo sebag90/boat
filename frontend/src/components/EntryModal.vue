@@ -476,9 +476,57 @@ const handleTsvUpload = async (e) => {
   if (!file || !props.activePopup || !props.activePopup.entry) return
   try {
     importingTsv.value = true
-    const newWps = await importWaypoints(props.activePopup.entry.id, file)
-    if (newWps && props.activePopup.entry.waypoints) {
-      props.activePopup.entry.waypoints.push(...newWps)
+    
+    // Parse on client-side first for immediate UI update & unsaved entries
+    const text = await file.text()
+    const lines = text.split('\n').map(l => l.trim()).filter(l => l)
+    const importedWps = []
+
+    for (const line of lines) {
+      let lat = null, lon = null, ts = new Date().toISOString(), name = null
+      if (line.startsWith('{') && line.endsWith('}')) {
+        try {
+          const data = JSON.parse(line)
+          lat = parseFloat(data.latitude ?? data.lat)
+          lon = parseFloat(data.longitude ?? data.lon ?? data.lng)
+          name = data.name || null
+          if (data.timestamp || data.time) {
+            ts = new Date(data.timestamp || data.time).toISOString()
+          }
+        } catch (err) { continue }
+      } else {
+        if (line.toLowerCase().includes('latitude') || line.toLowerCase().includes('lat')) continue
+        const parts = line.includes('\t') ? line.split('\t') : line.split(',')
+        const cleanParts = parts.map(p => p.trim()).filter(p => p)
+        if (cleanParts.length < 2) continue
+        lat = parseFloat(cleanParts[0])
+        lon = parseFloat(cleanParts[1])
+        if (isNaN(lat) || isNaN(lon)) continue
+        if (cleanParts.length >= 3) {
+          try { ts = new Date(cleanParts[2]).toISOString() } catch (err) {}
+        }
+      }
+
+      if (lat !== null && lon !== null && !isNaN(lat) && !isNaN(lon)) {
+        importedWps.push({ latitude: lat, longitude: lon, timestamp: ts, name })
+      }
+    }
+
+    if (!props.activePopup.entry.waypoints) props.activePopup.entry.waypoints = []
+
+    if (props.activePopup.entry.id) {
+      try {
+        const newWps = await importWaypoints(props.activePopup.entry.id, file)
+        if (newWps && newWps.length > 0) {
+          props.activePopup.entry.waypoints.push(...newWps)
+        } else {
+          props.activePopup.entry.waypoints.push(...importedWps)
+        }
+      } catch (err) {
+        props.activePopup.entry.waypoints.push(...importedWps)
+      }
+    } else {
+      props.activePopup.entry.waypoints.push(...importedWps)
     }
     emit('refreshEntry')
   } catch (err) {
