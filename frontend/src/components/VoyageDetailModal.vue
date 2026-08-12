@@ -76,7 +76,7 @@
                 <button type="button" @click="triggerTsvUpload" :disabled="importingTsv"
                   class="bg-marine-100 hover:bg-marine-200 text-marine-800 font-bold px-3 py-1.5 rounded-lg text-xs flex items-center space-x-1 shadow-sm transition active:scale-95 disabled:opacity-50">
                   <svg class="w-4 h-4 text-marine-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5"/></svg>
-                  <span>{{ importingTsv ? 'Importing...' : '📥 Import File (JSONL / TSV)' }}</span>
+                  <span>{{ importingTsv ? 'Importing...' : '📥 Import File' }}</span>
                 </button>
                 <input type="file" ref="tsvFileInput" accept=".jsonl,.json,.tsv,.csv,.txt" @change="handleTsvUpload" class="hidden" />
 
@@ -119,7 +119,7 @@
                   <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 mr-2 animate-pulse"></span>
                   Auto-Tracking Active — Next point in {{ secondsToNextTrack }}s
                 </span>
-                <span v-if="lastTrackTime" class="text-[10px] text-emerald-600 font-normal">Last log: {{ formatDateTime(lastTrackTime.toISOString()) }}</span>
+                <span v-if="lastTrackTime" class="text-[10px] text-emerald-600 font-normal">Last log: {{ formatDateTime(toLocalISOString(lastTrackTime)) }}</span>
               </div>
             </div>
 
@@ -267,6 +267,7 @@ import { t } from '../services/i18n'
 import {
   formatDate,
   formatDateTime,
+  toLocalISOString,
   renderMarkdown,
   calculateVoyageSummary,
   calculateLegStats,
@@ -310,7 +311,7 @@ const handleTsvUpload = async (e) => {
     const importedWps = []
 
     for (const line of lines) {
-      let lat = null, lon = null, ts = new Date().toISOString(), name = null
+      let lat = null, lon = null, ts = toLocalISOString(), name = null
       if (line.startsWith('{') && line.endsWith('}')) {
         try {
           const data = JSON.parse(line)
@@ -318,7 +319,7 @@ const handleTsvUpload = async (e) => {
           lon = parseFloat(data.longitude ?? data.lon ?? data.lng)
           name = data.name || null
           if (data.timestamp || data.time) {
-            ts = new Date(data.timestamp || data.time).toISOString()
+            ts = String(data.timestamp || data.time)
           }
         } catch (err) { continue }
       } else {
@@ -330,7 +331,7 @@ const handleTsvUpload = async (e) => {
         lon = parseFloat(cleanParts[1])
         if (isNaN(lat) || isNaN(lon)) continue
         if (cleanParts.length >= 3) {
-          try { ts = new Date(cleanParts[2]).toISOString() } catch (err) {}
+          ts = cleanParts[2]
         }
       }
 
@@ -405,7 +406,7 @@ const addGpsWaypoint = async () => {
           body: JSON.stringify({
             latitude: pos.coords.latitude,
             longitude: pos.coords.longitude,
-            timestamp: new Date().toISOString()
+            timestamp: toLocalISOString()
           })
         })
         const newWp = await res.json()

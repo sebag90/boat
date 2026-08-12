@@ -567,7 +567,7 @@ def add_log(boat_id: int, payload: schemas.LogCreate, db: Session = Depends(get_
     data = payload.model_dump(exclude={"waypoints"})
     entry = models.LogEntry(boat_id=boat_id, **data)
     for wp in payload.waypoints:
-        ts = wp.timestamp if wp.timestamp else datetime.utcnow()
+        ts = wp.timestamp if wp.timestamp else datetime.now()
         entry.waypoints.append(
             models.Waypoint(
                 latitude=wp.latitude,
@@ -594,7 +594,7 @@ def update_log(entry_id: int, payload: schemas.LogCreate, db: Session = Depends(
     if payload.waypoints is not None:
         entry.waypoints.clear()
         for wp in payload.waypoints:
-            ts = wp.timestamp if wp.timestamp else datetime.utcnow()
+            ts = wp.timestamp if wp.timestamp else datetime.now()
             entry.waypoints.append(
                 models.Waypoint(
                     latitude=wp.latitude,
@@ -625,7 +625,7 @@ def add_waypoint(
     entry = db.get(models.LogEntry, entry_id)
     if not entry:
         raise HTTPException(404, "Log entry not found")
-    ts = payload.timestamp if payload.timestamp else datetime.utcnow()
+    ts = payload.timestamp if payload.timestamp else datetime.now()
     wp = models.Waypoint(
         log_id=entry_id,
         latitude=payload.latitude,

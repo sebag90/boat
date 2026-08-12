@@ -88,7 +88,7 @@
 <script setup>
 import { ref, reactive, watch } from 'vue'
 import { t } from '../services/i18n'
-import { getTodayDateString } from '../services/api'
+import { getTodayDateString, toLocalISOString } from '../services/api'
 
 const props = defineProps({ show: Boolean })
 const emit = defineEmits(['close', 'submit'])
@@ -133,7 +133,7 @@ const captureGps = () => {
       initialGps.value = {
         latitude: pos.coords.latitude,
         longitude: pos.coords.longitude,
-        timestamp: new Date().toISOString(),
+        timestamp: toLocalISOString(),
         name: form.start ? `Start: ${form.start}` : 'Start Waypoint'
       }
     },

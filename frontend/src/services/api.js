@@ -45,9 +45,21 @@ export const formatDate = (dateStr) => {
   return dateStr;
 };
 
+export const toLocalISOString = (date = new Date()) => {
+  const d = date instanceof Date ? date : new Date(date);
+  if (isNaN(d.getTime())) return new Date().toISOString();
+  const pad = (n) => String(n).padStart(2, '0');
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;
+};
+
 // Formats ISO string to European DD-MM-YYYY HH:MM
 export const formatDateTime = (isoStr) => {
   if (!isoStr) return '';
+  const match = String(isoStr).match(/^(\d{4})-(\d{2})-(\d{2})[T ](\d{2}):(\d{2})/);
+  if (match) {
+    const [, yyyy, mm, dd, hrs, mins] = match;
+    return `${dd}-${mm}-${yyyy} ${hrs}:${mins}`;
+  }
   try {
     const d = new Date(isoStr);
     if (isNaN(d.getTime())) return String(isoStr);

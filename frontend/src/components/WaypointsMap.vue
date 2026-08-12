@@ -21,7 +21,7 @@
 <script setup>
 import { ref, onMounted, watch, onUnmounted, nextTick, computed } from 'vue'
 import L from 'leaflet'
-import { calculateLegStats } from '../services/api'
+import { calculateLegStats, formatDateTime } from '../services/api'
 
 const props = defineProps({
   waypoints: {
@@ -124,7 +124,7 @@ const formatWpPopup = (wp, idx, totalCount, prevWp) => {
   }
 
   const timeStr = wp.timestamp 
-    ? new Date(wp.timestamp).toLocaleString(undefined, { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })
+    ? formatDateTime(wp.timestamp)
     : 'No timestamp'
 
   let legInfo = ''

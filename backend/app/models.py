@@ -104,7 +104,7 @@ class Waypoint(Base):
     log_id: Mapped[int] = mapped_column(ForeignKey("logbook.id", ondelete="CASCADE"))
     latitude: Mapped[float] = mapped_column(Float, nullable=False)
     longitude: Mapped[float] = mapped_column(Float, nullable=False)
-    timestamp: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+    timestamp: Mapped[datetime] = mapped_column(DateTime, default=datetime.now)
     name: Mapped[str | None] = mapped_column(String(200), nullable=True)
 
     log_entry: Mapped[LogEntry] = relationship(back_populates="waypoints")

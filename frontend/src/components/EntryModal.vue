@@ -131,7 +131,7 @@
                   <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 mr-1.5 pulse-light"></span>
                   Active — Next point in {{ secondsToNextTrack }}s
                 </span>
-                <span v-if="lastTrackTime" class="text-[10px] text-emerald-600 font-normal">Last: {{ formatDateTime(lastTrackTime.toISOString()) }}</span>
+                <span v-if="lastTrackTime" class="text-[10px] text-emerald-600 font-normal">Last: {{ formatDateTime(toLocalISOString(lastTrackTime)) }}</span>
               </div>
             </div>
 
@@ -435,6 +435,7 @@ import { t } from '../services/i18n'
 import {
   formatDate,
   formatDateTime,
+  toLocalISOString,
   renderMarkdown,
   calculateVoyageSummary,
   calculateLegStats,
@@ -483,7 +484,7 @@ const handleTsvUpload = async (e) => {
     const importedWps = []
 
     for (const line of lines) {
-      let lat = null, lon = null, ts = new Date().toISOString(), name = null
+      let lat = null, lon = null, ts = toLocalISOString(), name = null
       if (line.startsWith('{') && line.endsWith('}')) {
         try {
           const data = JSON.parse(line)
@@ -491,7 +492,7 @@ const handleTsvUpload = async (e) => {
           lon = parseFloat(data.longitude ?? data.lon ?? data.lng)
           name = data.name || null
           if (data.timestamp || data.time) {
-            ts = new Date(data.timestamp || data.time).toISOString()
+            ts = String(data.timestamp || data.time)
           }
         } catch (err) { continue }
       } else {
@@ -503,7 +504,7 @@ const handleTsvUpload = async (e) => {
         lon = parseFloat(cleanParts[1])
         if (isNaN(lat) || isNaN(lon)) continue
         if (cleanParts.length >= 3) {
-          try { ts = new Date(cleanParts[2]).toISOString() } catch (err) {}
+          ts = cleanParts[2]
         }
       }
 
