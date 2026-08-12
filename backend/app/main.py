@@ -639,6 +639,69 @@ def add_waypoint(
     return wp
 
 
+@app.post("/api/logbook/{entry_id}/waypoints/import", response_model=list[schemas.WaypointOut])
+def import_waypoints(
+    entry_id: int, file: UploadFile = File(...), db: Session = Depends(get_db)
+):
+    entry = db.get(models.LogEntry, entry_id)
+    if not entry:
+        raise HTTPException(404, "Log entry not found")
+
+    content = file.file.read().decode("utf-8", errors="ignore")
+    lines = [line.strip() for line in content.splitlines() if line.strip()]
+    imported_wps = []
+
+    for line in lines:
+        lat, lon, ts_str, name = None, None, None, None
+        if line.startswith("{") and line.endswith("}"):
+            try:
+                import json
+                data = json.loads(line)
+                lat = float(data.get("latitude") if data.get("latitude") is not None else data.get("lat"))
+                lon = float(data.get("longitude") if data.get("longitude") is not None else data.get("lon") if data.get("lon") is not None else data.get("lng"))
+                name = data.get("name")
+                if data.get("timestamp") or data.get("time"):
+                    ts_str = str(data.get("timestamp") or data.get("time"))
+            except Exception:
+                continue
+        else:
+            if "latitude" in line.lower() or "lat" in line.lower():
+                continue
+            parts = [p.strip() for p in (line.split("\t") if "\t" in line else line.split(",")) if p.strip()]
+            if len(parts) < 2:
+                continue
+            try:
+                lat = float(parts[0])
+                lon = float(parts[1])
+            except ValueError:
+                continue
+            if len(parts) >= 3:
+                ts_str = parts[2]
+
+        if lat is not None and lon is not None:
+            ts = datetime.now()
+            if ts_str:
+                try:
+                    ts = datetime.fromisoformat(ts_str.replace("Z", "+00:00"))
+                except Exception:
+                    ts = datetime.now()
+
+            wp = models.Waypoint(
+                log_id=entry_id,
+                latitude=lat,
+                longitude=lon,
+                timestamp=ts,
+                name=name,
+            )
+            db.add(wp)
+            imported_wps.append(wp)
+
+    db.commit()
+    for wp in imported_wps:
+        db.refresh(wp)
+    return imported_wps
+
+
 @app.delete("/api/waypoints/{waypoint_id}")
 def delete_waypoint(waypoint_id: int, db: Session = Depends(get_db)):
     wp = db.get(models.Waypoint, waypoint_id)

@@ -306,57 +306,52 @@ const handleTsvUpload = async (e) => {
   try {
     importingTsv.value = true
 
-    const text = await file.text()
-    const lines = text.split('\n').map(l => l.trim()).filter(l => l)
-    const importedWps = []
-
-    for (const line of lines) {
-      let lat = null, lon = null, ts = toLocalISOString(), name = null
-      if (line.startsWith('{') && line.endsWith('}')) {
-        try {
-          const data = JSON.parse(line)
-          lat = parseFloat(data.latitude ?? data.lat)
-          lon = parseFloat(data.longitude ?? data.lon ?? data.lng)
-          name = data.name || null
-          if (data.timestamp || data.time) {
-            ts = String(data.timestamp || data.time)
-          }
-        } catch (err) { continue }
-      } else {
-        if (line.toLowerCase().includes('latitude') || line.toLowerCase().includes('lat')) continue
-        const parts = line.includes('\t') ? line.split('\t') : line.split(',')
-        const cleanParts = parts.map(p => p.trim()).filter(p => p)
-        if (cleanParts.length < 2) continue
-        lat = parseFloat(cleanParts[0])
-        lon = parseFloat(cleanParts[1])
-        if (isNaN(lat) || isNaN(lon)) continue
-        if (cleanParts.length >= 3) {
-          ts = cleanParts[2]
-        }
-      }
-
-      if (lat !== null && lon !== null && !isNaN(lat) && !isNaN(lon)) {
-        importedWps.push({ latitude: lat, longitude: lon, timestamp: ts, name })
-      }
-    }
-
     if (!props.entry.waypoints) props.entry.waypoints = []
 
     if (props.entry.id) {
-      try {
-        const newWps = await importWaypoints(props.entry.id, file)
-        if (newWps && newWps.length > 0) {
-          props.entry.waypoints.push(...newWps)
-        } else {
-          props.entry.waypoints.push(...importedWps)
-        }
-      } catch (err) {
-        props.entry.waypoints.push(...importedWps)
+      const newWps = await importWaypoints(props.entry.id, file)
+      if (newWps && newWps.length > 0) {
+        props.entry.waypoints.push(...newWps)
+      } else {
+        alert('No valid waypoints found in file.')
       }
     } else {
+      const text = await file.text()
+      const lines = text.split('\n').map(l => l.trim()).filter(l => l)
+      const importedWps = []
+
+      for (const line of lines) {
+        let lat = null, lon = null, ts = toLocalISOString(), name = null
+        if (line.startsWith('{') && line.endsWith('}')) {
+          try {
+            const data = JSON.parse(line)
+            lat = parseFloat(data.latitude ?? data.lat)
+            lon = parseFloat(data.longitude ?? data.lon ?? data.lng)
+            name = data.name || null
+            if (data.timestamp || data.time) {
+              ts = String(data.timestamp || data.time)
+            }
+          } catch (err) { continue }
+        } else {
+          if (line.toLowerCase().includes('latitude') || line.toLowerCase().includes('lat')) continue
+          const parts = line.includes('\t') ? line.split('\t') : line.split(',')
+          const cleanParts = parts.map(p => p.trim()).filter(p => p)
+          if (cleanParts.length < 2) continue
+          lat = parseFloat(cleanParts[0])
+          lon = parseFloat(cleanParts[1])
+          if (isNaN(lat) || isNaN(lon)) continue
+          if (cleanParts.length >= 3) {
+            ts = cleanParts[2]
+          }
+        }
+
+        if (lat !== null && lon !== null && !isNaN(lat) && !isNaN(lon)) {
+          importedWps.push({ latitude: lat, longitude: lon, timestamp: ts, name })
+        }
+      }
       props.entry.waypoints.push(...importedWps)
     }
-    emit('updateVoyage')
+    emit('updateVoyage', { ...props.entry, waypoints: [...props.entry.waypoints] })
   } catch (err) {
     alert('Failed to import file: ' + err.message)
   } finally {
