@@ -634,8 +634,13 @@ const closePopup = () => {
   editFile.value = null
 }
 
-const handleEditFileChange = (e) => {
-  editFile.value = e.target.files[0]
+const handleEditFileChange = (file) => {
+  // FileUploadDropzone emits either File or Event depending on usage
+  if (file && file.target && file.target.files) {
+    editFile.value = file.target.files[0]
+  } else {
+    editFile.value = file
+  }
 }
 
 const savePopupEdit = async (editForm) => {
@@ -662,7 +667,11 @@ const savePopupEdit = async (editForm) => {
       fd.append('done', editForm.done ? 'true' : 'false')
     }
     if (editFile.value) {
-      fd.append('file', editFile.value)
+      if (type === 'maintenance') {
+        fd.append('receipt', editFile.value)
+      } else {
+        fd.append('file', editFile.value)
+      }
     }
 
     let url = ''

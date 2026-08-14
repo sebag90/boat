@@ -230,7 +230,7 @@
                 </div>
               </div>
 
-              <a :href="getAttachmentUrlWithAuth(currentBoat.id, activePopup.entry, activePopup.type)" target="_blank"
+              <a :href="getAttachmentUrlWithAuth(activePopup.entry, activePopup.type)" target="_blank"
                 class="bg-white hover:bg-marine-100 border border-marine-200 hover:border-marine-300 text-marine-800 font-bold py-2 px-4 rounded-lg text-xs shadow-sm hover:shadow transition flex items-center justify-center space-x-1.5 flex-shrink-0">
                 <svg class="w-4 h-4 text-sand-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25"/></svg>
                 <span>{{ t('open_attachment') }}</span>
@@ -246,12 +246,12 @@
                 </span>
                 <span class="text-marine-300">Document Reader</span>
               </div>
-              <iframe :src="getAttachmentUrlWithAuth(currentBoat.id, activePopup.entry, activePopup.type)" class="w-full h-96 border-none" loading="lazy"></iframe>
+              <iframe :src="getAttachmentUrlWithAuth(activePopup.entry, activePopup.type)" class="w-full h-96 border-none" loading="lazy"></iframe>
             </div>
 
             <!-- Image Viewer -->
             <div v-else-if="isImageAttachment(activePopup.entry, activePopup.type)" class="border border-marine-100 rounded-xl overflow-hidden bg-marine-50 max-h-72 flex justify-center items-center shadow-inner">
-              <img :src="getAttachmentUrlWithAuth(currentBoat.id, activePopup.entry, activePopup.type)" alt="Attachment Preview" class="max-h-64 object-contain">
+              <img :src="getAttachmentUrlWithAuth(activePopup.entry, activePopup.type)" alt="Attachment Preview" class="max-h-64 object-contain">
             </div>
           </div>
 
