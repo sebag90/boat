@@ -1,23 +1,34 @@
 {
   "name": "boat-organizer-frontend",
   "private": true,
-  "version": "1.0.0",
+  "version": "2.0.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
-    "preview": "vite preview"
+    "build": "tsc -b && vite build",
+    "preview": "vite preview",
+    "typecheck": "tsc -b",
+    "smoke": "esbuild smoke/entry.tsx --bundle --outfile=smoke/bundle.cjs --format=cjs --platform=browser --jsx=automatic --loader:.css=empty --define:process.env.NODE_ENV='\"development\"' --log-level=warning && tsx smoke/run.ts"
   },
   "dependencies": {
+    "@tanstack/react-query": "^5.101.4",
+    "dompurify": "^3.2.7",
     "leaflet": "^1.9.4",
-    "marked": "^15.0.0",
-    "vue": "^3.5.13"
+    "lucide-react": "^0.552.0",
+    "marked": "^18.0.10",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0"
   },
   "devDependencies": {
-    "@vitejs/plugin-vue": "^5.2.1",
-    "autoprefixer": "^10.4.20",
-    "postcss": "^8.4.49",
-    "tailwindcss": "^3.4.17",
-    "vite": "^6.0.7"
+    "@tailwindcss/vite": "^4.3.3",
+    "@types/leaflet": "^1.9.20",
+    "@types/react": "^19.2.2",
+    "@types/react-dom": "^19.2.2",
+    "@vitejs/plugin-react": "^5.1.0",
+    "jsdom": "^28.0.1",
+    "tailwindcss": "^4.3.3",
+    "tsx": "^4.23.12",
+    "typescript": "^5.9.3",
+    "vite": "^7.1.14"
   }
 }

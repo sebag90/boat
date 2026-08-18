@@ -1,0 +1,311 @@
+@import 'tailwindcss';
+
+/* ------------------------------------------------------------------ *
+ * Maritime light theme — "chart paper & open sea"
+ * ------------------------------------------------------------------ */
+@theme {
+  --font-sans:
+    'Inter', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial,
+    sans-serif;
+  --font-display: 'Iowan Old Style', 'Palatino Linotype', Palatino, Georgia, 'Times New Roman', serif;
+  --font-mono: ui-monospace, 'SFMono-Regular', 'JetBrains Mono', Menlo, Consolas, monospace;
+
+  /* Deep hull navy */
+  --color-navy-50: #f1f5f9;
+  --color-navy-100: #e2e9f1;
+  --color-navy-200: #c3d2e2;
+  --color-navy-300: #93aac5;
+  --color-navy-400: #5c7ba1;
+  --color-navy-500: #3b5c83;
+  --color-navy-600: #2a4667;
+  --color-navy-700: #1d3352;
+  --color-navy-800: #132441;
+  --color-navy-900: #0b1a31;
+  --color-navy-950: #07162a;
+
+  /* Open ocean blue */
+  --color-ocean-50: #f0f9ff;
+  --color-ocean-100: #e0f2fe;
+  --color-ocean-200: #bae6fd;
+  --color-ocean-300: #7dd3fc;
+  --color-ocean-400: #38bdf8;
+  --color-ocean-500: #0ea5e9;
+  --color-ocean-600: #0284c7;
+  --color-ocean-700: #0369a1;
+  --color-ocean-800: #075985;
+  --color-ocean-900: #0c4a6e;
+
+  /* Polished brass hardware */
+  --color-brass-50: #fbf7ef;
+  --color-brass-100: #f6ecd8;
+  --color-brass-200: #ecd8b0;
+  --color-brass-300: #dfbd80;
+  --color-brass-400: #d0a257;
+  --color-brass-500: #b6863f;
+  --color-brass-600: #966a32;
+  --color-brass-700: #78522b;
+  --color-brass-800: #5f4227;
+  --color-brass-900: #503923;
+
+  /* Sea foam / signals */
+  --color-foam-500: #0d9488;
+  --color-foam-600: #0f766e;
+  --color-signal-500: #dc2626;
+  --color-signal-600: #b91c1c;
+
+  --color-mist: #eef5fa;
+  --color-parchment: #fbf9f4;
+
+  --radius-card: 1rem;
+
+  --shadow-chart: 0 1px 2px rgb(7 22 42 / 0.06), 0 12px 32px -18px rgb(7 22 42 / 0.28);
+  --shadow-float: 0 24px 60px -24px rgb(7 22 42 / 0.45);
+
+  --ease-sail: cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+/* ------------------------------------------------------------------ *
+ * Base
+ * ------------------------------------------------------------------ */
+@layer base {
+  * {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    @apply bg-mist font-sans text-navy-900 antialiased;
+    background-image:
+      radial-gradient(at 8% 0%, rgb(186 230 253 / 0.55) 0px, transparent 55%),
+      radial-gradient(at 96% 4%, rgb(246 236 216 / 0.75) 0px, transparent 45%),
+      linear-gradient(180deg, #f5fafd 0%, #eef5fa 55%, #e7f0f7 100%);
+    background-attachment: fixed;
+    min-height: 100dvh;
+  }
+
+  h1,
+  h2,
+  h3 {
+    @apply font-display tracking-tight;
+  }
+
+  :focus-visible {
+    @apply outline-2 outline-offset-2 outline-ocean-500;
+  }
+
+  input,
+  textarea,
+  select {
+    font-size: 16px; /* avoid iOS zoom on focus */
+  }
+
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    @apply rounded-full bg-navy-200;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-navy-300;
+  }
+}
+
+/* ------------------------------------------------------------------ *
+ * Utilities
+ * ------------------------------------------------------------------ */
+@utility rope-divider {
+  height: 3px;
+  background-image: repeating-linear-gradient(
+    90deg,
+    var(--color-brass-300) 0 8px,
+    transparent 8px 14px
+  );
+  border-radius: 999px;
+  opacity: 0.85;
+}
+
+@utility chart-grid {
+  background-image:
+    linear-gradient(rgb(147 170 197 / 0.16) 1px, transparent 1px),
+    linear-gradient(90deg, rgb(147 170 197 / 0.16) 1px, transparent 1px);
+  background-size: 26px 26px;
+}
+
+@utility scrollbar-none {
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+/* ------------------------------------------------------------------ *
+ * Markdown rendering
+ * ------------------------------------------------------------------ */
+@layer components {
+  .md-body {
+    @apply text-[0.95rem] leading-relaxed text-navy-700;
+  }
+  .md-body > * + * {
+    @apply mt-3;
+  }
+  .md-body h1,
+  .md-body h2,
+  .md-body h3,
+  .md-body h4 {
+    @apply font-display font-semibold text-navy-950;
+  }
+  .md-body h1 {
+    @apply text-xl;
+  }
+  .md-body h2 {
+    @apply text-lg;
+  }
+  .md-body h3 {
+    @apply text-base;
+  }
+  .md-body a {
+    @apply font-medium text-ocean-700 underline decoration-ocean-300 underline-offset-2 hover:text-ocean-800;
+  }
+  .md-body strong {
+    @apply font-semibold text-navy-900;
+  }
+  .md-body ul {
+    @apply list-disc space-y-1 pl-5;
+  }
+  .md-body ol {
+    @apply list-decimal space-y-1 pl-5;
+  }
+  .md-body blockquote {
+    @apply border-l-4 border-brass-300 bg-brass-50/60 py-2 pl-4 text-navy-600 italic;
+  }
+  .md-body code {
+    @apply rounded bg-navy-50 px-1.5 py-0.5 font-mono text-[0.85em] text-navy-800;
+  }
+  .md-body pre {
+    @apply overflow-x-auto rounded-xl bg-navy-950 p-4 text-navy-50;
+  }
+  .md-body pre code {
+    @apply bg-transparent p-0 text-navy-50;
+  }
+  .md-body table {
+    @apply w-full border-collapse text-sm;
+  }
+  .md-body th,
+  .md-body td {
+    @apply border border-navy-100 px-3 py-1.5 text-left;
+  }
+  .md-body hr {
+    @apply my-4 border-navy-100;
+  }
+  .md-body img {
+    @apply max-w-full rounded-lg;
+  }
+}
+
+/* ------------------------------------------------------------------ *
+ * Leaflet
+ * ------------------------------------------------------------------ */
+.leaflet-container {
+  font-family: var(--font-sans);
+  background: #dfeaf3;
+  z-index: 0;
+}
+
+.leaflet-control-attribution {
+  font-size: 10px !important;
+  background: rgb(255 255 255 / 0.82) !important;
+}
+
+.leaflet-popup-content-wrapper {
+  border-radius: 0.85rem !important;
+  box-shadow: var(--shadow-float) !important;
+  border: 1px solid var(--color-navy-100);
+}
+
+.leaflet-popup-content {
+  margin: 0.75rem 0.9rem !important;
+  font-size: 0.8rem;
+  line-height: 1.45;
+}
+
+.wp-marker {
+  background: transparent;
+  border: 0;
+}
+
+.wp-badge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-sans);
+  font-weight: 700;
+  font-size: 10px;
+  letter-spacing: 0.04em;
+  color: #fff;
+  border-radius: 999px;
+  border: 2px solid #fff;
+  box-shadow: 0 3px 10px rgb(7 22 42 / 0.45);
+  white-space: nowrap;
+}
+
+.wp-badge--start {
+  background: var(--color-foam-500);
+  padding: 0 7px;
+  height: 22px;
+}
+
+.wp-badge--end {
+  background: var(--color-signal-500);
+  padding: 0 7px;
+  height: 22px;
+}
+
+.wp-badge--mid {
+  background: var(--color-navy-950);
+  width: 22px;
+  height: 22px;
+}
+
+.wp-badge--solo {
+  background: var(--color-ocean-600);
+  width: 20px;
+  height: 20px;
+  animation: wp-pulse 1.8s ease-out infinite;
+}
+
+@keyframes wp-pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgb(2 132 199 / 0.55);
+  }
+  70% {
+    box-shadow: 0 0 0 16px rgb(2 132 199 / 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgb(2 132 199 / 0);
+  }
+}
+
+.map-recenter {
+  background: #fff;
+  border: 1px solid var(--color-navy-200) !important;
+  border-radius: 0.6rem !important;
+  box-shadow: var(--shadow-chart);
+  width: 34px;
+  height: 34px;
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-navy-800);
+  cursor: pointer;
+}
+
+.map-recenter:hover {
+  background: var(--color-ocean-50);
+}

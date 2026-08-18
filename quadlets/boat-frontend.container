@@ -1,5 +1,5 @@
 [Unit]
-Description=Boat Frontend (nginx)
+Description=Boat Frontend (Caddy)
 
 [Container]
 ContainerName=boat-frontend

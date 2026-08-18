@@ -71,3 +71,15 @@ frontend: _net
 # Stop and remove all containers
 down:
     -podman rm -f boat-frontend boat-backend boat-db
+
+# Run the frontend dev server (Vite, proxies /api to localhost:8000)
+frontend-dev:
+    cd frontend && npm install && npm run dev
+
+# Typecheck + production build of the frontend (no container)
+frontend-build:
+    cd frontend && npm install && npm run build
+
+# Headless smoke test: renders the whole UI against a mocked API
+frontend-test:
+    cd frontend && npm install && npm run smoke

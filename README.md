@@ -6,7 +6,8 @@ history, to-do lists, shopping lists and a trip log book.
 ## Stack
 - **Backend**: FastAPI (Python, dependencies managed with `uv`)
 - **Database**: PostgreSQL
-- **Frontend**: React + Vite, served by nginx
+- **Frontend**: React 19 + TypeScript + Vite + Tailwind CSS v4 + TanStack Query
+  (Leaflet maps, `marked` Markdown), served by Caddy
 - **Runtime**: Podman containers on a shared network
 
 ## Features
@@ -46,12 +47,34 @@ boat/
 ├── justfile              # dev commands: db / backend / frontend / adduser / down
 ├── auth/htpasswd         # user credentials (git-ignored, auto-created)
 ├── backend/              # FastAPI + SQLAlchemy (uv-managed)
-│   ├── Dockerfile
+│   ├── Containerfile
 │   └── app/{main,models,schemas,db,auth}.py
-└── frontend/             # React + Vite, served by nginx
-    ├── Dockerfile, nginx.conf
-    └── src/{pages,components,api.js,format.js,styles.css}
+└── frontend/             # React 19 + TS + Vite + Tailwind v4, served by Caddy
+    ├── Containerfile, Caddyfile
+    ├── smoke/           # headless jsdom smoke test (`just frontend-test`)
+    └── src/
+        ├── api/         # TanStack Query hooks per resource
+        ├── components/  # ui/, layout/, entries/, detail/, dropzone/,
+        │                # attachments/, logbook/, documents/, maintenance/,
+        │                # todos/, shopping/, settings/, fleet/
+        ├── hooks/       # session, selected boat, GPS auto-tracker
+        ├── i18n/        # en + it dictionaries, provider
+        ├── lib/         # api client, auth, format, nautical math, geojson
+        ├── pages/       # LoginPage, WorkspacePage, TabContent
+        └── styles/      # Tailwind theme (maritime light)
 ```
+
+### Frontend notes
+- **Maritime light theme**: navy/ocean/brass palette, chart-paper surfaces,
+  compass rose branding — all defined as Tailwind v4 theme tokens in
+  `src/styles/index.css`.
+- **i18n**: English/Italian toggle on the login screen and in the header,
+  persisted in `localStorage` (`app_locale`).
+- **Logbook**: GPS waypoint capture, interval auto-tracker (with screen wake
+  lock), JSONL/CSV/TSV track import, Haversine distance/speed maths, Leaflet
+  route map and a geojson.io deep link.
+- **Backend host override**: configurable on the login screen (`api_host`),
+  empty means same-origin requests.
 
 ## Development
 
@@ -86,7 +109,7 @@ HTPASSWD_FILE=../auth/htpasswd uv run uvicorn app.main:app --reload
 ### Running the frontend locally
 
 ```sh
-cd frontend
-npm install
-npm run dev    # http://localhost:5173, proxies /api to :8000
+just frontend-dev     # http://localhost:5173, proxies /api to :8000
+just frontend-build   # typecheck + production build
+just frontend-test    # headless smoke test of the whole UI
 ```

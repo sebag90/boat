@@ -1,76 +1,64 @@
+#!/usr/bin/env python3
+import datetime
 import json
 import subprocess
+import sys
 import time
-from datetime import datetime
+
 from pathlib import Path
 
+LOG_FILE = Path("storage/downloads/gps_log.jsonl")
+LOG_FILE.parent.mkdir(parents=True, exist_ok=True)
+INTERVAL_SECONDS = 60
 
-LOG_FILE = Path("storage/downloads/voyage_log.jsonl")
-INTERVAL = 60  # seconds
-ACCURACY = 10
 
-
-def get_location(max_wait=20, target_accuracy=ACCURACY):
-    """Stream GPS updates for up to max_wait seconds, returning best location fix."""
-    proc = None
-    best_loc = None
-    start_time = time.time()
+def get_gps_location():
+    """Call termux-location to get GPS coordinates."""
     try:
-        proc = subprocess.Popen(
-            ["termux-location", "-p", "gps", "-r", "updates"],
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,
+        # Avoid '-r once' because it hangs on second invocation in Termux
+        result = subprocess.run(
+            ["termux-location", "-r", "once", "-p", "gps"],
+            capture_output=True,
             text=True,
+            check=True,
+            timeout=15,
         )
-        while time.time() - start_time < max_wait:
-            line = proc.stdout.readline()
-            if not line:
-                break
-            line = line.strip()
-            if not line:
-                continue
-            try:
-                loc = json.loads(line)
-                if "latitude" not in loc or "longitude" not in loc:
-                    continue
-                acc = float(loc.get("accuracy", 9999))
-                if best_loc is None or acc < float(best_loc.get("accuracy", 9999)):
-                    best_loc = loc
-                if acc <= target_accuracy:
-                    break
-            except json.JSONDecodeError:
-                continue
-    except Exception as e:
-        print(f"GPS error: {e}")
-    finally:
-        if proc and proc.poll() is None:
-            proc.terminate()
-            proc.wait()
-    return best_loc
+        data = json.loads(result.stdout)
+        return data.get("latitude"), data.get("longitude")
+    except subprocess.TimeoutExpired:
+        print("termux-location timed out", file=sys.stderr, flush=True)
+        return None, None
+    except (subprocess.SubprocessError, json.JSONDecodeError, KeyError) as e:
+        print(f"Error getting location: {e}", file=sys.stderr, flush=True)
+        return None, None
 
 
 def main():
-    print(f"Logging GPS to {LOG_FILE} (1-min interval, target acc: {ACCURACY}m)...")
+    print(
+        f"Starting GPS tracker. Saving to {LOG_FILE} every {INTERVAL_SECONDS}s...",
+        flush=True,
+    )
     while True:
-        loc = get_location()
+        start_time = time.time()
+        lat, lon = get_gps_location()
 
-        if loc and "latitude" in loc and "longitude" in loc:
-            acc = float(loc.get("accuracy", 0))
-            record = {
-                "latitude": round(loc["latitude"], 6),
-                "longitude": round(loc["longitude"], 6),
-                "accuracy": round(acc, 1),
-                "timestamp": datetime.now().isoformat(),
+        if lat is not None and lon is not None:
+            now_iso = datetime.datetime.now().isoformat()
+            entry = {
+                "latitude": lat,
+                "longitude": lon,
+                "timestamp": now_iso,
             }
-            line = json.dumps(record) + "\n"
-            LOG_FILE.parent.mkdir(parents=True, exist_ok=True)
-            with LOG_FILE.open("a") as f:
-                f.write(line)
-            print(f"[{time.strftime('%H:%M:%S')}] {line.strip()}")
+            with LOG_FILE.open("a", encoding="utf-8") as f:
+                f.write(json.dumps(entry) + "\n")
+            print(f"[{now_iso}] Logged: lat={lat}, lon={lon}", flush=True)
         else:
-            print(f"[{time.strftime('%H:%M:%S')}] No valid GPS fix...")
+            print("Failed to acquire GPS fix.", flush=True)
 
-        time.sleep(INTERVAL)
+        # Calculate sleep time to align closely with interval
+        elapsed = time.time() - start_time
+        sleep_time = max(0.0, INTERVAL_SECONDS - elapsed)
+        time.sleep(sleep_time)
 
 
 if __name__ == "__main__":

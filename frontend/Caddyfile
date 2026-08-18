@@ -1,0 +1,31 @@
+{
+	admin off
+	auto_https off
+	# Keep logs terse; podman captures stdout.
+	log {
+		format console
+	}
+}
+
+:80 {
+	root * /srv
+	encode zstd gzip
+
+	# Same-origin API proxy (frontend and backend share the pod/network).
+	handle /api/* {
+		reverse_proxy boat-backend:8000 {
+			header_up X-Real-IP {remote_host}
+		}
+	}
+
+	# Hashed assets are immutable.
+	@assets path /assets/*
+	header @assets Cache-Control "public, max-age=31536000, immutable"
+	header /favicon.svg Cache-Control "public, max-age=86400"
+
+	# Static files, with SPA fallback.
+	handle {
+		try_files {path} /index.html
+		file_server
+	}
+}
