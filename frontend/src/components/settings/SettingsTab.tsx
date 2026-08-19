@@ -91,7 +91,7 @@ export function SettingsTab({ boat, onDeleted }: SettingsTabProps) {
 
             <div className="flex items-center justify-end gap-3">
               {saved && !update.isPending && (
-                <span className="text-sm font-semibold text-foam-600">✓</span>
+                <span className="text-sm font-semibold text-foam-700">✓</span>
               )}
               <Button
                 type="submit"
@@ -105,13 +105,13 @@ export function SettingsTab({ boat, onDeleted }: SettingsTabProps) {
         </PanelBody>
       </Panel>
 
-      <Panel className="border border-red-200/70 bg-red-50/40 ring-red-200/70">
+      <Panel className="border-2 border-signal-600/70 bg-red-50 ring-0">
         <PanelHeader
           title={t('settings.danger')}
-          icon={<ShieldAlert className="size-4 text-signal-600" />}
+          icon={<ShieldAlert className="size-4 text-signal-500" />}
         />
         <PanelBody className="space-y-4">
-          <p className="text-sm text-navy-600">{t('settings.dangerBody')}</p>
+          <p className="text-sm text-red-900">{t('settings.dangerBody')}</p>
           <Button
             variant="danger"
             onClick={onDelete}

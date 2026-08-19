@@ -16,14 +16,14 @@ interface WaypointTableProps {
 export function WaypointTable({ waypoints, stats, onDelete, deleting }: WaypointTableProps) {
   const { t } = useI18n()
   if (waypoints.length === 0) {
-    return <p className="text-sm text-navy-400 italic">{t('voyage.noWaypoints')}</p>
+    return <p className="text-sm font-medium text-navy-500 italic">{t('voyage.noWaypoints')}</p>
   }
 
   return (
-    <div className="overflow-x-auto rounded-2xl ring-1 ring-navy-100">
+    <div className="overflow-x-auto rounded-2xl ring-1 ring-navy-300">
       <table className="w-full min-w-[520px] border-collapse text-sm">
         <thead>
-          <tr className="bg-navy-50/80 text-[0.65rem] tracking-[0.1em] text-navy-500 uppercase">
+          <tr className="bg-navy-950 text-[0.65rem] tracking-[0.1em] text-brass-300 uppercase">
             <Th className="w-10">{t('voyage.table.index')}</Th>
             <Th>{t('voyage.table.time')}</Th>
             <Th>{t('voyage.table.position')}</Th>
@@ -32,39 +32,39 @@ export function WaypointTable({ waypoints, stats, onDelete, deleting }: Waypoint
             <Th className="w-12" />
           </tr>
         </thead>
-        <tbody className="divide-y divide-navy-100 bg-white">
+        <tbody className="divide-y divide-navy-200 bg-white">
           {waypoints.map((waypoint, index) => {
             const leg = stats.legs[index]
             return (
-              <tr key={waypoint.id} className="hover:bg-ocean-50/40">
-                <td className="px-3 py-2 font-semibold text-navy-400">{index + 1}</td>
-                <td className="px-3 py-2 whitespace-nowrap text-navy-700">
+              <tr key={waypoint.id} className="hover:bg-brass-50">
+                <td className="px-3 py-2 font-semibold text-navy-500">{index + 1}</td>
+                <td className="px-3 py-2 whitespace-nowrap text-navy-800">
                   {formatDateTime(waypoint.timestamp)}
                   {waypoint.name && (
-                    <span className="block text-xs text-navy-400">{waypoint.name}</span>
+                    <span className="block text-xs text-navy-500">{waypoint.name}</span>
                   )}
                 </td>
-                <td className="px-3 py-2 font-mono text-xs whitespace-nowrap text-navy-600">
+                <td className="px-3 py-2 font-mono text-xs whitespace-nowrap text-ocean-800">
                   {formatCoordinate(Number(waypoint.latitude))},{' '}
                   {formatCoordinate(Number(waypoint.longitude))}
                 </td>
-                <td className="px-3 py-2 text-right whitespace-nowrap text-navy-700">
+                <td className="px-3 py-2 text-right whitespace-nowrap text-navy-800">
                   {leg ? (
                     <>
                       <span className="font-semibold">{leg.distanceNm.toFixed(2)} NM</span>
-                      <span className="block text-xs text-navy-400">
+                      <span className="block text-xs text-navy-500">
                         {leg.distanceKm.toFixed(2)} km
                       </span>
                     </>
                   ) : (
-                    <span className="text-xs text-navy-400">{t('voyage.table.startLeg')}</span>
+                    <span className="text-xs font-semibold text-foam-700">{t('voyage.table.startLeg')}</span>
                   )}
                 </td>
-                <td className="px-3 py-2 text-right whitespace-nowrap text-navy-700">
+                <td className="px-3 py-2 text-right whitespace-nowrap text-navy-800">
                   {leg ? (
                     <>
                       <span className="font-semibold">{leg.speedKnots.toFixed(1)} kn</span>
-                      <span className="block text-xs text-navy-400">
+                      <span className="block text-xs text-navy-500">
                         {leg.speedKmh.toFixed(1)} km/h
                       </span>
                     </>

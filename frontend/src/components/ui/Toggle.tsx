@@ -26,8 +26,8 @@ export function CheckToggle({ checked, onChange, label, disabled, className }: C
       className={cn(
         'flex size-6 shrink-0 items-center justify-center rounded-full border-2 transition-all duration-200 ease-sail',
         checked
-          ? 'border-foam-500 bg-foam-500 text-white'
-          : 'border-navy-300 bg-white text-transparent hover:border-ocean-500 hover:bg-ocean-50',
+          ? 'border-foam-700 bg-foam-600 text-white'
+          : 'border-navy-400 bg-white text-transparent hover:border-brass-500 hover:bg-brass-100',
         disabled && 'cursor-not-allowed opacity-50',
         className,
       )}
@@ -55,7 +55,7 @@ export function Switch({ checked, onChange, label }: SwitchProps) {
       <span
         className={cn(
           'relative h-6 w-11 rounded-full transition-colors duration-200',
-          checked ? 'bg-foam-500' : 'bg-navy-200',
+          checked ? 'bg-foam-600' : 'bg-navy-300',
         )}
       >
         <span

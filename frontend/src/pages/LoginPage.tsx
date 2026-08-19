@@ -52,7 +52,7 @@ export function LoginPage() {
             <Logo className="size-11" />
             <div>
               <p className="font-display text-xl font-semibold text-navy-950">{t('app.name')}</p>
-              <p className="text-[0.68rem] font-semibold tracking-[0.16em] text-navy-400 uppercase">
+              <p className="text-[0.68rem] font-semibold tracking-[0.16em] text-brass-700 uppercase">
                 {t('app.fleet')}
               </p>
             </div>
@@ -62,10 +62,10 @@ export function LoginPage() {
 
         <form
           onSubmit={onSubmit}
-          className="rounded-card bg-white/90 px-6 py-7 ring-1 ring-navy-200/70 shadow-float backdrop-blur"
+          className="rounded-card bg-white px-6 py-7 ring-1 ring-navy-300 shadow-float"
         >
           <h1 className="text-2xl font-semibold text-navy-950">{t('login.title')}</h1>
-          <p className="mt-1 text-sm text-navy-500">{t('login.subtitle')}</p>
+          <p className="mt-1 text-sm text-navy-600">{t('login.subtitle')}</p>
           <div className="rope-divider my-5" />
 
           <div className="space-y-4">
@@ -98,11 +98,11 @@ export function LoginPage() {
             </Button>
           </div>
 
-          <div className="mt-5 border-t border-navy-100 pt-4">
+          <div className="mt-5 border-t border-navy-200 pt-4">
             <button
               type="button"
               onClick={() => setShowAdvanced((value) => !value)}
-              className="flex w-full items-center gap-1.5 text-xs font-semibold text-navy-500 hover:text-navy-800"
+              className="flex w-full items-center gap-1.5 text-xs font-semibold text-navy-600 hover:text-brass-700"
             >
               <Server className="size-3.5" />
               {t('login.advanced')}
@@ -126,7 +126,7 @@ export function LoginPage() {
           </div>
         </form>
 
-        <p className="mt-5 text-center text-xs text-navy-400">{t('app.tagline')}</p>
+        <p className="mt-5 text-center text-xs text-navy-600">{t('app.tagline')}</p>
       </div>
     </div>
   )
@@ -145,7 +145,7 @@ interface IconInputProps {
 function IconInput({ id, icon, value, onChange, type = 'text', ...rest }: IconInputProps) {
   return (
     <div className="relative">
-      <span className="pointer-events-none absolute top-1/2 left-3.5 -translate-y-1/2 text-navy-300">
+      <span className="pointer-events-none absolute top-1/2 left-3.5 -translate-y-1/2 text-navy-400">
         {icon}
       </span>
       <TextInput
@@ -164,9 +164,9 @@ function IconInput({ id, icon, value, onChange, type = 'text', ...rest }: IconIn
 function Horizon() {
   return (
     <div aria-hidden="true" className="pointer-events-none absolute inset-0 overflow-hidden">
-      <div className="chart-grid absolute inset-0 opacity-60" />
+      <div className="chart-grid absolute inset-0 opacity-70" />
       <svg
-        className="absolute bottom-0 left-0 w-full text-ocean-300/40"
+        className="absolute bottom-0 left-0 w-full text-ocean-400/45"
         viewBox="0 0 1440 320"
         preserveAspectRatio="none"
       >

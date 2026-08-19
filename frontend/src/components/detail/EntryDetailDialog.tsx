@@ -106,7 +106,7 @@ export function EntryDetailDialog({ boatId, type, entry, onClose }: EntryDetailD
               variant="ghost"
               onClick={onDelete}
               disabled={deleting}
-              className="mr-auto text-signal-600 hover:bg-signal-500/10"
+              className="mr-auto text-signal-700 hover:bg-signal-600 hover:text-white"
               icon={deleting ? <Spinner /> : <Trash2 className="size-4" />}
             >
               {t('action.delete')}
@@ -145,7 +145,7 @@ export function EntryDetailDialog({ boatId, type, entry, onClose }: EntryDetailD
                 href={view.link}
                 target="_blank"
                 rel="noreferrer"
-                className="inline-flex max-w-full items-center gap-2 rounded-xl bg-ocean-50 px-3.5 py-2.5 text-sm font-semibold text-ocean-800 ring-1 ring-ocean-200 hover:bg-ocean-100"
+                className="inline-flex max-w-full items-center gap-2 rounded-xl bg-ocean-100 px-3.5 py-2.5 text-sm font-semibold text-ocean-900 ring-1 ring-ocean-400 hover:bg-ocean-200"
               >
                 <ExternalLink className="size-4 shrink-0" />
                 <span className="truncate">{view.link}</span>
@@ -162,7 +162,7 @@ export function EntryDetailDialog({ boatId, type, entry, onClose }: EntryDetailD
                 label={view.attachment.label}
               />
             ) : (
-              <p className="text-sm text-navy-400 italic">{t('label.noAttachment')}</p>
+              <p className="text-sm font-medium text-navy-500 italic">{t('label.noAttachment')}</p>
             )}
           </>
         )}

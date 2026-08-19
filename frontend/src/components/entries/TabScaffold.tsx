@@ -17,7 +17,7 @@ export function TabHeading({ title, subtitle, icon, aside }: TabHeadingProps) {
         </span>
         <div>
           <h1 className="text-2xl leading-tight font-semibold text-navy-950">{title}</h1>
-          <p className="text-sm text-navy-500">{subtitle}</p>
+          <p className="text-sm text-navy-600">{subtitle}</p>
         </div>
       </div>
       {aside && <div className="flex flex-wrap items-center gap-2">{aside}</div>}

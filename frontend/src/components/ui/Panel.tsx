@@ -7,12 +7,12 @@ interface PanelProps {
   as?: 'section' | 'div' | 'article'
 }
 
-/** A chart-table surface: soft white card with a hairline navy rule. */
+/** A chart-table surface: crisp white card over the deeper sea-blue ground. */
 export function Panel({ children, className, as: Tag = 'section' }: PanelProps) {
   return (
     <Tag
       className={cn(
-        'rounded-card bg-white/85 ring-1 ring-navy-200/70 shadow-chart backdrop-blur-sm',
+        'overflow-hidden rounded-card bg-white ring-1 ring-navy-200 shadow-chart',
         className,
       )}
     >
@@ -33,13 +33,13 @@ export function PanelHeader({ title, subtitle, icon, actions, className }: Panel
   return (
     <div
       className={cn(
-        'flex flex-wrap items-start justify-between gap-3 border-b border-navy-100 px-5 py-4',
+        'relative flex flex-wrap items-start justify-between gap-3 border-b border-navy-200 bg-navy-50/70 px-5 py-4',
         className,
       )}
     >
       <div className="flex min-w-0 items-start gap-3">
         {icon && (
-          <span className="mt-0.5 flex size-9 shrink-0 items-center justify-center rounded-xl bg-ocean-50 text-ocean-700 ring-1 ring-ocean-100">
+          <span className="mt-0.5 flex size-9 shrink-0 items-center justify-center rounded-xl bg-navy-950 text-brass-300 shadow-sm">
             {icon}
           </span>
         )}
@@ -49,6 +49,7 @@ export function PanelHeader({ title, subtitle, icon, actions, className }: Panel
         </div>
       </div>
       {actions && <div className="flex shrink-0 items-center gap-2">{actions}</div>}
+      <span className="brass-rule absolute inset-x-0 bottom-0" />
     </div>
   )
 }

@@ -33,27 +33,27 @@ export function BoatSelector({ boats, selected, onSelect, onCreate }: BoatSelect
         aria-expanded={open}
         className={cn(
           'flex w-full items-center gap-2.5 rounded-xl bg-white px-3 py-2 text-left ring-1 shadow-sm transition-all sm:w-auto sm:min-w-[13rem]',
-          open ? 'ring-ocean-400' : 'ring-navy-200 hover:ring-ocean-300',
+          open ? 'ring-2 ring-brass-400' : 'ring-navy-300 hover:ring-brass-400',
         )}
       >
-        <span className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-navy-950 text-white">
+        <span className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-navy-950 text-brass-300">
           <Sailboat className="size-4" />
         </span>
         <span className="min-w-0 flex-1">
           <span className="block truncate text-sm font-semibold text-navy-950">
             {selected?.name ?? t('nav.selectVessel')}
           </span>
-          <span className="block truncate text-[0.7rem] text-navy-400">
+          <span className="block truncate text-[0.7rem] text-navy-500">
             {selected?.description || `${boats.length} ${t('fleet.vessels')}`}
           </span>
         </span>
         <ChevronDown
-          className={cn('size-4 shrink-0 text-navy-400 transition-transform', open && 'rotate-180')}
+          className={cn('size-4 shrink-0 text-navy-500 transition-transform', open && 'rotate-180')}
         />
       </button>
 
       {open && (
-        <div className="absolute top-full right-0 left-0 z-40 mt-2 overflow-hidden rounded-xl bg-white ring-1 ring-navy-200 shadow-float sm:left-auto sm:w-72">
+        <div className="absolute top-full right-0 left-0 z-40 mt-2 overflow-hidden rounded-xl bg-white ring-1 ring-navy-300 shadow-float sm:left-auto sm:w-72">
           <ul className="max-h-64 overflow-y-auto py-1">
             {boats.map((boat) => (
               <li key={boat.id}>
@@ -70,12 +70,12 @@ export function BoatSelector({ boats, selected, onSelect, onCreate }: BoatSelect
                       {boat.name}
                     </span>
                     {boat.description && (
-                      <span className="block truncate text-xs text-navy-400">
+                      <span className="block truncate text-xs text-navy-500">
                         {boat.description}
                       </span>
                     )}
                   </span>
-                  {selected?.id === boat.id && <Check className="size-4 shrink-0 text-foam-500" />}
+                  {selected?.id === boat.id && <Check className="size-4 shrink-0 text-foam-600" />}
                 </button>
               </li>
             ))}
@@ -86,7 +86,7 @@ export function BoatSelector({ boats, selected, onSelect, onCreate }: BoatSelect
               onCreate()
               setOpen(false)
             }}
-            className="flex w-full items-center gap-2 border-t border-navy-100 px-3 py-2.5 text-sm font-semibold text-ocean-700 hover:bg-ocean-50"
+            className="flex w-full items-center gap-2 border-t border-navy-200 bg-brass-50 px-3 py-2.5 text-sm font-semibold text-brass-800 hover:bg-brass-100"
           >
             <Plus className="size-4" />
             {t('nav.newVessel')}

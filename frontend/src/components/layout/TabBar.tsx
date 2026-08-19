@@ -36,7 +36,7 @@ export function TabBar({ active, onChange }: TabBarProps) {
   const { t } = useI18n()
   return (
     <nav className="scrollbar-none -mx-4 overflow-x-auto px-4 sm:mx-0 sm:px-0">
-      <ul className="flex min-w-max items-center gap-1 rounded-2xl bg-white/70 p-1.5 ring-1 ring-navy-200/70 shadow-chart backdrop-blur">
+      <ul className="flex min-w-max items-center gap-1 rounded-2xl bg-white p-1.5 ring-1 ring-navy-200 shadow-chart">
         {TABS.map(({ id, labelKey, Icon }) => {
           const isActive = active === id
           return (
@@ -50,7 +50,7 @@ export function TabBar({ active, onChange }: TabBarProps) {
                   'transition-all duration-200 ease-sail',
                   isActive
                     ? 'bg-navy-950 text-white shadow-chart'
-                    : 'text-navy-500 hover:bg-navy-100/80 hover:text-navy-900',
+                    : 'text-navy-600 hover:bg-brass-100 hover:text-brass-800',
                 )}
               >
                 <Icon className={cn('size-4', isActive ? 'text-brass-300' : 'text-navy-400')} />

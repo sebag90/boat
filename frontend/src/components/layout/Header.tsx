@@ -18,14 +18,14 @@ export function Header({ boats, selectedBoat, onSelectBoat, onCreateBoat }: Head
   const { username, logout } = useSession()
 
   return (
-    <header className="sticky top-0 z-30 border-b border-navy-200/70 bg-white/80 backdrop-blur-lg">
+    <header className="sticky top-0 z-30 border-b border-navy-200 bg-white/92 backdrop-blur-lg">
       <div className="mx-auto flex max-w-6xl flex-wrap items-center gap-3 px-4 py-3 sm:px-6">
         <BrandMark subtitle={t('app.fleet')} />
 
         <div className="order-2 ml-auto flex items-center gap-2 sm:order-3">
-          <div className="hidden items-center gap-1.5 rounded-xl bg-navy-50 px-3 py-1.5 text-xs text-navy-500 sm:flex">
-            <UserRound className="size-3.5" />
-            <span className="font-semibold text-navy-800">{username}</span>
+          <div className="hidden items-center gap-1.5 rounded-xl bg-navy-950 px-3 py-1.5 text-xs text-navy-200 sm:flex">
+            <UserRound className="size-3.5 text-brass-300" />
+            <span className="font-semibold text-white">{username}</span>
           </div>
           <LanguageToggle />
           <IconButton
@@ -44,7 +44,7 @@ export function Header({ boats, selectedBoat, onSelectBoat, onCreateBoat }: Head
           />
         </div>
       </div>
-      <span className="block h-px bg-linear-to-r from-transparent via-brass-300/60 to-transparent" />
+      <span className="brass-rule block" />
     </header>
   )
 }

@@ -13,7 +13,7 @@ export function Markdown({ source, className, fallback }: MarkdownProps) {
   const html = useMemo(() => renderMarkdown(source), [source])
 
   if (!html) {
-    return fallback ? <p className="text-sm text-navy-400 italic">{fallback}</p> : null
+    return fallback ? <p className="text-sm font-medium text-navy-500 italic">{fallback}</p> : null
   }
 
   return (

@@ -98,7 +98,7 @@ export function ShoppingTab({ boatId }: { boatId: number }) {
                       title={t('shopping.openLink')}
                       aria-label={t('shopping.openLink')}
                       onClick={(event) => event.stopPropagation()}
-                      className="flex size-8 items-center justify-center rounded-lg text-navy-400 hover:bg-ocean-50 hover:text-ocean-700"
+                      className="flex size-8 items-center justify-center rounded-lg text-ocean-700 hover:bg-ocean-600 hover:text-white"
                     >
                       <ExternalLink className="size-4" />
                     </a>

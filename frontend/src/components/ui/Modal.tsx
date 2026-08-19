@@ -67,7 +67,7 @@ export function Modal({ open, onClose, title, eyebrow, size = 'md', footer, chil
         aria-modal="true"
         className={cn(
           'relative flex max-h-[94dvh] w-full flex-col overflow-hidden bg-parchment shadow-float',
-          'rounded-t-3xl sm:rounded-3xl ring-1 ring-navy-950/10',
+          'rounded-t-3xl sm:rounded-3xl ring-2 ring-navy-950/15',
           'animate-[modal-in_.28s_cubic-bezier(.32,.72,0,1)]',
           SIZES[size],
         )}
@@ -75,7 +75,7 @@ export function Modal({ open, onClose, title, eyebrow, size = 'md', footer, chil
         <ModalHeader title={title} eyebrow={eyebrow} onClose={onClose} />
         <div className="min-h-0 flex-1 overflow-y-auto px-5 py-5 sm:px-6">{children}</div>
         {footer && (
-          <div className="flex flex-wrap items-center justify-end gap-2 border-t border-navy-100 bg-white/70 px-5 py-3.5 sm:px-6">
+          <div className="flex flex-wrap items-center justify-end gap-2 border-t border-navy-200 bg-white px-5 py-3.5 sm:px-6">
             {footer}
           </div>
         )}
@@ -97,17 +97,17 @@ function ModalHeader({
 }) {
   const { t } = useI18n()
   return (
-    <header className="relative flex items-start gap-4 border-b border-navy-100 bg-white/80 px-5 py-4 sm:px-6">
+    <header className="relative flex items-start gap-4 border-b border-navy-200 bg-white px-5 py-4 sm:px-6">
       <div className="min-w-0 flex-1">
         {eyebrow && (
-          <p className="mb-1 text-[0.68rem] font-semibold tracking-[0.14em] text-ocean-700 uppercase">
+          <p className="mb-1 text-[0.68rem] font-semibold tracking-[0.14em] text-brass-700 uppercase">
             {eyebrow}
           </p>
         )}
         <h2 className="text-xl leading-snug font-semibold break-words text-navy-950">{title}</h2>
       </div>
       <IconButton label={t('action.close')} icon={<X className="size-5" />} onClick={onClose} />
-      <span className="absolute inset-x-0 bottom-0 h-px bg-linear-to-r from-transparent via-brass-300/70 to-transparent" />
+      <span className="brass-rule absolute inset-x-0 bottom-0" />
     </header>
   )
 }

@@ -8,10 +8,10 @@ const VARIANTS: Record<Variant, string> = {
   primary:
     'bg-navy-950 text-white shadow-chart hover:bg-navy-800 active:bg-navy-900 disabled:hover:bg-navy-950',
   secondary:
-    'bg-white text-navy-800 ring-1 ring-navy-200 shadow-sm hover:bg-ocean-50 hover:ring-ocean-300',
-  ghost: 'text-navy-600 hover:bg-navy-100/70 hover:text-navy-900',
-  danger: 'bg-signal-500 text-white shadow-chart hover:bg-signal-600',
-  brass: 'bg-brass-500 text-white shadow-chart hover:bg-brass-600',
+    'bg-white text-navy-800 ring-1 ring-navy-300 shadow-sm hover:bg-ocean-50 hover:text-ocean-900 hover:ring-ocean-400',
+  ghost: 'text-navy-600 hover:bg-navy-100 hover:text-navy-950',
+  danger: 'bg-signal-600 text-white shadow-chart hover:bg-signal-700',
+  brass: 'bg-brass-600 text-white shadow-chart hover:bg-brass-700',
 }
 
 const SIZES: Record<Size, string> = {

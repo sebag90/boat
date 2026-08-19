@@ -53,14 +53,14 @@ export function VoyageReadView({
 
       <section className="space-y-3">
         <div className="flex flex-wrap items-center justify-between gap-2">
-          <h3 className="text-[0.7rem] font-semibold tracking-[0.12em] text-navy-500 uppercase">
+          <h3 className="text-[0.7rem] font-semibold tracking-[0.12em] text-brass-700 uppercase">
             {t('voyage.waypoints')} · {waypoints.length}
           </h3>
           <a
             href={geojsonIoUrl(waypoints)}
             target="_blank"
             rel="noreferrer"
-            className="inline-flex items-center gap-1.5 text-xs font-semibold text-ocean-700 hover:underline"
+            className="inline-flex items-center gap-1.5 rounded-lg bg-navy-950 px-2.5 py-1.5 text-xs font-semibold text-brass-300 transition-colors hover:bg-navy-800"
           >
             <MapIcon className="size-3.5" />
             {t('voyage.openMap')}

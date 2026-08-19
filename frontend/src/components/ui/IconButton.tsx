@@ -18,8 +18,8 @@ export function IconButton({ label, icon, tone = 'neutral', className, ...props 
         'inline-flex size-9 items-center justify-center rounded-xl transition-colors duration-200',
         'disabled:cursor-not-allowed disabled:opacity-40',
         tone === 'danger'
-          ? 'text-navy-400 hover:bg-signal-500/10 hover:text-signal-600'
-          : 'text-navy-500 hover:bg-navy-100 hover:text-navy-900',
+          ? 'text-navy-500 hover:bg-signal-600 hover:text-white'
+          : 'text-navy-600 hover:bg-navy-950 hover:text-brass-300',
         className,
       )}
     >

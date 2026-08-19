@@ -126,7 +126,7 @@ export function VoyageDialog({ boatId, entry, onClose }: VoyageDialogProps) {
               variant="ghost"
               onClick={onDelete}
               disabled={deleteLog.isPending}
-              className="mr-auto text-signal-600 hover:bg-signal-500/10"
+              className="mr-auto text-signal-700 hover:bg-signal-600 hover:text-white"
               icon={deleteLog.isPending ? <Spinner /> : <Trash2 className="size-4" />}
             >
               {t('action.delete')}

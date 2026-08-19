@@ -30,9 +30,9 @@ export function EntryCard({
   return (
     <li
       className={cn(
-        'group relative flex items-start gap-3 rounded-2xl bg-white px-4 py-3.5 ring-1 ring-navy-100',
-        'shadow-sm transition-all duration-200 ease-sail hover:-translate-y-px hover:ring-ocean-300 hover:shadow-chart',
-        muted && 'bg-navy-50/60',
+        'group relative flex items-start gap-3 rounded-2xl bg-white px-4 py-3.5 ring-1 ring-navy-200',
+        'shadow-sm transition-all duration-200 ease-sail hover:-translate-y-px hover:ring-2 hover:ring-brass-400 hover:shadow-chart',
+        muted && 'bg-navy-50',
         className,
       )}
     >
@@ -53,13 +53,13 @@ export function EntryCard({
         </span>
         {meta && <span className="mt-1 flex flex-wrap items-center gap-2 text-xs">{meta}</span>}
         {excerpt && (
-          <span className="mt-1.5 block truncate text-sm text-navy-500">{excerpt}</span>
+          <span className="mt-1.5 block truncate text-sm text-navy-600">{excerpt}</span>
         )}
       </button>
 
       <div className="flex shrink-0 items-center gap-1 self-center">
         {trailing}
-        <ChevronRight className="size-4 text-navy-200 transition-colors group-hover:text-ocean-500" />
+        <ChevronRight className="size-4 text-navy-300 transition-colors group-hover:text-brass-600" />
       </div>
     </li>
   )

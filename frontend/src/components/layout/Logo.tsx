@@ -31,7 +31,7 @@ export function BrandMark({ subtitle }: { subtitle?: string }) {
           Boat Organizer
         </p>
         {subtitle && (
-          <p className="text-[0.68rem] font-semibold tracking-[0.16em] text-navy-400 uppercase">
+          <p className="text-[0.68rem] font-semibold tracking-[0.16em] text-brass-700 uppercase">
             {subtitle}
           </p>
         )}

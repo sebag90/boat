@@ -9,7 +9,7 @@ export function LanguageToggle({ className }: { className?: string }) {
   return (
     <div
       className={cn(
-        'inline-flex items-center rounded-full bg-white/70 p-0.5 ring-1 ring-navy-200',
+        'inline-flex items-center rounded-full bg-white p-0.5 ring-1 ring-navy-300',
         className,
       )}
     >
@@ -22,8 +22,8 @@ export function LanguageToggle({ className }: { className?: string }) {
           className={cn(
             'rounded-full px-2.5 py-1 text-[0.7rem] font-bold tracking-wider uppercase transition-all duration-200',
             locale === code
-              ? 'bg-navy-950 text-white shadow-sm'
-              : 'text-navy-400 hover:text-navy-700',
+              ? 'bg-navy-950 text-brass-300 shadow-sm'
+              : 'text-navy-500 hover:bg-brass-100 hover:text-brass-800',
           )}
         >
           {code}

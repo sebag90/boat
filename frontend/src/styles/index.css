@@ -10,15 +10,15 @@
   --font-display: 'Iowan Old Style', 'Palatino Linotype', Palatino, Georgia, 'Times New Roman', serif;
   --font-mono: ui-monospace, 'SFMono-Regular', 'JetBrains Mono', Menlo, Consolas, monospace;
 
-  /* Deep hull navy */
-  --color-navy-50: #f1f5f9;
-  --color-navy-100: #e2e9f1;
-  --color-navy-200: #c3d2e2;
-  --color-navy-300: #93aac5;
-  --color-navy-400: #5c7ba1;
-  --color-navy-500: #3b5c83;
-  --color-navy-600: #2a4667;
-  --color-navy-700: #1d3352;
+  /* Deep hull navy — the cool base */
+  --color-navy-50: #eff4fa;
+  --color-navy-100: #dde7f2;
+  --color-navy-200: #b9cce2;
+  --color-navy-300: #89a4c3;
+  --color-navy-400: #4c6f9c;
+  --color-navy-500: #33578a;
+  --color-navy-600: #24446e;
+  --color-navy-700: #1a3357;
   --color-navy-800: #132441;
   --color-navy-900: #0b1a31;
   --color-navy-950: #07162a;
@@ -35,26 +35,28 @@
   --color-ocean-800: #075985;
   --color-ocean-900: #0c4a6e;
 
-  /* Polished brass hardware */
-  --color-brass-50: #fbf7ef;
-  --color-brass-100: #f6ecd8;
-  --color-brass-200: #ecd8b0;
-  --color-brass-300: #dfbd80;
-  --color-brass-400: #d0a257;
-  --color-brass-500: #b6863f;
-  --color-brass-600: #966a32;
-  --color-brass-700: #78522b;
-  --color-brass-800: #5f4227;
-  --color-brass-900: #503923;
+  /* Polished brass — the warm complement of the navy/ocean base */
+  --color-brass-50: #fdf8ec;
+  --color-brass-100: #f9ebcd;
+  --color-brass-200: #f2d69b;
+  --color-brass-300: #e5b45c;
+  --color-brass-400: #d29a2a;
+  --color-brass-500: #b8801a;
+  --color-brass-600: #96651a;
+  --color-brass-700: #7a5219;
+  --color-brass-800: #63431a;
+  --color-brass-900: #523818;
 
-  /* Sea foam / signals */
+  /* Sea foam / signals — the split accents */
   --color-foam-500: #0d9488;
   --color-foam-600: #0f766e;
+  --color-foam-700: #115e59;
   --color-signal-500: #dc2626;
   --color-signal-600: #b91c1c;
+  --color-signal-700: #991b1b;
 
-  --color-mist: #eef5fa;
-  --color-parchment: #fbf9f4;
+  --color-mist: #e5eef8;
+  --color-parchment: #fdf8ec;
 
   --radius-card: 1rem;
 
@@ -79,9 +81,9 @@
   body {
     @apply bg-mist font-sans text-navy-900 antialiased;
     background-image:
-      radial-gradient(at 8% 0%, rgb(186 230 253 / 0.55) 0px, transparent 55%),
-      radial-gradient(at 96% 4%, rgb(246 236 216 / 0.75) 0px, transparent 45%),
-      linear-gradient(180deg, #f5fafd 0%, #eef5fa 55%, #e7f0f7 100%);
+      radial-gradient(at 6% 0%, rgb(125 211 252 / 0.5) 0px, transparent 55%),
+      radial-gradient(at 97% 2%, rgb(229 180 92 / 0.42) 0px, transparent 45%),
+      linear-gradient(180deg, #eff6fd 0%, #e5eef8 55%, #d9e6f4 100%);
     background-attachment: fixed;
     min-height: 100dvh;
   }
@@ -124,18 +126,30 @@
   height: 3px;
   background-image: repeating-linear-gradient(
     90deg,
-    var(--color-brass-300) 0 8px,
+    var(--color-brass-400) 0 8px,
     transparent 8px 14px
   );
   border-radius: 999px;
-  opacity: 0.85;
+  opacity: 0.9;
 }
 
 @utility chart-grid {
   background-image:
-    linear-gradient(rgb(147 170 197 / 0.16) 1px, transparent 1px),
-    linear-gradient(90deg, rgb(147 170 197 / 0.16) 1px, transparent 1px);
+    linear-gradient(rgb(137 164 195 / 0.28) 1px, transparent 1px),
+    linear-gradient(90deg, rgb(137 164 195 / 0.28) 1px, transparent 1px);
   background-size: 26px 26px;
+}
+
+/* Warm brass hairline used to cap headers and panels. */
+@utility brass-rule {
+  height: 2px;
+  background-image: linear-gradient(
+    90deg,
+    transparent,
+    var(--color-brass-400) 35%,
+    var(--color-brass-300) 65%,
+    transparent
+  );
 }
 
 @utility scrollbar-none {
@@ -183,10 +197,10 @@
     @apply list-decimal space-y-1 pl-5;
   }
   .md-body blockquote {
-    @apply border-l-4 border-brass-300 bg-brass-50/60 py-2 pl-4 text-navy-600 italic;
+    @apply border-l-4 border-brass-400 bg-brass-50 py-2 pl-4 text-navy-700 italic;
   }
   .md-body code {
-    @apply rounded bg-navy-50 px-1.5 py-0.5 font-mono text-[0.85em] text-navy-800;
+    @apply rounded bg-ocean-50 px-1.5 py-0.5 font-mono text-[0.85em] text-ocean-900 ring-1 ring-ocean-100;
   }
   .md-body pre {
     @apply overflow-x-auto rounded-xl bg-navy-950 p-4 text-navy-50;
@@ -256,13 +270,13 @@
 }
 
 .wp-badge--start {
-  background: var(--color-foam-500);
+  background: var(--color-foam-600);
   padding: 0 7px;
   height: 22px;
 }
 
 .wp-badge--end {
-  background: var(--color-signal-500);
+  background: var(--color-signal-600);
   padding: 0 7px;
   height: 22px;
 }
@@ -294,7 +308,7 @@
 
 .map-recenter {
   background: #fff;
-  border: 1px solid var(--color-navy-200) !important;
+  border: 1px solid var(--color-navy-300) !important;
   border-radius: 0.6rem !important;
   box-shadow: var(--shadow-chart);
   width: 34px;
@@ -302,10 +316,12 @@
   display: flex !important;
   align-items: center;
   justify-content: center;
-  color: var(--color-navy-800);
+  color: var(--color-navy-900);
   cursor: pointer;
 }
 
 .map-recenter:hover {
-  background: var(--color-ocean-50);
+  background: var(--color-brass-100);
+  border-color: var(--color-brass-400) !important;
+  color: var(--color-brass-800);
 }

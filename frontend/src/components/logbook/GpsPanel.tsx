@@ -42,8 +42,8 @@ export function GpsPanel({ onFix, onImport }: GpsPanelProps) {
   }
 
   return (
-    <section className="space-y-3 rounded-2xl bg-ocean-50/70 p-4 ring-1 ring-ocean-100">
-      <h3 className="flex items-center gap-2 text-[0.68rem] font-semibold tracking-[0.14em] text-ocean-800 uppercase">
+    <section className="space-y-3 rounded-2xl bg-ocean-100/70 p-4 ring-1 ring-ocean-300">
+      <h3 className="flex items-center gap-2 text-[0.68rem] font-semibold tracking-[0.14em] text-ocean-900 uppercase">
         <Radio className="size-3.5" />
         {t('voyage.gps')}
       </h3>
@@ -79,11 +79,11 @@ export function GpsPanel({ onFix, onImport }: GpsPanelProps) {
         />
       </div>
 
-      <p className="text-xs text-navy-500">{t('voyage.importHint')}</p>
-      {importMessage && <p className="text-xs font-semibold text-foam-600">{importMessage}</p>}
+      <p className="text-xs text-navy-600">{t('voyage.importHint')}</p>
+      {importMessage && <p className="text-xs font-semibold text-foam-700">{importMessage}</p>}
       <InlineError message={importError} />
 
-      <div className="rounded-xl bg-white/80 p-3.5 ring-1 ring-ocean-100">
+      <div className="rounded-xl bg-white p-3.5 ring-1 ring-navy-200">
         <div className="flex flex-wrap items-end gap-3">
           <Field label={t('voyage.tracker')} className="w-32">
             <Select
@@ -128,9 +128,9 @@ export function GpsPanel({ onFix, onImport }: GpsPanelProps) {
           )}
         </div>
 
-        <p className="mt-2 text-xs text-navy-500">{t('voyage.trackerHint')}</p>
+        <p className="mt-2 text-xs text-navy-600">{t('voyage.trackerHint')}</p>
         {tracker.lastFixAt && (
-          <p className="mt-1 text-xs text-navy-400">
+          <p className="mt-1 text-xs font-medium text-navy-700">
             {t('voyage.lastFix')}: {formatTime(localIsoTimestamp(tracker.lastFixAt))}
           </p>
         )}

@@ -46,8 +46,8 @@ export function AppShell({
         {children}
       </main>
 
-      <footer className="mx-auto flex w-full max-w-6xl items-center justify-center gap-2 px-4 py-6 text-xs text-navy-400">
-        <Anchor className="size-3.5" />
+      <footer className="mx-auto flex w-full max-w-6xl items-center justify-center gap-2 px-4 py-6 text-xs text-navy-600">
+        <Anchor className="size-3.5 text-brass-600" />
         <span>{t('app.tagline')}</span>
       </footer>
     </div>
