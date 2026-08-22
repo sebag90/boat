@@ -21,6 +21,13 @@ export interface WaypointInput {
   name?: string | null
 }
 
+export interface Photo {
+  id: number
+  filename: string
+  content_type: string
+  created_at: string
+}
+
 export interface LogEntry {
   id: number
   date: string
@@ -30,6 +37,7 @@ export interface LogEntry {
   description: string
   created_at: string
   waypoints: Waypoint[]
+  photo_count: number
 }
 
 export interface LogEntryInput {
@@ -57,6 +65,7 @@ export interface MaintenanceEntry {
   description: string
   receipt_filename: string | null
   created_at: string
+  photo_count: number
 }
 
 export interface TodoEntry {

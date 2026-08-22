@@ -27,6 +27,17 @@ def _init_db(retries: int = 30, delay: float = 2.0):
 
 _init_db()
 
+# ponytail: no migration tool in this project; one idempotent DDL nudge for the
+# `photos.position` column added after the table shipped. Move to Alembic if a
+# second schema change like this shows up.
+try:
+    with engine.begin() as _conn:
+        from sqlalchemy import text as _text
+
+        _conn.execute(_text("ALTER TABLE photos ADD COLUMN position INTEGER DEFAULT 0"))
+except Exception:
+    pass
+
 app = FastAPI(title="Boat Organizer", dependencies=[Depends(require_auth)])
 
 app.add_middleware(
@@ -296,6 +307,97 @@ def delete_maintenance(record_id: int, db: Session = Depends(get_db)):
     if not record:
         raise HTTPException(404, "Record not found")
     db.delete(record)
+    db.commit()
+    return {"ok": True}
+
+
+# ---------- Photos (maintenance records / voyages) ----------
+async def _add_photos(db: Session, files: list[UploadFile], **parent: int) -> list[models.Photo]:
+    start = db.query(models.Photo).filter_by(**parent).count()
+    photos = [
+        models.Photo(
+            **parent,
+            position=start + idx,
+            data=await f.read(),
+            filename=f.filename or "photo",
+            content_type=f.content_type or "application/octet-stream",
+        )
+        for idx, f in enumerate(f for f in files if f.filename)
+    ]
+    db.add_all(photos)
+    db.commit()
+    for photo in photos:
+        db.refresh(photo)
+    return photos
+
+
+def _list_photos(db: Session, **parent: int) -> list[models.Photo]:
+    return (
+        db.query(models.Photo)
+        .filter_by(**parent)
+        .order_by(models.Photo.position, models.Photo.id)
+        .all()
+    )
+
+
+@app.post("/api/maintenance/{record_id}/photos", response_model=list[schemas.PhotoOut])
+async def add_maintenance_photos(
+    record_id: int, files: list[UploadFile] = File(...), db: Session = Depends(get_db)
+):
+    if not db.get(models.Maintenance, record_id):
+        raise HTTPException(404, "Record not found")
+    return await _add_photos(db, files, maintenance_id=record_id)
+
+
+@app.get("/api/maintenance/{record_id}/photos", response_model=list[schemas.PhotoOut])
+def list_maintenance_photos(record_id: int, db: Session = Depends(get_db)):
+    return _list_photos(db, maintenance_id=record_id)
+
+
+@app.post("/api/logbook/{entry_id}/photos", response_model=list[schemas.PhotoOut])
+async def add_log_photos(
+    entry_id: int, files: list[UploadFile] = File(...), db: Session = Depends(get_db)
+):
+    if not db.get(models.LogEntry, entry_id):
+        raise HTTPException(404, "Log entry not found")
+    return await _add_photos(db, files, log_id=entry_id)
+
+
+@app.get("/api/logbook/{entry_id}/photos", response_model=list[schemas.PhotoOut])
+def list_log_photos(entry_id: int, db: Session = Depends(get_db)):
+    return _list_photos(db, log_id=entry_id)
+
+
+@app.put("/api/photos/order")
+def reorder_photos(ids: list[int], db: Session = Depends(get_db)):
+    """Body is the photo ids in their new display order."""
+    for index, photo_id in enumerate(ids):
+        photo = db.get(models.Photo, photo_id)
+        if not photo:
+            raise HTTPException(404, f"Photo {photo_id} not found")
+        photo.position = index
+    db.commit()
+    return {"ok": True}
+
+
+@app.get("/api/photos/{photo_id}")
+def download_photo(photo_id: int, db: Session = Depends(get_db)):
+    photo = db.get(models.Photo, photo_id)
+    if not photo:
+        raise HTTPException(404, "Photo not found")
+    return StreamingResponse(
+        io.BytesIO(photo.data),
+        media_type=photo.content_type,
+        headers={"Content-Disposition": f'inline; filename="{photo.filename}"'},
+    )
+
+
+@app.delete("/api/photos/{photo_id}")
+def delete_photo(photo_id: int, db: Session = Depends(get_db)):
+    photo = db.get(models.Photo, photo_id)
+    if not photo:
+        raise HTTPException(404, "Photo not found")
+    db.delete(photo)
     db.commit()
     return {"ok": True}
 

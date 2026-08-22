@@ -88,6 +88,14 @@ export const en = {
   'dropzone.single': 'Drop a replacement file or click to browse',
   'dropzone.selected': 'Selected files',
 
+  // --- photos --------------------------------------------------------
+  'photos.title': 'Pictures',
+  'photos.add': 'Drop pictures here or click to browse',
+  'photos.uploading': 'Uploading pictures…',
+  'photos.previous': 'Previous picture',
+  'photos.next': 'Next picture',
+  'photos.confirmDelete': 'Delete this picture?',
+
   // --- documents -----------------------------------------------------
   'documents.title': 'Documents Locker',
   'documents.subtitle': 'Manuals, certificates and ship’s papers.',

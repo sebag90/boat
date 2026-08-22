@@ -18,6 +18,7 @@ const logbook = [
     goal: 'Calvi',
     description: 'calm',
     created_at: '2026-06-15T08:00:00Z',
+    photo_count: 3,
     waypoints: [
       { id: 1, log_id: 1, latitude: 43.7384, longitude: 7.4246, timestamp: '2026-06-15T08:30:00', name: 'A' },
       { id: 2, log_id: 1, latitude: 43.4, longitude: 8.1, timestamp: '2026-06-15T13:30:00', name: null },
@@ -28,7 +29,7 @@ const documents = [
   { id: 1, title: 'Manual', description: 'desc', filename: 'a.pdf', content_type: 'application/pdf', uploaded_at: '2026-01-01T09:00:00Z' },
 ]
 const maintenance = [
-  { id: 1, title: 'Impeller', date: '2026-05-10', description: 'done', receipt_filename: null, created_at: '2026-05-10T14:00:00Z' },
+  { id: 1, title: 'Impeller', date: '2026-05-10', description: 'done', receipt_filename: null, created_at: '2026-05-10T14:00:00Z', photo_count: 2 },
 ]
 const todos = [{ id: 1, text: 'Check bilge', done: false, file_filename: null, file_content_type: null, created_at: '2026-01-01T09:00:00Z' }]
 const shopping = [
@@ -42,6 +43,7 @@ const routes: [RegExp, unknown][] = [
   [/\/api\/boats\/\d+\/maintenance$/, maintenance],
   [/\/api\/boats\/\d+\/todos$/, todos],
   [/\/api\/boats\/\d+\/shopping$/, shopping],
+  [/\/photos(\?|$)/, []],
 ]
 
 const calls: string[] = []
@@ -107,6 +109,7 @@ const checks: [string, boolean][] = [
   ['renders header brand', html.includes('Boat Organizer')],
   ['renders tab bar', html.includes('Log Book')],
   ['renders voyage card', html.includes('Monaco')],
+  ['renders voyage picture count', html.includes('3 Pictures')],
   ['renders detail dialog', dom.window.document.body.innerHTML.includes('Engine Manual')],
   ['renders markdown', dom.window.document.body.innerHTML.includes('<strong>Page 42</strong>')],
   ['renders waypoint table', dom.window.document.body.innerHTML.includes('43.73840')],
@@ -115,6 +118,7 @@ const checks: [string, boolean][] = [
   ['fetched logbook', calls.some((url) => url.includes('/logbook'))],
   ['renders documents tab', body.includes('Manual') && body.includes('Documents Locker')],
   ['renders maintenance preview as date - title', body.includes('10-05-2026 - Impeller')],
+  ['renders maintenance picture count', body.includes('2 Pictures')],
   ['renders todos tab', body.includes('Check bilge')],
   ['renders shopping tab', body.includes('Shackle')],
   ['renders settings tab', body.includes('Danger zone')],

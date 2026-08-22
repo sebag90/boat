@@ -1,4 +1,4 @@
-import { MapPin, Route, Users } from 'lucide-react'
+import { Images, MapPin, Route, Users } from 'lucide-react'
 import { useI18n } from '../../i18n'
 import { formatDate } from '../../lib/format'
 import { validWaypoints, voyageStats } from '../../lib/nautical'
@@ -41,6 +41,12 @@ export function VoyageCard({ entry, onClick }: { entry: LogEntry; onClick: () =>
               <MapPin className="size-3.5" />
               {waypoints.length} {t('voyage.waypoints')}
             </span>
+            {entry.photo_count > 0 && (
+              <span className="inline-flex items-center gap-1">
+                <Images className="size-3.5" />
+                {entry.photo_count} {t('photos.title')}
+              </span>
+            )}
             {stats.totalNm > 0 && (
               <span className="inline-flex items-center gap-1 rounded-md bg-ocean-100 px-1.5 py-0.5 font-semibold text-ocean-900">
                 <Route className="size-3.5" />

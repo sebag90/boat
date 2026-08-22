@@ -5,4 +5,5 @@ export const queryKeys = {
   todos: (boatId: number) => ['todos', boatId] as const,
   shopping: (boatId: number) => ['shopping', boatId] as const,
   logbook: (boatId: number) => ['logbook', boatId] as const,
+  photos: (parent: string, parentId: number) => ['photos', parent, parentId] as const,
 }

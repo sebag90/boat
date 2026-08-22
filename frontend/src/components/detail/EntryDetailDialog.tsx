@@ -11,6 +11,7 @@ import type {
 } from '../../lib/types'
 import { AttachmentBlock } from '../attachments/AttachmentBlock'
 import { Markdown } from '../Markdown'
+import { PhotoGallery } from '../photos/PhotoGallery'
 import { Badge, Button, InlineError, Modal, Spinner } from '../ui'
 import { EntryEditForm } from './EntryEditForm'
 import { presentEntry } from './entryPresenter'
@@ -164,6 +165,8 @@ export function EntryDetailDialog({ boatId, type, entry, onClose }: EntryDetailD
             ) : (
               <p className="text-sm font-medium text-navy-500 italic">{t('label.noAttachment')}</p>
             )}
+
+            {type === 'maintenance' && <PhotoGallery parent="maintenance" parentId={current.id} />}
           </>
         )}
       </div>

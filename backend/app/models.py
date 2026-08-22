@@ -1,7 +1,7 @@
 from datetime import datetime, date
 
-from sqlalchemy import String, Text, ForeignKey, DateTime, Date, Boolean, LargeBinary, Float
-from sqlalchemy.orm import Mapped, mapped_column, relationship
+from sqlalchemy import String, Text, ForeignKey, DateTime, Date, Boolean, LargeBinary, Float, Integer, func, select
+from sqlalchemy.orm import Mapped, mapped_column, relationship, column_property
 
 from .db import Base
 
@@ -60,6 +60,31 @@ class Maintenance(Base):
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
 
     boat: Mapped[Boat] = relationship(back_populates="maintenance")
+    photos: Mapped[list["Photo"]] = relationship(
+        back_populates="maintenance", cascade="all, delete-orphan"
+    )
+
+
+class Photo(Base):
+    """Picture attached to a maintenance record or a voyage (exactly one parent)."""
+
+    __tablename__ = "photos"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    maintenance_id: Mapped[int | None] = mapped_column(
+        ForeignKey("maintenance.id", ondelete="CASCADE"), nullable=True
+    )
+    log_id: Mapped[int | None] = mapped_column(
+        ForeignKey("logbook.id", ondelete="CASCADE"), nullable=True
+    )
+    filename: Mapped[str] = mapped_column(String(500), default="photo")
+    content_type: Mapped[str] = mapped_column(String(200), default="image/jpeg")
+    data: Mapped[bytes] = mapped_column(LargeBinary)
+    position: Mapped[int] = mapped_column(Integer, default=0)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+
+    maintenance: Mapped["Maintenance | None"] = relationship(back_populates="photos")
+    log_entry: Mapped["LogEntry | None"] = relationship(back_populates="photos")
 
 
 class Todo(Base):
@@ -90,6 +115,9 @@ class LogEntry(Base):
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
 
     boat: Mapped[Boat] = relationship(back_populates="logbook")
+    photos: Mapped[list["Photo"]] = relationship(
+        back_populates="log_entry", cascade="all, delete-orphan"
+    )
     waypoints: Mapped[list["Waypoint"]] = relationship(
         back_populates="log_entry",
         cascade="all, delete-orphan",
@@ -125,3 +153,12 @@ class ShoppingItem(Base):
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
 
     boat: Mapped[Boat] = relationship(back_populates="shopping")
+
+
+# Counted with a subquery so list endpoints never load the picture blobs.
+LogEntry.photo_count = column_property(
+    select(func.count(Photo.id)).where(Photo.log_id == LogEntry.id).scalar_subquery()
+)
+Maintenance.photo_count = column_property(
+    select(func.count(Photo.id)).where(Photo.maintenance_id == Maintenance.id).scalar_subquery()
+)

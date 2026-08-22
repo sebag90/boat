@@ -30,6 +30,16 @@ class DocumentOut(BaseModel):
         from_attributes = True
 
 
+class PhotoOut(BaseModel):
+    id: int
+    filename: str
+    content_type: str
+    created_at: datetime
+
+    class Config:
+        from_attributes = True
+
+
 class MaintenanceOut(BaseModel):
     id: int
     title: str
@@ -37,6 +47,7 @@ class MaintenanceOut(BaseModel):
     description: str
     receipt_filename: str | None
     created_at: datetime
+    photo_count: int = 0
 
     class Config:
         from_attributes = True
@@ -78,6 +89,7 @@ class LogOut(BaseModel):
     goal: str
     description: str
     created_at: datetime
+    photo_count: int = 0
     waypoints: list[WaypointOut] = []
 
     class Config:

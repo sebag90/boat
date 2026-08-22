@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react'
-import { Wrench } from 'lucide-react'
+import { Images, Wrench } from 'lucide-react'
 import { useI18n } from '../../i18n'
 import { useMaintenance } from '../../api/maintenance'
 import { formatDate } from '../../lib/format'
@@ -70,6 +70,11 @@ export function MaintenanceTab({ boatId }: { boatId: number }) {
                 meta={
                   <>
                     <Badge tone="ocean">{formatDate(record.date)}</Badge>
+                    {record.photo_count > 0 && (
+                      <Badge tone="brass" icon={<Images className="size-3" />}>
+                        {record.photo_count} {t('photos.title')}
+                      </Badge>
+                    )}
                     <AttachmentChip filename={record.receipt_filename} />
                   </>
                 }

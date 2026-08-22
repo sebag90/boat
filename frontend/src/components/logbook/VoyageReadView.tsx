@@ -6,6 +6,7 @@ import { validWaypoints, voyageStats } from '../../lib/nautical'
 import type { Fix } from '../../lib/geolocation'
 import type { LogEntry, Waypoint } from '../../lib/types'
 import { Markdown } from '../Markdown'
+import { PhotoGallery } from '../photos/PhotoGallery'
 import { Badge } from '../ui'
 import { GpsPanel } from './GpsPanel'
 import { RouteBanner } from './RouteBanner'
@@ -76,6 +77,8 @@ export function VoyageReadView({
       </section>
 
       <TrackMap waypoints={waypoints} />
+
+      <PhotoGallery parent="logbook" parentId={entry.id} />
     </div>
   )
 }

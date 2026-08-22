@@ -90,6 +90,14 @@ export const it: Record<TranslationKey, string> = {
   'dropzone.single': 'Trascina un file sostitutivo o clicca per sfogliare',
   'dropzone.selected': 'File selezionati',
 
+  // --- photos --------------------------------------------------------
+  'photos.title': 'Foto',
+  'photos.add': 'Trascina le foto qui o clicca per sfogliare',
+  'photos.uploading': 'Caricamento foto…',
+  'photos.previous': 'Foto precedente',
+  'photos.next': 'Foto successiva',
+  'photos.confirmDelete': 'Eliminare questa foto?',
+
   // --- documents -----------------------------------------------------
   'documents.title': 'Armadio documenti',
   'documents.subtitle': 'Manuali, certificati e documenti di bordo.',
