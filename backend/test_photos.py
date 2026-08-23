@@ -45,14 +45,14 @@ def demo():
         raw = client.get(f"/api/photos/{listed[0]['id']}")
         assert raw.content == PNG and raw.headers["content-type"] == "image/png"
 
-        # a later upload lands last; an explicit reorder sticks
+        # a later upload (e.g. video) lands last; an explicit reorder sticks
         more = client.post(
-            f"/api/{parent}/{pid}/photos", files=[("files", ("c.png", PNG, "image/png"))]
+            f"/api/{parent}/{pid}/photos", files=[("files", ("clip.mp4", b"fake-mp4", "video/mp4"))]
         ).json()
         assert [p["filename"] for p in client.get(f"/api/{parent}/{pid}/photos").json()] == [
             "a.png",
             "b.png",
-            "c.png",
+            "clip.mp4",
         ]
         order = [more[0]["id"], listed[1]["id"], listed[0]["id"]]
         assert client.put("/api/photos/order", json=order).status_code == 200
@@ -63,7 +63,7 @@ def demo():
         assert len(client.get(f"/api/{parent}/{pid}/photos").json()) == 2
 
     # photos must not leak between parents, and must die with their parent
-    assert client.get(f"/api/logbook/{voyage['id']}/photos").json()[0]["filename"] == "c.png"
+    assert client.get(f"/api/logbook/{voyage['id']}/photos").json()[0]["filename"] == "clip.mp4"
     counted = client.get(f"/api/boats/{boat['id']}/logbook").json()[0]
     assert counted["photo_count"] == 2, counted
     assert client.get(f"/api/boats/{boat['id']}/maintenance").json()[0]["photo_count"] == 2

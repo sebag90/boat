@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react'
-import { ChevronLeft, ChevronRight, ExternalLink, GripVertical, Trash2 } from 'lucide-react'
+import { ChevronLeft, ChevronRight, ExternalLink, GripVertical, Play, Trash2 } from 'lucide-react'
 import { usePhotos, type PhotoParent } from '../../api/photos'
 import { useI18n } from '../../i18n'
 import { attachmentUrl } from '../../lib/api'
 import { cn } from '../../lib/cn'
+import { isVideo } from '../../lib/format'
 import type { Photo } from '../../lib/types'
 import { Dropzone } from '../dropzone/Dropzone'
 import { InlineError, Modal, Spinner } from '../ui'
@@ -104,13 +105,28 @@ export function PhotoGallery({ parent, parentId }: { parent: PhotoParent; parent
               )}
             >
               <button type="button" onClick={() => setViewIndex(index)} className="block w-full">
-                <img
-                  src={attachmentUrl(`/api/photos/${photo.id}`)}
-                  alt={photo.filename}
-                  loading="lazy"
-                  draggable={false}
-                  className="h-32 w-full bg-white object-cover"
-                />
+                {isVideo(photo.filename, photo.content_type) ? (
+                  <div className="relative h-32 w-full bg-navy-950">
+                    <video
+                      src={`${attachmentUrl(`/api/photos/${photo.id}`)}#t=0.1`}
+                      preload="metadata"
+                      muted
+                      playsInline
+                      className="size-full object-cover"
+                    />
+                    <span className="absolute inset-0 flex items-center justify-center bg-navy-950/30 text-white transition-colors group-hover:bg-navy-950/10">
+                      <Play className="size-8 fill-white/90 text-white drop-shadow" />
+                    </span>
+                  </div>
+                ) : (
+                  <img
+                    src={attachmentUrl(`/api/photos/${photo.id}`)}
+                    alt={photo.filename}
+                    loading="lazy"
+                    draggable={false}
+                    className="h-32 w-full bg-white object-cover"
+                  />
+                )}
               </button>
               <span className="absolute top-1.5 left-1.5 flex size-7 items-center justify-center rounded-lg bg-white/90 text-navy-400 shadow-sm">
                 <GripVertical className="size-4" />
@@ -133,7 +149,7 @@ export function PhotoGallery({ parent, parentId }: { parent: PhotoParent; parent
         </ul>
       )}
 
-      <Dropzone files={[]} onChange={onFiles} accept="image/*" label={t('photos.add')} />
+      <Dropzone files={[]} onChange={onFiles} accept="image/*,video/*" label={t('photos.add')} />
 
       {upload.isPending && (
         <p className="flex items-center gap-2 text-sm text-navy-600">
@@ -152,11 +168,22 @@ export function PhotoGallery({ parent, parentId }: { parent: PhotoParent; parent
           title={viewing.filename}
         >
           <div className="relative">
-            <img
-              src={attachmentUrl(`/api/photos/${viewing.id}`)}
-              alt={viewing.filename}
-              className="max-h-[75dvh] w-full rounded-xl bg-navy-950 object-contain"
-            />
+            {isVideo(viewing.filename, viewing.content_type) ? (
+              <video
+                key={viewing.id}
+                src={attachmentUrl(`/api/photos/${viewing.id}`)}
+                controls
+                autoPlay
+                playsInline
+                className="max-h-[75dvh] w-full rounded-xl bg-black object-contain"
+              />
+            ) : (
+              <img
+                src={attachmentUrl(`/api/photos/${viewing.id}`)}
+                alt={viewing.filename}
+                className="max-h-[75dvh] w-full rounded-xl bg-navy-950 object-contain"
+              />
+            )}
             {shown.length > 1 && (
               <>
                 <ArrowButton side="left" label={t('photos.previous')} onClick={() => step(-1)} />

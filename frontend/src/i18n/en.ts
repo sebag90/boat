@@ -88,13 +88,13 @@ export const en = {
   'dropzone.single': 'Drop a replacement file or click to browse',
   'dropzone.selected': 'Selected files',
 
-  // --- photos --------------------------------------------------------
-  'photos.title': 'Pictures',
-  'photos.add': 'Drop pictures here or click to browse',
-  'photos.uploading': 'Uploading pictures…',
-  'photos.previous': 'Previous picture',
-  'photos.next': 'Next picture',
-  'photos.confirmDelete': 'Delete this picture?',
+  // --- photos & videos -----------------------------------------------
+  'photos.title': 'Photos & Videos',
+  'photos.add': 'Drop pictures or videos here or click to browse',
+  'photos.uploading': 'Uploading…',
+  'photos.previous': 'Previous',
+  'photos.next': 'Next',
+  'photos.confirmDelete': 'Delete this file?',
 
   // --- documents -----------------------------------------------------
   'documents.title': 'Documents Locker',

@@ -1,7 +1,7 @@
-import { ExternalLink, FileText, Image as ImageIcon, Paperclip } from 'lucide-react'
+import { ExternalLink, FileText, Film, Image as ImageIcon, Paperclip } from 'lucide-react'
 import { useI18n } from '../../i18n'
 import { attachmentUrl } from '../../lib/api'
-import { isImage, isPdf } from '../../lib/format'
+import { isImage, isPdf, isVideo } from '../../lib/format'
 
 interface AttachmentBlockProps {
   filename?: string | null
@@ -22,6 +22,7 @@ export function AttachmentBlock({ filename, contentType, path, label }: Attachme
   const href = attachmentUrl(path)
   const pdf = isPdf(filename)
   const image = isImage(filename, contentType)
+  const video = isVideo(filename, contentType)
 
   return (
     <section className="space-y-3">
@@ -40,6 +41,8 @@ export function AttachmentBlock({ filename, contentType, path, label }: Attachme
             <FileText className="size-5 text-signal-600" />
           ) : image ? (
             <ImageIcon className="size-5 text-ocean-700" />
+          ) : video ? (
+            <Film className="size-5 text-ocean-700" />
           ) : (
             <Paperclip className="size-5" />
           )}
@@ -67,6 +70,15 @@ export function AttachmentBlock({ filename, contentType, path, label }: Attachme
             className="max-h-[520px] w-full rounded-xl bg-white object-contain ring-1 ring-navy-300"
           />
         </a>
+      )}
+
+      {video && (
+        <video
+          src={href}
+          controls
+          playsInline
+          className="max-h-[520px] w-full rounded-xl bg-black object-contain ring-1 ring-navy-300"
+        />
       )}
     </section>
   )

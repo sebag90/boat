@@ -80,6 +80,11 @@ export function isImage(filename?: string | null, contentType?: string | null): 
   return !!filename && /\.(png|jpe?g|gif|webp|bmp|svg|avif|heic)$/i.test(filename)
 }
 
+export function isVideo(filename?: string | null, contentType?: string | null): boolean {
+  if (contentType?.startsWith('video/')) return true
+  return !!filename && /\.(mp4|mov|webm|mkv|avi|m4v|ogv)$/i.test(filename)
+}
+
 function pad(value: number): string {
   return String(value).padStart(2, '0')
 }

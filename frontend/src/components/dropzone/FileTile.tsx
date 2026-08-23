@@ -1,5 +1,5 @@
-import { FileText, Image as ImageIcon, Paperclip, X } from 'lucide-react'
-import { formatFileSize, isImage, isPdf } from '../../lib/format'
+import { FileText, Film, Image as ImageIcon, Paperclip, X } from 'lucide-react'
+import { formatFileSize, isImage, isPdf, isVideo } from '../../lib/format'
 import { useI18n } from '../../i18n'
 
 interface FileTileProps {
@@ -11,6 +11,7 @@ interface FileTileProps {
 export function FileTile({ file, previewUrl, onRemove }: FileTileProps) {
   const { t } = useI18n()
   const image = isImage(file.name, file.type)
+  const video = isVideo(file.name, file.type)
 
   return (
     <li className="group relative flex items-center gap-3 rounded-xl bg-white p-2 ring-1 ring-navy-200 shadow-sm">
@@ -21,6 +22,8 @@ export function FileTile({ file, previewUrl, onRemove }: FileTileProps) {
           <FileText className="size-5 text-signal-600" />
         ) : image ? (
           <ImageIcon className="size-5 text-ocean-700" />
+        ) : video ? (
+          <Film className="size-5 text-ocean-700" />
         ) : (
           <Paperclip className="size-5" />
         )}
