@@ -97,6 +97,16 @@ export const it: Record<TranslationKey, string> = {
   'photos.previous': 'Precedente',
   'photos.next': 'Successivo',
   'photos.confirmDelete': 'Eliminare questo file?',
+  'photos.all': 'Tutti',
+  'photos.uncategorized': 'Generale',
+  'photos.albums': 'Album',
+  'photos.newAlbum': 'Nuovo album',
+  'photos.albumName': 'Nome album',
+  'photos.createAlbum': 'Crea album',
+  'photos.renameAlbum': 'Rinomina album',
+  'photos.moveToAlbum': 'Sposta in album',
+  'photos.noAlbum': 'Nessun album',
+  'photos.uploadTo': 'Carica in',
 
   // --- documents -----------------------------------------------------
   'documents.title': 'Armadio documenti',

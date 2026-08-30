@@ -95,6 +95,16 @@ export const en = {
   'photos.previous': 'Previous',
   'photos.next': 'Next',
   'photos.confirmDelete': 'Delete this file?',
+  'photos.all': 'All',
+  'photos.uncategorized': 'General',
+  'photos.albums': 'Albums',
+  'photos.newAlbum': 'New album',
+  'photos.albumName': 'Album name',
+  'photos.createAlbum': 'Create album',
+  'photos.renameAlbum': 'Rename album',
+  'photos.moveToAlbum': 'Move to album',
+  'photos.noAlbum': 'No album',
+  'photos.uploadTo': 'Upload to',
 
   // --- documents -----------------------------------------------------
   'documents.title': 'Documents Locker',

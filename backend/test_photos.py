@@ -47,8 +47,11 @@ def demo():
 
         # a later upload (e.g. video) lands last; an explicit reorder sticks
         more = client.post(
-            f"/api/{parent}/{pid}/photos", files=[("files", ("clip.mp4", b"fake-mp4", "video/mp4"))]
+            f"/api/{parent}/{pid}/photos",
+            files=[("files", ("clip.mp4", b"fake-mp4", "video/mp4"))],
+            data={"album": "front cabin"},
         ).json()
+        assert more[0]["album"] == "front cabin"
         assert [p["filename"] for p in client.get(f"/api/{parent}/{pid}/photos").json()] == [
             "a.png",
             "b.png",
@@ -58,6 +61,25 @@ def demo():
         assert client.put("/api/photos/order", json=order).status_code == 200
         assert [p["id"] for p in client.get(f"/api/{parent}/{pid}/photos").json()] == order
         assert client.put("/api/photos/order", json=[999999]).status_code == 404
+
+        # patch single photo album
+        patched = client.patch(
+            f"/api/photos/{listed[1]['id']}", json={"album": "back cabin"}
+        ).json()
+        assert patched["album"] == "back cabin"
+
+        # rename album batch
+        res = client.put(
+            f"/api/{parent}/{pid}/photos/albums",
+            json={"old_name": "front cabin", "new_name": "forward cabin"},
+        )
+        assert res.status_code == 200
+        assert client.get(f"/api/photos/{more[0]['id']}").status_code == 200
+        after_rename = client.get(f"/api/{parent}/{pid}/photos").json()
+        photo_by_id = {p["id"]: p for p in after_rename}
+        assert photo_by_id[more[0]["id"]]["album"] == "forward cabin"
+        assert photo_by_id[listed[1]["id"]]["album"] == "back cabin"
+        assert photo_by_id[listed[0]["id"]]["album"] is None
 
         assert client.delete(f"/api/photos/{listed[0]['id']}").status_code == 200
         assert len(client.get(f"/api/{parent}/{pid}/photos").json()) == 2

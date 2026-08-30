@@ -23,6 +23,7 @@ export interface WaypointInput {
 
 export interface Photo {
   id: number
+  album?: string | null
   filename: string
   content_type: string
   created_at: string

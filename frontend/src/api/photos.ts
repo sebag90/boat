@@ -6,6 +6,11 @@ import { queryKeys } from './queryKeys'
 /** `maintenance` = service job, `logbook` = voyage. */
 export type PhotoParent = 'maintenance' | 'logbook'
 
+export interface PhotoUploadInput {
+  files: File[]
+  album?: string | null
+}
+
 /** List / upload / delete the pictures of one maintenance record or voyage. */
 export function usePhotos(parent: PhotoParent, parentId: number) {
   const queryClient = useQueryClient()
@@ -20,11 +25,26 @@ export function usePhotos(parent: PhotoParent, parentId: number) {
   const list = useQuery({ queryKey, queryFn: () => api.get<Photo[]>(path) })
 
   const upload = useMutation({
-    mutationFn: (files: File[]) => {
+    mutationFn: (input: File[] | PhotoUploadInput) => {
+      const files = Array.isArray(input) ? input : input.files
+      const album = Array.isArray(input) ? null : input.album
       const form = new FormData()
       for (const file of files) form.append('files', file)
+      if (album && album.trim()) form.append('album', album.trim())
       return api.postForm<Photo[]>(path, form)
     },
+    onSuccess,
+  })
+
+  const updatePhoto = useMutation({
+    mutationFn: ({ id, album }: { id: number; album: string | null }) =>
+      api.patchJson<Photo>(`/api/photos/${id}`, { album }),
+    onSuccess,
+  })
+
+  const renameAlbum = useMutation({
+    mutationFn: ({ oldName, newName }: { oldName: string; newName: string }) =>
+      api.putJson<{ ok: boolean }>(`${path}/albums`, { old_name: oldName, new_name: newName }),
     onSuccess,
   })
 
@@ -42,5 +62,5 @@ export function usePhotos(parent: PhotoParent, parentId: number) {
     onSettled: onSuccess,
   })
 
-  return { photos: list.data ?? [], loading: list.isPending, upload, remove, reorder }
+  return { photos: list.data ?? [], loading: list.isPending, upload, updatePhoto, renameAlbum, remove, reorder }
 }

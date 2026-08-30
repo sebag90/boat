@@ -77,6 +77,7 @@ class Photo(Base):
     log_id: Mapped[int | None] = mapped_column(
         ForeignKey("logbook.id", ondelete="CASCADE"), nullable=True
     )
+    album: Mapped[str | None] = mapped_column(String(200), nullable=True)
     filename: Mapped[str] = mapped_column(String(500), default="photo")
     content_type: Mapped[str] = mapped_column(String(200), default="image/jpeg")
     data: Mapped[bytes] = mapped_column(LargeBinary)

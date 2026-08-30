@@ -32,12 +32,22 @@ class DocumentOut(BaseModel):
 
 class PhotoOut(BaseModel):
     id: int
+    album: str | None = None
     filename: str
     content_type: str
     created_at: datetime
 
     class Config:
         from_attributes = True
+
+
+class PhotoUpdate(BaseModel):
+    album: str | None = None
+
+
+class AlbumRename(BaseModel):
+    old_name: str
+    new_name: str
 
 
 class MaintenanceOut(BaseModel):

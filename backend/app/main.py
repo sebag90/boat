@@ -27,16 +27,19 @@ def _init_db(retries: int = 30, delay: float = 2.0):
 
 _init_db()
 
-# ponytail: no migration tool in this project; one idempotent DDL nudge for the
-# `photos.position` column added after the table shipped. Move to Alembic if a
-# second schema change like this shows up.
-try:
-    with engine.begin() as _conn:
-        from sqlalchemy import text as _text
+# ponytail: no migration tool in this project; idempotent DDL nudges for
+# columns added after the table shipped.
+for _stmt in (
+    "ALTER TABLE photos ADD COLUMN position INTEGER DEFAULT 0",
+    "ALTER TABLE photos ADD COLUMN album VARCHAR(200)",
+):
+    try:
+        with engine.begin() as _conn:
+            from sqlalchemy import text as _text
 
-        _conn.execute(_text("ALTER TABLE photos ADD COLUMN position INTEGER DEFAULT 0"))
-except Exception:
-    pass
+            _conn.execute(_text(_stmt))
+    except Exception:
+        pass
 
 app = FastAPI(title="Boat Organizer", dependencies=[Depends(require_auth)])
 
@@ -312,11 +315,18 @@ def delete_maintenance(record_id: int, db: Session = Depends(get_db)):
 
 
 # ---------- Photos (maintenance records / voyages) ----------
-async def _add_photos(db: Session, files: list[UploadFile], **parent: int) -> list[models.Photo]:
+async def _add_photos(
+    db: Session,
+    files: list[UploadFile],
+    album: str | None = None,
+    **parent: int,
+) -> list[models.Photo]:
     start = db.query(models.Photo).filter_by(**parent).count()
+    clean_album = album.strip() if album and album.strip() else None
     photos = [
         models.Photo(
             **parent,
+            album=clean_album,
             position=start + idx,
             data=await f.read(),
             filename=f.filename or "photo",
@@ -340,13 +350,25 @@ def _list_photos(db: Session, **parent: int) -> list[models.Photo]:
     )
 
 
+def _rename_album(db: Session, old_name: str, new_name: str, **parent: int):
+    clean_new = new_name.strip() if new_name and new_name.strip() else None
+    db.query(models.Photo).filter_by(**parent, album=old_name).update(
+        {"album": clean_new}, synchronize_session=False
+    )
+    db.commit()
+    return {"ok": True}
+
+
 @app.post("/api/maintenance/{record_id}/photos", response_model=list[schemas.PhotoOut])
 async def add_maintenance_photos(
-    record_id: int, files: list[UploadFile] = File(...), db: Session = Depends(get_db)
+    record_id: int,
+    files: list[UploadFile] = File(...),
+    album: str | None = Form(None),
+    db: Session = Depends(get_db),
 ):
     if not db.get(models.Maintenance, record_id):
         raise HTTPException(404, "Record not found")
-    return await _add_photos(db, files, maintenance_id=record_id)
+    return await _add_photos(db, files, album=album, maintenance_id=record_id)
 
 
 @app.get("/api/maintenance/{record_id}/photos", response_model=list[schemas.PhotoOut])
@@ -354,18 +376,39 @@ def list_maintenance_photos(record_id: int, db: Session = Depends(get_db)):
     return _list_photos(db, maintenance_id=record_id)
 
 
+@app.put("/api/maintenance/{record_id}/photos/albums")
+def rename_maintenance_album(
+    record_id: int, payload: schemas.AlbumRename, db: Session = Depends(get_db)
+):
+    if not db.get(models.Maintenance, record_id):
+        raise HTTPException(404, "Record not found")
+    return _rename_album(db, payload.old_name, payload.new_name, maintenance_id=record_id)
+
+
 @app.post("/api/logbook/{entry_id}/photos", response_model=list[schemas.PhotoOut])
 async def add_log_photos(
-    entry_id: int, files: list[UploadFile] = File(...), db: Session = Depends(get_db)
+    entry_id: int,
+    files: list[UploadFile] = File(...),
+    album: str | None = Form(None),
+    db: Session = Depends(get_db),
 ):
     if not db.get(models.LogEntry, entry_id):
         raise HTTPException(404, "Log entry not found")
-    return await _add_photos(db, files, log_id=entry_id)
+    return await _add_photos(db, files, album=album, log_id=entry_id)
 
 
 @app.get("/api/logbook/{entry_id}/photos", response_model=list[schemas.PhotoOut])
 def list_log_photos(entry_id: int, db: Session = Depends(get_db)):
     return _list_photos(db, log_id=entry_id)
+
+
+@app.put("/api/logbook/{entry_id}/photos/albums")
+def rename_log_album(
+    entry_id: int, payload: schemas.AlbumRename, db: Session = Depends(get_db)
+):
+    if not db.get(models.LogEntry, entry_id):
+        raise HTTPException(404, "Log entry not found")
+    return _rename_album(db, payload.old_name, payload.new_name, log_id=entry_id)
 
 
 @app.put("/api/photos/order")
@@ -378,6 +421,17 @@ def reorder_photos(ids: list[int], db: Session = Depends(get_db)):
         photo.position = index
     db.commit()
     return {"ok": True}
+
+
+@app.patch("/api/photos/{photo_id}", response_model=schemas.PhotoOut)
+def update_photo(photo_id: int, payload: schemas.PhotoUpdate, db: Session = Depends(get_db)):
+    photo = db.get(models.Photo, photo_id)
+    if not photo:
+        raise HTTPException(404, "Photo not found")
+    photo.album = payload.album.strip() if payload.album and payload.album.strip() else None
+    db.commit()
+    db.refresh(photo)
+    return photo
 
 
 @app.get("/api/photos/{photo_id}")

@@ -29,7 +29,7 @@ export function attachmentUrl(path: string): string {
 }
 
 interface RequestOptions {
-  method?: 'GET' | 'POST' | 'PUT' | 'DELETE'
+  method?: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE'
   json?: unknown
   form?: FormData
   authHeader?: string
@@ -73,6 +73,7 @@ export const api = {
   get: <T>(path: string, options?: RequestOptions) => request<T>(path, { ...options, method: 'GET' }),
   postJson: <T>(path: string, json: unknown) => request<T>(path, { method: 'POST', json }),
   putJson: <T>(path: string, json: unknown) => request<T>(path, { method: 'PUT', json }),
+  patchJson: <T>(path: string, json: unknown) => request<T>(path, { method: 'PATCH', json }),
   postForm: <T>(path: string, form: FormData) => request<T>(path, { method: 'POST', form }),
   putForm: <T>(path: string, form: FormData) => request<T>(path, { method: 'PUT', form }),
   del: <T = { ok: boolean }>(path: string) => request<T>(path, { method: 'DELETE' }),
