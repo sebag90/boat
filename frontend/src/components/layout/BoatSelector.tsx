@@ -9,9 +9,10 @@ interface BoatSelectorProps {
   selected: Boat | null
   onSelect: (boat: Boat) => void
   onCreate: () => void
+  dropUp?: boolean
 }
 
-export function BoatSelector({ boats, selected, onSelect, onCreate }: BoatSelectorProps) {
+export function BoatSelector({ boats, selected, onSelect, onCreate, dropUp }: BoatSelectorProps) {
   const { t } = useI18n()
   const [open, setOpen] = useState(false)
   const containerRef = useRef<HTMLDivElement>(null)
@@ -53,7 +54,12 @@ export function BoatSelector({ boats, selected, onSelect, onCreate }: BoatSelect
       </button>
 
       {open && (
-        <div className="absolute top-full right-0 left-0 z-40 mt-2 overflow-hidden rounded-card border border-navy-200 bg-white shadow-float sm:left-auto sm:w-72">
+        <div
+          className={cn(
+            'absolute right-0 left-0 z-40 overflow-hidden rounded-card border border-navy-200 bg-white shadow-float',
+            dropUp ? 'bottom-full mb-2' : 'top-full mt-2 sm:left-auto sm:w-72',
+          )}
+        >
           <ul className="max-h-64 overflow-y-auto py-1">
             {boats.map((boat) => (
               <li key={boat.id}>

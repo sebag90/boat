@@ -60,6 +60,7 @@ export function Sidebar({
 
       <div className="mt-auto border-t border-navy-200 p-4">
         <BoatSelector
+          dropUp
           boats={boats}
           selected={selectedBoat}
           onSelect={onSelectBoat}
