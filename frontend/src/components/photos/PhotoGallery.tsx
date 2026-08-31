@@ -222,7 +222,7 @@ export function PhotoGallery({ parent, parentId }: { parent: PhotoParent; parent
   return (
     <section className="space-y-3">
       <div className="flex flex-wrap items-center justify-between gap-2">
-        <h3 className="text-[0.7rem] font-semibold tracking-[0.12em] text-brass-700 uppercase">
+        <h3 className="label-mono text-navy-600">
           {t('photos.title')} · {photos.length}
         </h3>
 
@@ -246,10 +246,10 @@ export function PhotoGallery({ parent, parentId }: { parent: PhotoParent; parent
             type="button"
             onClick={() => setActiveAlbum(null)}
             className={cn(
-              'rounded-full px-3 py-1 text-xs font-semibold transition-all',
+              'rounded-chip px-3 py-1 text-xs font-semibold transition-all',
               activeAlbum === null
-                ? 'bg-navy-950 text-white shadow-sm ring-1 ring-navy-950'
-                : 'bg-white text-navy-700 ring-1 ring-navy-300 hover:bg-ocean-50',
+                ? 'bg-navy-950 text-white'
+                : 'border border-navy-200 bg-white text-navy-700 hover:bg-tint',
             )}
           >
             {t('photos.all')} ({photos.length})
@@ -260,10 +260,10 @@ export function PhotoGallery({ parent, parentId }: { parent: PhotoParent; parent
               type="button"
               onClick={() => setActiveAlbum('__uncategorized__')}
               className={cn(
-                'rounded-full px-3 py-1 text-xs font-semibold transition-all',
+                'rounded-chip px-3 py-1 text-xs font-semibold transition-all',
                 activeAlbum === '__uncategorized__'
-                  ? 'bg-navy-950 text-white shadow-sm ring-1 ring-navy-950'
-                  : 'bg-white text-navy-700 ring-1 ring-navy-300 hover:bg-ocean-50',
+                  ? 'bg-navy-950 text-white'
+                  : 'border border-navy-200 bg-white text-navy-700 hover:bg-tint',
               )}
             >
               {t('photos.uncategorized')} ({uncategorizedCount})
@@ -278,10 +278,10 @@ export function PhotoGallery({ parent, parentId }: { parent: PhotoParent; parent
                   type="button"
                   onClick={() => setActiveAlbum(name)}
                   className={cn(
-                    'inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-semibold transition-all',
+                    'inline-flex items-center gap-1.5 rounded-chip px-3 py-1 text-xs font-semibold transition-all',
                     isSelected
-                      ? 'bg-brass-600 text-white shadow-sm ring-1 ring-brass-600'
-                      : 'bg-white text-navy-700 ring-1 ring-navy-300 hover:bg-ocean-50',
+                      ? 'bg-navy-900 text-white'
+                      : 'border border-navy-200 bg-white text-navy-700 hover:bg-tint',
                   )}
                 >
                   <Tag className="size-3 opacity-70" />
@@ -297,7 +297,7 @@ export function PhotoGallery({ parent, parentId }: { parent: PhotoParent; parent
                     }}
                     title={t('photos.renameAlbum')}
                     aria-label={t('photos.renameAlbum')}
-                    className="ml-1 rounded-full p-1 text-navy-500 hover:bg-ocean-100 hover:text-navy-900"
+                    className="ml-1 rounded p-1 text-navy-500 hover:bg-ocean-100 hover:text-navy-900"
                   >
                     <Pencil className="size-3" />
                   </button>
@@ -329,8 +329,8 @@ export function PhotoGallery({ parent, parentId }: { parent: PhotoParent; parent
                 event.stopPropagation()
               }}
               className={cn(
-                'group relative cursor-grab overflow-hidden rounded-xl ring-1 ring-navy-300',
-                dragId === photo.id && 'ring-2 ring-brass-500 opacity-60',
+                'group relative cursor-grab overflow-hidden rounded-card border border-navy-200',
+                dragId === photo.id && 'ring-2 ring-navy-500 opacity-60',
               )}
             >
               <button type="button" onClick={() => setViewIndex(index)} className="block w-full">
@@ -371,7 +371,7 @@ export function PhotoGallery({ parent, parentId }: { parent: PhotoParent; parent
                     openMoveModal(photo)
                   }}
                   title={t('photos.moveToAlbum')}
-                  className="absolute bottom-1.5 left-1.5 inline-flex max-w-[calc(100%-12px)] items-center gap-1 truncate rounded-md bg-navy-950/80 px-2 py-0.5 text-[0.65rem] font-semibold text-brass-300 backdrop-blur transition-colors hover:bg-navy-950 hover:text-white"
+                  className="absolute bottom-1.5 left-1.5 inline-flex max-w-[calc(100%-12px)] items-center gap-1 truncate rounded-md bg-navy-950/80 px-2 py-0.5 text-[0.65rem] font-semibold text-white backdrop-blur transition-colors hover:bg-navy-950 hover:text-white"
                 >
                   <Tag className="size-2.5 shrink-0" />
                   <span className="truncate">{photo.album}</span>
@@ -423,7 +423,7 @@ export function PhotoGallery({ parent, parentId }: { parent: PhotoParent; parent
 
       <div className="space-y-1">
         {activeAlbum && activeAlbum !== '__uncategorized__' && (
-          <p className="text-xs font-semibold text-brass-800">
+          <p className="text-xs font-semibold text-navy-700">
             {t('photos.uploadTo')}: <span className="font-bold text-navy-900">{activeAlbum}</span>
           </p>
         )}
@@ -474,7 +474,7 @@ export function PhotoGallery({ parent, parentId }: { parent: PhotoParent; parent
           <div className="mt-3 flex flex-wrap items-center justify-between gap-2">
             <div className="flex items-center gap-2">
               {viewing.album?.trim() ? (
-                <Badge tone="brass" icon={<Tag className="size-3" />}>
+                <Badge tone="ocean" icon={<Tag className="size-3" />}>
                   {viewing.album}
                 </Badge>
               ) : null}

@@ -51,10 +51,8 @@ export function LoginPage() {
           <div className="flex items-center gap-3">
             <Logo className="size-11" />
             <div>
-              <p className="font-display text-xl font-semibold text-navy-950">{t('app.name')}</p>
-              <p className="text-[0.68rem] font-semibold tracking-[0.16em] text-brass-700 uppercase">
-                {t('app.fleet')}
-              </p>
+              <p className="text-headline-md text-navy-950">{t('app.name')}</p>
+              <p className="label-mono text-navy-500">{t('app.fleet')}</p>
             </div>
           </div>
           <LanguageToggle />
@@ -62,9 +60,9 @@ export function LoginPage() {
 
         <form
           onSubmit={onSubmit}
-          className="rounded-card bg-white px-6 py-7 ring-1 ring-navy-300 shadow-float"
+          className="rounded-card border border-navy-200 bg-white px-6 py-7 shadow-chart"
         >
-          <h1 className="text-2xl font-semibold text-navy-950">{t('login.title')}</h1>
+          <h1 className="text-headline-lg text-navy-950">{t('login.title')}</h1>
           <p className="mt-1 text-sm text-navy-600">{t('login.subtitle')}</p>
           <div className="rope-divider my-5" />
 
@@ -102,7 +100,7 @@ export function LoginPage() {
             <button
               type="button"
               onClick={() => setShowAdvanced((value) => !value)}
-              className="flex w-full items-center gap-1.5 text-xs font-semibold text-navy-600 hover:text-brass-700"
+              className="flex w-full items-center gap-1.5 label-mono text-navy-500 hover:text-navy-950"
             >
               <Server className="size-3.5" />
               {t('login.advanced')}
@@ -160,26 +158,12 @@ function IconInput({ id, icon, value, onChange, type = 'text', ...rest }: IconIn
   )
 }
 
-/** Decorative sea horizon behind the sign-in card. */
+/** Tonal wash behind the sign-in card. */
 function Horizon() {
   return (
     <div aria-hidden="true" className="pointer-events-none absolute inset-0 overflow-hidden">
-      <div className="chart-grid absolute inset-0 opacity-70" />
-      <svg
-        className="absolute bottom-0 left-0 w-full text-ocean-400/45"
-        viewBox="0 0 1440 320"
-        preserveAspectRatio="none"
-      >
-        <path
-          fill="currentColor"
-          d="M0 224c120-32 240 32 360 32s240-64 360-64 240 64 360 64 240-32 360-64v128H0z"
-        />
-        <path
-          fill="currentColor"
-          fillOpacity="0.55"
-          d="M0 272c120-32 240 16 360 16s240-48 360-48 240 48 360 48 240-24 360-48v80H0z"
-        />
-      </svg>
+      <div className="chart-grid absolute inset-0" />
+      <div className="absolute inset-x-0 bottom-0 h-1/2 bg-linear-to-t from-tint-strong to-transparent" />
     </div>
   )
 }

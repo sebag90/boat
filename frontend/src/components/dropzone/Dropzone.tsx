@@ -57,14 +57,14 @@ export function Dropzone({
         onDragLeave={() => setDragging(false)}
         onDrop={onDrop}
         className={cn(
-          'flex cursor-pointer flex-col items-center justify-center gap-1.5 rounded-2xl border-2 border-dashed',
-          'px-5 py-7 text-center transition-all duration-200 ease-sail',
+          'flex cursor-pointer flex-col items-center justify-center gap-1.5 rounded-card border border-dashed',
+          'px-5 py-7 text-center transition-colors duration-200',
           dragging
-            ? 'border-brass-500 bg-brass-100 ring-4 ring-brass-200'
-            : 'border-navy-300 bg-navy-50/60 hover:border-brass-400 hover:bg-brass-50',
+            ? 'border-navy-900 bg-tint-strong'
+            : 'border-navy-300 bg-tint/60 hover:border-navy-400 hover:bg-tint',
         )}
       >
-        <UploadCloud className={cn('size-7', dragging ? 'text-brass-700' : 'text-navy-400')} />
+        <UploadCloud className={cn('size-7', dragging ? 'text-navy-600' : 'text-navy-400')} />
         <p className="text-sm font-semibold text-navy-900">
           {label ?? (multiple ? t('dropzone.title') : t('dropzone.single'))}
         </p>
@@ -85,7 +85,7 @@ export function Dropzone({
       {files.length > 0 && (
         <div className="mt-3">
           <div className="mb-2 flex items-center justify-between">
-            <p className="text-[0.7rem] font-semibold tracking-[0.08em] text-navy-600 uppercase">
+            <p className="label-mono text-navy-600">
               {t('dropzone.selected')} · {files.length}
             </p>
             <button

@@ -65,9 +65,12 @@ boat/
 ```
 
 ### Frontend notes
-- **Maritime light theme**: navy/ocean/brass palette, chart-paper surfaces,
-  compass rose branding — all defined as Tailwind v4 theme tokens in
-  `src/styles/index.css`.
+- **Maritime Professional theme**: fixed white sidebar navigation (desktop) with
+  a tonal active state, light top bar, white 8px cards on a `#f9f9ff` ground,
+  `#e7eeff`/`#dee8ff` tonal tints, black CTAs, safety orange for alerts, Hanken
+  Grotesk + JetBrains Mono (`label-mono` technical labels, `text-headline-*`
+  scale) — all Tailwind v4 theme tokens in `src/styles/index.css`
+  (see `DESIGN.md` and `example/` reference screens).
 - **i18n**: English/Italian toggle on the login screen and in the header,
   persisted in `localStorage` (`app_locale`).
 - **Logbook**: GPS waypoint capture, interval auto-tracker (with screen wake

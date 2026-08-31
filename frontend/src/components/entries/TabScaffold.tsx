@@ -10,17 +10,15 @@ interface TabHeadingProps {
 
 export function TabHeading({ title, subtitle, icon, aside }: TabHeadingProps) {
   return (
-    <div className="mb-5 flex flex-wrap items-end justify-between gap-4">
-      <div className="flex items-center gap-3">
-        <span className="flex size-11 items-center justify-center rounded-2xl bg-navy-950 text-brass-300 shadow-chart">
+    <div className="mb-6 flex flex-wrap items-start justify-between gap-4 md:items-end">
+      <div className="min-w-0">
+        <span className="mb-2 flex items-center gap-2 label-mono text-navy-500">
           {icon}
+          {subtitle}
         </span>
-        <div>
-          <h1 className="text-2xl leading-tight font-semibold text-navy-950">{title}</h1>
-          <p className="text-sm text-navy-600">{subtitle}</p>
-        </div>
+        <h1 className="text-headline-lg text-navy-950 lg:text-headline-xl">{title}</h1>
       </div>
-      {aside && <div className="flex flex-wrap items-center gap-2">{aside}</div>}
+      {aside && <div className="flex flex-wrap items-center gap-3">{aside}</div>}
     </div>
   )
 }

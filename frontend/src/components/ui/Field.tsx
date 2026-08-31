@@ -1,10 +1,11 @@
 import type { InputHTMLAttributes, ReactNode, SelectHTMLAttributes, TextareaHTMLAttributes } from 'react'
 import { cn } from '../../lib/cn'
 
+/** White field, 1px grey border thickening to 2px navy on focus. */
 const CONTROL =
-  'w-full rounded-xl border border-navy-300 bg-white px-3.5 py-2.5 text-sm text-navy-900 ' +
-  'placeholder:text-navy-400 shadow-inner shadow-navy-950/[0.03] transition-colors duration-200 ' +
-  'focus:border-ocean-600 focus:ring-2 focus:ring-ocean-300 focus:outline-none ' +
+  'w-full rounded-xl border border-navy-300 bg-white px-3.5 py-2.5 text-sm text-navy-950 ' +
+  'placeholder:text-navy-400 transition-colors duration-200 ' +
+  'focus:border-navy-900 focus:ring-1 focus:ring-navy-900 focus:outline-none ' +
   'disabled:cursor-not-allowed disabled:bg-navy-50 disabled:text-navy-400'
 
 interface FieldProps {
@@ -21,7 +22,7 @@ export function Field({ label, hint, htmlFor, children, className }: FieldProps)
       {label && (
         <label
           htmlFor={htmlFor}
-          className="block text-[0.7rem] font-semibold tracking-[0.08em] text-navy-600 uppercase"
+          className="block label-mono text-navy-600"
         >
           {label}
         </label>

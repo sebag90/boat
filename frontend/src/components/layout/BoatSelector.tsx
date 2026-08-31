@@ -32,11 +32,11 @@ export function BoatSelector({ boats, selected, onSelect, onCreate }: BoatSelect
         onClick={() => setOpen((value) => !value)}
         aria-expanded={open}
         className={cn(
-          'flex w-full items-center gap-2.5 rounded-xl bg-white px-3 py-2 text-left ring-1 shadow-sm transition-all sm:w-auto sm:min-w-[13rem]',
-          open ? 'ring-2 ring-brass-400' : 'ring-navy-300 hover:ring-brass-400',
+          'flex w-full items-center gap-2.5 rounded-xl border bg-white px-3 py-2 text-left transition-colors sm:min-w-[13rem]',
+          open ? 'border-navy-900' : 'border-navy-200 hover:border-navy-400',
         )}
       >
-        <span className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-navy-950 text-brass-300">
+        <span className="flex size-8 shrink-0 items-center justify-center rounded bg-tint-strong text-navy-900">
           <Sailboat className="size-4" />
         </span>
         <span className="min-w-0 flex-1">
@@ -53,7 +53,7 @@ export function BoatSelector({ boats, selected, onSelect, onCreate }: BoatSelect
       </button>
 
       {open && (
-        <div className="absolute top-full right-0 left-0 z-40 mt-2 overflow-hidden rounded-xl bg-white ring-1 ring-navy-300 shadow-float sm:left-auto sm:w-72">
+        <div className="absolute top-full right-0 left-0 z-40 mt-2 overflow-hidden rounded-card border border-navy-200 bg-white shadow-float sm:left-auto sm:w-72">
           <ul className="max-h-64 overflow-y-auto py-1">
             {boats.map((boat) => (
               <li key={boat.id}>
@@ -86,7 +86,7 @@ export function BoatSelector({ boats, selected, onSelect, onCreate }: BoatSelect
               onCreate()
               setOpen(false)
             }}
-            className="flex w-full items-center gap-2 border-t border-navy-200 bg-brass-50 px-3 py-2.5 text-sm font-semibold text-brass-800 hover:bg-brass-100"
+            className="flex w-full items-center gap-2 border-t border-navy-200 bg-navy-50 px-3 py-2.5 text-sm font-semibold text-navy-700 hover:bg-navy-100"
           >
             <Plus className="size-4" />
             {t('nav.newVessel')}

@@ -60,7 +60,7 @@ export function DocumentsTab({ boatId }: { boatId: number }) {
                 excerpt={excerptOf(doc.description)}
                 meta={
                   <>
-                    <span className="text-navy-400">{formatDateTime(doc.uploaded_at)}</span>
+                    <span className="font-mono text-[0.7rem] text-navy-500">{formatDateTime(doc.uploaded_at)}</span>
                     <AttachmentChip filename={doc.filename} />
                   </>
                 }

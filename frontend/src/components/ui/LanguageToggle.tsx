@@ -9,7 +9,7 @@ export function LanguageToggle({ className }: { className?: string }) {
   return (
     <div
       className={cn(
-        'inline-flex items-center rounded-full bg-white p-0.5 ring-1 ring-navy-300',
+        'inline-flex items-center rounded-chip border border-navy-200 bg-white p-0.5',
         className,
       )}
     >
@@ -20,10 +20,10 @@ export function LanguageToggle({ className }: { className?: string }) {
           onClick={() => setLocale(code)}
           aria-pressed={locale === code}
           className={cn(
-            'rounded-full px-2.5 py-1 text-[0.7rem] font-bold tracking-wider uppercase transition-all duration-200',
+            'rounded-sm px-2.5 py-1 label-mono transition-colors duration-200',
             locale === code
-              ? 'bg-navy-950 text-brass-300 shadow-sm'
-              : 'text-navy-500 hover:bg-brass-100 hover:text-brass-800',
+              ? 'bg-navy-900 text-white'
+              : 'text-navy-500 hover:bg-navy-100 hover:text-navy-700',
           )}
         >
           {code}

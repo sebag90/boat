@@ -72,7 +72,7 @@ export function presentEntry(
         badges: [
           todo.done
             ? { label: t('status.completed'), tone: 'foam' }
-            : { label: t('status.pending'), tone: 'brass' },
+            : { label: t('status.pending'), tone: 'neutral' },
           { label: `${t('label.created')} ${formatDateTime(todo.created_at)}`, tone: 'neutral' },
         ],
         description: todo.text,
@@ -92,7 +92,7 @@ export function presentEntry(
         badges: [
           item.done
             ? { label: t('status.purchased'), tone: 'foam' }
-            : { label: t('status.toBuy'), tone: 'brass' },
+            : { label: t('status.toBuy'), tone: 'neutral' },
           { label: `${t('label.created')} ${formatDateTime(item.created_at)}`, tone: 'neutral' },
         ],
         description: item.description,

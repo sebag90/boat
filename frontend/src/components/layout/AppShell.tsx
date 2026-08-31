@@ -1,8 +1,8 @@
 import type { ReactNode } from 'react'
-import { Anchor } from 'lucide-react'
 import { useI18n } from '../../i18n'
 import type { Boat, TabId } from '../../lib/types'
 import { Header } from './Header'
+import { Sidebar } from './Sidebar'
 import { TabBar } from './TabBar'
 
 interface AppShellProps {
@@ -29,27 +29,40 @@ export function AppShell({
   const { t } = useI18n()
 
   return (
-    <div className="flex min-h-dvh flex-col">
-      <Header
+    <div className="min-h-dvh">
+      <Sidebar
         boats={boats}
         selectedBoat={selectedBoat}
         onSelectBoat={onSelectBoat}
         onCreateBoat={onCreateBoat}
+        active={activeTab}
+        onChange={onTabChange}
+        showTabs={showTabs}
       />
 
-      <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-5 sm:px-6 sm:py-7">
-        {showTabs && (
-          <div className="mb-5">
-            <TabBar active={activeTab} onChange={onTabChange} />
-          </div>
-        )}
-        {children}
-      </main>
+      <div className="flex min-h-dvh flex-col lg:pl-72">
+        <Header
+          boats={boats}
+          selectedBoat={selectedBoat}
+          onSelectBoat={onSelectBoat}
+          onCreateBoat={onCreateBoat}
+        />
 
-      <footer className="mx-auto flex w-full max-w-6xl items-center justify-center gap-2 px-4 py-6 text-xs text-navy-600">
-        <Anchor className="size-3.5 text-brass-600" />
-        <span>{t('app.tagline')}</span>
-      </footer>
+        <main className="w-full flex-1 px-4 py-5 sm:px-6 lg:px-8 lg:py-8">
+          <div className="mx-auto w-full max-w-[1280px]">
+            {showTabs && (
+              <div className="mb-5 lg:hidden">
+                <TabBar active={activeTab} onChange={onTabChange} />
+              </div>
+            )}
+            {children}
+          </div>
+        </main>
+
+        <footer className="px-4 py-6 text-center label-mono text-navy-500 sm:px-6 lg:px-8">
+          {t('app.tagline')}
+        </footer>
+      </div>
     </div>
   )
 }

@@ -68,7 +68,7 @@ export function TrackMap({ waypoints }: { waypoints: Waypoint[] }) {
   }, [waypoints, t])
 
   return (
-    <div className="relative overflow-hidden rounded-2xl ring-1 ring-navy-200 shadow-chart">
+    <div className="relative overflow-hidden rounded-card border border-navy-200">
       <div ref={containerRef} className="h-[340px] w-full sm:h-[420px]" />
       <button
         type="button"

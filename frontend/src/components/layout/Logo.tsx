@@ -27,14 +27,8 @@ export function BrandMark({ subtitle }: { subtitle?: string }) {
     <div className="flex items-center gap-3">
       <Logo />
       <div className="leading-tight">
-        <p className="font-display text-[1.05rem] font-semibold tracking-tight text-navy-950">
-          Boat Organizer
-        </p>
-        {subtitle && (
-          <p className="text-[0.68rem] font-semibold tracking-[0.16em] text-brass-700 uppercase">
-            {subtitle}
-          </p>
-        )}
+        <p className="text-headline-md text-navy-950">Boat Organizer</p>
+        {subtitle && <p className="label-mono text-navy-500">{subtitle}</p>}
       </div>
     </div>
   )

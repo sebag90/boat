@@ -17,15 +17,13 @@ export function VoyageCard({ entry, onClick }: { entry: LogEntry; onClick: () =>
       <button
         type="button"
         onClick={onClick}
-        className="group flex w-full items-stretch gap-4 rounded-2xl bg-white p-4 text-left ring-1 ring-navy-200 shadow-sm transition-all duration-200 ease-sail hover:-translate-y-px hover:ring-2 hover:ring-brass-400 hover:shadow-chart"
+        className="group flex w-full items-stretch gap-4 rounded-card border border-navy-200 bg-white p-4 text-left transition-shadow duration-200 hover:shadow-chart"
       >
-        <div className="flex w-16 shrink-0 flex-col items-center justify-center rounded-xl bg-navy-950 px-2 py-2 text-white">
-          <span className="font-display text-lg leading-none font-semibold">
+        <div className="flex w-16 shrink-0 flex-col items-center justify-center rounded bg-tint-strong px-2 py-2 text-navy-950">
+          <span className="text-headline-md leading-none">
             {formatDate(entry.date).slice(0, 2)}
           </span>
-          <span className="mt-0.5 text-[0.6rem] tracking-[0.1em] text-brass-300 uppercase">
-            {formatDate(entry.date).slice(3)}
-          </span>
+          <span className="mt-1 label-mono text-navy-600">{formatDate(entry.date).slice(3)}</span>
         </div>
 
         <div className="min-w-0 flex-1">
@@ -48,7 +46,7 @@ export function VoyageCard({ entry, onClick }: { entry: LogEntry; onClick: () =>
               </span>
             )}
             {stats.totalNm > 0 && (
-              <span className="inline-flex items-center gap-1 rounded-md bg-ocean-100 px-1.5 py-0.5 font-semibold text-ocean-900">
+              <span className="inline-flex items-center gap-1 rounded-chip bg-tint px-2 py-0.5 font-mono text-[0.7rem] font-medium text-navy-900">
                 <Route className="size-3.5" />
                 {stats.totalNm.toFixed(1)} NM
               </span>

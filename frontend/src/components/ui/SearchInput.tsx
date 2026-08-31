@@ -21,7 +21,7 @@ export function SearchInput({ value, onChange, placeholder, className }: SearchI
         placeholder={placeholder ?? t('action.search')}
         className={cn(
           'w-full rounded-xl border border-navy-300 bg-white py-2.5 pr-10 pl-10 text-sm',
-          'placeholder:text-navy-400 focus:border-ocean-600 focus:ring-2 focus:ring-ocean-300 focus:outline-none',
+          'placeholder:text-navy-400 focus:border-navy-900 focus:ring-1 focus:ring-navy-900 focus:outline-none',
           '[&::-webkit-search-cancel-button]:hidden',
         )}
       />

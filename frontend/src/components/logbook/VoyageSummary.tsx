@@ -9,8 +9,8 @@ export function VoyageSummary({ stats }: { stats: VoyageStats }) {
   if (stats.waypointCount < 2) return null
 
   return (
-    <section className="rounded-2xl bg-linear-to-br from-navy-950 to-navy-800 p-4 shadow-chart">
-      <h3 className="mb-3 flex items-center gap-2 text-[0.68rem] font-semibold tracking-[0.14em] text-brass-300 uppercase">
+    <section className="rounded-card border border-navy-200 bg-white p-4">
+      <h3 className="mb-3 flex items-center gap-2 label-mono text-navy-600">
         <Route className="size-3.5" />
         {t('voyage.summary')}
       </h3>

@@ -39,7 +39,7 @@ export function ShoppingTab({ boatId }: { boatId: number }) {
         icon={<ShoppingCart className="size-5" />}
         aside={
           <>
-            <Badge tone="brass">{`${openCount} ${t('status.toBuy')}`}</Badge>
+            <Badge tone="neutral">{`${openCount} ${t('status.toBuy')}`}</Badge>
             <Badge tone="foam">{`${items.length - openCount} ${t('status.purchased')}`}</Badge>
           </>
         }
@@ -77,7 +77,7 @@ export function ShoppingTab({ boatId }: { boatId: number }) {
                 excerpt={excerptOf(item.description)}
                 meta={
                   <>
-                    <span className="text-navy-400">{formatDateTime(item.created_at)}</span>
+                    <span className="font-mono text-[0.7rem] text-navy-500">{formatDateTime(item.created_at)}</span>
                     <AttachmentChip filename={item.file_filename} />
                   </>
                 }

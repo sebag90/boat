@@ -13,7 +13,7 @@ export function AttachmentChip({
   return (
     <span
       className={cn(
-        'inline-flex max-w-[14rem] items-center gap-1.5 rounded-lg bg-brass-100 px-2 py-1 text-xs font-medium text-brass-800 ring-1 ring-brass-200',
+        'inline-flex max-w-[14rem] items-center gap-1.5 rounded-chip bg-tint px-2.5 py-1 font-mono text-[0.7rem] text-navy-800',
         className,
       )}
     >

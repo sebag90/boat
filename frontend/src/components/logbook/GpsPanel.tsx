@@ -42,8 +42,8 @@ export function GpsPanel({ onFix, onImport }: GpsPanelProps) {
   }
 
   return (
-    <section className="space-y-3 rounded-2xl bg-ocean-100/70 p-4 ring-1 ring-ocean-300">
-      <h3 className="flex items-center gap-2 text-[0.68rem] font-semibold tracking-[0.14em] text-ocean-900 uppercase">
+    <section className="space-y-3 rounded-card bg-tint p-4">
+      <h3 className="flex items-center gap-2 label-mono text-navy-600">
         <Radio className="size-3.5" />
         {t('voyage.gps')}
       </h3>
@@ -83,7 +83,7 @@ export function GpsPanel({ onFix, onImport }: GpsPanelProps) {
       {importMessage && <p className="text-xs font-semibold text-foam-700">{importMessage}</p>}
       <InlineError message={importError} />
 
-      <div className="rounded-xl bg-white p-3.5 ring-1 ring-navy-200">
+      <div className="rounded-card border border-navy-200 bg-white p-3.5">
         <div className="flex flex-wrap items-end gap-3">
           <Field label={t('voyage.tracker')} className="w-32">
             <Select

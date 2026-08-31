@@ -30,9 +30,9 @@ export function EntryCard({
   return (
     <li
       className={cn(
-        'group relative flex items-start gap-3 rounded-2xl bg-white px-4 py-3.5 ring-1 ring-navy-200',
-        'shadow-sm transition-all duration-200 ease-sail hover:-translate-y-px hover:ring-2 hover:ring-brass-400 hover:shadow-chart',
-        muted && 'bg-navy-50',
+        'group relative flex items-start gap-3 rounded-card border border-navy-200 bg-white px-4 py-3.5',
+        'transition-shadow duration-200 hover:shadow-chart',
+        muted && 'bg-tint',
         className,
       )}
     >
@@ -59,7 +59,7 @@ export function EntryCard({
 
       <div className="flex shrink-0 items-center gap-1 self-center">
         {trailing}
-        <ChevronRight className="size-4 text-navy-300 transition-colors group-hover:text-brass-600" />
+        <ChevronRight className="size-4 text-navy-400 transition-colors group-hover:text-navy-900" />
       </div>
     </li>
   )

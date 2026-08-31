@@ -71,7 +71,7 @@ export function MaintenanceTab({ boatId }: { boatId: number }) {
                   <>
                     <Badge tone="ocean">{formatDate(record.date)}</Badge>
                     {record.photo_count > 0 && (
-                      <Badge tone="brass" icon={<Images className="size-3" />}>
+                      <Badge tone="neutral" icon={<Images className="size-3" />}>
                         {record.photo_count} {t('photos.title')}
                       </Badge>
                     )}

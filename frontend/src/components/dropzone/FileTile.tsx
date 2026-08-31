@@ -14,7 +14,7 @@ export function FileTile({ file, previewUrl, onRemove }: FileTileProps) {
   const video = isVideo(file.name, file.type)
 
   return (
-    <li className="group relative flex items-center gap-3 rounded-xl bg-white p-2 ring-1 ring-navy-200 shadow-sm">
+    <li className="group relative flex items-center gap-3 rounded-card border border-navy-200 bg-white p-2">
       <span className="flex size-11 shrink-0 items-center justify-center overflow-hidden rounded-lg bg-navy-100 text-navy-500">
         {image && previewUrl ? (
           <img src={previewUrl} alt="" className="size-full object-cover" />

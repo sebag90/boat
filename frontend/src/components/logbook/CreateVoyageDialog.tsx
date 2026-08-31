@@ -89,7 +89,7 @@ export function CreateVoyageDialog({ boatId, onClose, onCreated }: CreateVoyageD
           onChange={(patch) => setDraft((value) => ({ ...value, ...patch }))}
         />
 
-        <div className="space-y-2 rounded-2xl bg-ocean-50/70 p-4 ring-1 ring-ocean-100">
+        <div className="space-y-2 rounded-card bg-tint p-4">
           <Button
             variant="secondary"
             onClick={captureStart}

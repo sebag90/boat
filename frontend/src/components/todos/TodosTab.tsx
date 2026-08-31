@@ -35,7 +35,7 @@ export function TodosTab({ boatId }: { boatId: number }) {
         icon={<ClipboardList className="size-5" />}
         aside={
           <>
-            <Badge tone="brass">{`${openCount} ${t('todos.open')}`}</Badge>
+            <Badge tone="neutral">{`${openCount} ${t('todos.open')}`}</Badge>
             <Badge tone="foam">{`${todos.length - openCount} ${t('todos.doneCount')}`}</Badge>
           </>
         }
@@ -68,7 +68,7 @@ export function TodosTab({ boatId }: { boatId: number }) {
                 title={firstLine(todo.text)}
                 meta={
                   <>
-                    <span className="text-navy-400">{formatDateTime(todo.created_at)}</span>
+                    <span className="font-mono text-[0.7rem] text-navy-500">{formatDateTime(todo.created_at)}</span>
                     <AttachmentChip filename={todo.file_filename} />
                   </>
                 }

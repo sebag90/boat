@@ -20,10 +20,10 @@ export function WaypointTable({ waypoints, stats, onDelete, deleting }: Waypoint
   }
 
   return (
-    <div className="overflow-x-auto rounded-2xl ring-1 ring-navy-300">
+    <div className="overflow-x-auto rounded-card border border-navy-200">
       <table className="w-full min-w-[520px] border-collapse text-sm">
         <thead>
-          <tr className="bg-navy-950 text-[0.65rem] tracking-[0.1em] text-brass-300 uppercase">
+          <tr className="bg-tint-strong label-mono text-navy-700">
             <Th className="w-10">{t('voyage.table.index')}</Th>
             <Th>{t('voyage.table.time')}</Th>
             <Th>{t('voyage.table.position')}</Th>
@@ -36,15 +36,15 @@ export function WaypointTable({ waypoints, stats, onDelete, deleting }: Waypoint
           {waypoints.map((waypoint, index) => {
             const leg = stats.legs[index]
             return (
-              <tr key={waypoint.id} className="hover:bg-brass-50">
-                <td className="px-3 py-2 font-semibold text-navy-500">{index + 1}</td>
-                <td className="px-3 py-2 whitespace-nowrap text-navy-800">
+              <tr key={waypoint.id} className="h-10 hover:bg-tint">
+                <td className="px-3 py-2 font-mono text-xs text-navy-500">{index + 1}</td>
+                <td className="px-3 py-2 font-mono text-xs whitespace-nowrap text-navy-800">
                   {formatDateTime(waypoint.timestamp)}
                   {waypoint.name && (
                     <span className="block text-xs text-navy-500">{waypoint.name}</span>
                   )}
                 </td>
-                <td className="px-3 py-2 font-mono text-xs whitespace-nowrap text-ocean-800">
+                <td className="px-3 py-2 font-mono text-xs whitespace-nowrap text-navy-600">
                   {formatCoordinate(Number(waypoint.latitude))},{' '}
                   {formatCoordinate(Number(waypoint.longitude))}
                 </td>
@@ -91,5 +91,5 @@ export function WaypointTable({ waypoints, stats, onDelete, deleting }: Waypoint
 }
 
 function Th({ children, className }: { children?: React.ReactNode; className?: string }) {
-  return <th className={`px-3 py-2 text-left font-semibold ${className ?? ''}`}>{children}</th>
+  return <th className={`px-3 py-2 text-left ${className ?? ''}`}>{children}</th>
 }

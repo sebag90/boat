@@ -9,7 +9,7 @@ interface CheckToggleProps {
   className?: string
 }
 
-/** Round completion toggle — the ship's-brass porthole check. */
+/** Round completion toggle. */
 export function CheckToggle({ checked, onChange, label, disabled, className }: CheckToggleProps) {
   return (
     <button
@@ -27,7 +27,7 @@ export function CheckToggle({ checked, onChange, label, disabled, className }: C
         'flex size-6 shrink-0 items-center justify-center rounded-full border-2 transition-all duration-200 ease-sail',
         checked
           ? 'border-foam-700 bg-foam-600 text-white'
-          : 'border-navy-400 bg-white text-transparent hover:border-brass-500 hover:bg-brass-100',
+          : 'border-navy-400 bg-white text-transparent hover:border-navy-900 hover:bg-navy-50',
         disabled && 'cursor-not-allowed opacity-50',
         className,
       )}
