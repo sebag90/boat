@@ -65,12 +65,13 @@ boat/
 ```
 
 ### Frontend notes
-- **Maritime Professional theme**: fixed white sidebar navigation (desktop) with
-  a tonal active state, light top bar, white 8px cards on a `#f9f9ff` ground,
-  `#e7eeff`/`#dee8ff` tonal tints, black CTAs, safety orange for alerts, Hanken
-  Grotesk + JetBrains Mono (`label-mono` technical labels, `text-headline-*`
-  scale) — all Tailwind v4 theme tokens in `src/styles/index.css`
-  (see `DESIGN.md` and `example/` reference screens).
+- **Deepwater Navigation theme**: fixed deep-navy sidebar (desktop) with a light
+  ocean-blue active pill, translucent seafoam top bar, white 12px cards lifted by
+  soft ambient shadows on a `#f6fafe` ground, ocean-blue (`#006399`) primary
+  buttons, safety orange (`#f74b00`) for alerts, Montserrat headlines + Inter UI
+  (`label-mono` = 12px uppercase technical labels, `text-headline-*` scale) — all
+  Tailwind v4 theme tokens in `src/styles/index.css` (see `DESIGN.md` and
+  `stitch_maritime_fleet_manager/` reference screens).
 - **i18n**: English/Italian toggle on the login screen and in the header,
   persisted in `localStorage` (`app_locale`).
 - **Logbook**: GPS waypoint capture, interval auto-tracker (with screen wake

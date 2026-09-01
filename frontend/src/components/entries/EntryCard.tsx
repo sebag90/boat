@@ -30,9 +30,9 @@ export function EntryCard({
   return (
     <li
       className={cn(
-        'group relative flex items-start gap-3 rounded-card border border-navy-200 bg-white px-4 py-3.5',
+        'group relative flex items-start gap-3 rounded-card bg-white px-4 py-3.5 shadow-xs',
         'transition-shadow duration-200 hover:shadow-chart',
-        muted && 'bg-tint',
+        muted && 'bg-tint shadow-none',
         className,
       )}
     >

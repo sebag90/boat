@@ -1,51 +1,54 @@
 @import 'tailwindcss';
 
 /* ------------------------------------------------------------------ *
- * Maritime Professional — deep navy, slate grey, safety orange.
- * Depth comes from tonal layers + 1px outlines, not heavy shadows.
+ * Deepwater Navigation — deep navy, ocean blue, safety orange.
+ * Depth comes from tonal layers + soft ambient shadows (DESIGN.md).
  * ------------------------------------------------------------------ */
 @theme {
   --font-sans:
-    'Hanken Grotesk', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica,
-    Arial, sans-serif;
-  --font-mono: 'JetBrains Mono', ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace;
+    Inter, ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial,
+    sans-serif;
+  --font-display: Montserrat, Inter, ui-sans-serif, system-ui, sans-serif;
+  /* `mono-data`: Inter with tabular figures, not a monospace face */
+  --font-mono: Inter, ui-sans-serif, system-ui, sans-serif;
+  --font-mono--font-feature-settings: 'tnum';
 
-  /* Primary deep navy, cooling into slate grey for secondary text */
-  --color-navy-50: #f0f3ff;
-  --color-navy-100: #dee8ff;
-  --color-navy-200: #c4c6cf;
-  --color-navy-300: #b6bfc9;
-  --color-navy-400: #8a939f;
-  --color-navy-500: #626b76;
-  --color-navy-600: #43474e;
-  --color-navy-700: #2f3d52;
-  --color-navy-800: #1b3454;
-  --color-navy-900: #001f3f;
-  --color-navy-950: #000613;
+  /* Deep navy → neutral greys for secondary text */
+  --color-navy-50: #f0f4f8;
+  --color-navy-100: #e8edf3;
+  --color-navy-200: #dde5ed;
+  --color-navy-300: #c4c6cf;
+  --color-navy-400: #9aa0a8;
+  --color-navy-500: #74777f;
+  --color-navy-600: #44474e;
+  --color-navy-700: #2d476f;
+  --color-navy-800: #002147;
+  --color-navy-900: #001b3d;
+  --color-navy-950: #000a1e;
 
-  /* Steel blue — links, focus, informational tints */
-  --color-ocean-50: #f0f3ff;
-  --color-ocean-100: #d4e3ff;
-  --color-ocean-200: #afc8f0;
-  --color-ocean-300: #8fadd9;
-  --color-ocean-400: #6f88ad;
-  --color-ocean-500: #4d6b93;
-  --color-ocean-600: #3c5a80;
-  --color-ocean-700: #2f486a;
-  --color-ocean-800: #24395a;
-  --color-ocean-900: #001f3f;
+  /* Ocean blue — primary actions, links, focus, informational tints */
+  --color-ocean-50: #eff6ff;
+  --color-ocean-100: #cde5ff;
+  --color-ocean-200: #94ccff;
+  --color-ocean-300: #67bafd;
+  --color-ocean-400: #2b9ae0;
+  --color-ocean-500: #007ec2;
+  --color-ocean-600: #006399;
+  --color-ocean-700: #004b74;
+  --color-ocean-800: #004972;
+  --color-ocean-900: #001d32;
 
-  /* Safety orange — CTAs, alerts, critical status only */
-  --color-brass-50: #fff4ee;
-  --color-brass-100: #ffdbcc;
-  --color-brass-200: #ffb693;
-  --color-brass-300: #ff9a6b;
-  --color-brass-400: #ff7f3f;
-  --color-brass-500: #e15e00;
-  --color-brass-600: #c85200;
-  --color-brass-700: #a34200;
-  --color-brass-800: #7a3000;
-  --color-brass-900: #3a1200;
+  /* Safety orange — alerts, critical status, emergency actions only */
+  --color-brass-50: #fff1eb;
+  --color-brass-100: #ffdbd0;
+  --color-brass-200: #ffb59e;
+  --color-brass-300: #ff8f6e;
+  --color-brass-400: #ff6a3d;
+  --color-brass-500: #f74b00;
+  --color-brass-600: #cc3c00;
+  --color-brass-700: #852400;
+  --color-brass-800: #6a1c00;
+  --color-brass-900: #3a0b00;
 
   /* Resolved green / error red */
   --color-foam-500: #12805a;
@@ -55,14 +58,15 @@
   --color-signal-600: #ba1a1a;
   --color-signal-700: #93000a;
 
-  --color-parchment: #f9f9ff;
-  /* Tonal layers lifted straight from the reference screens */
-  --color-tint: #e7eeff;
-  --color-tint-strong: #dee8ff;
+  /* Level 0 floor: seafoam white */
+  --color-parchment: #f6fafe;
+  /* Tonal layers: seafoam surface + light ocean tint for active states */
+  --color-tint: #f0f4f8;
+  --color-tint-strong: #cde5ff;
 
   /* Type scale from DESIGN.md */
-  --text-headline-xl: 40px;
-  --text-headline-xl--line-height: 48px;
+  --text-headline-xl: 48px;
+  --text-headline-xl--line-height: 56px;
   --text-headline-xl--letter-spacing: -0.02em;
   --text-headline-xl--font-weight: 700;
   --text-headline-lg: 32px;
@@ -76,21 +80,21 @@
   --text-body-sm: 14px;
   --text-body-sm--line-height: 20px;
 
-  /* Soft-but-rectangular: 4px controls, 8px cards, 12px chips */
+  /* Soft shapes: 4px small components, 8px controls, 12px cards, pill chips */
   --radius-sm: 0.125rem;
-  --radius-md: 0.25rem;
-  --radius-lg: 0.25rem;
+  --radius-md: 0.375rem;
+  --radius-lg: 0.5rem;
   --radius-xl: 0.5rem;
-  --radius-2xl: 0.5rem;
+  --radius-2xl: 0.75rem;
   --radius-3xl: 0.75rem;
-  --radius-card: 0.5rem;
-  --radius-chip: 0.75rem;
+  --radius-card: 0.75rem;
+  --radius-chip: 9999px;
 
-  /* Level 2: bottom-weighted 4px blur, 5% opacity */
-  --shadow-xs: 0 1px 2px rgb(0 6 19 / 0.05);
-  --shadow-sm: 0 1px 3px rgb(0 6 19 / 0.05);
-  --shadow-chart: 0 2px 4px rgb(0 6 19 / 0.05);
-  --shadow-float: 0 12px 32px -14px rgb(0 6 19 / 0.3);
+  /* Ambient shadows: Level 1 lift, Level 2 float (DESIGN.md §Elevation) */
+  --shadow-xs: 0 1px 3px rgb(0 33 71 / 0.04);
+  --shadow-sm: 0 4px 20px rgb(0 33 71 / 0.05);
+  --shadow-chart: 0 6px 24px rgb(0 33 71 / 0.09);
+  --shadow-float: 0 10px 30px rgb(0 33 71 / 0.12);
 
   --ease-sail: cubic-bezier(0.32, 0.72, 0, 1);
 }
@@ -118,8 +122,17 @@
     @apply font-semibold tracking-tight;
   }
 
+  /* Montserrat carries every headline / display readout */
+  h1,
+  h2,
+  h3,
+  [class*='text-headline'],
+  [class*='text-display'] {
+    font-family: var(--font-display);
+  }
+
   :focus-visible {
-    @apply outline-2 outline-offset-2 outline-navy-900;
+    @apply outline-2 outline-offset-2 outline-ocean-600;
   }
 
   input,
@@ -155,17 +168,17 @@
 /* Blueprint grid lines. */
 @utility chart-grid {
   background-image:
-    linear-gradient(rgb(0 31 63 / 0.06) 1px, transparent 1px),
-    linear-gradient(90deg, rgb(0 31 63 / 0.06) 1px, transparent 1px);
+    linear-gradient(rgb(0 33 71 / 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgb(0 33 71 / 0.05) 1px, transparent 1px);
   background-size: 24px 24px;
 }
 
-/* Technical label: mono, uppercase, tracked out. */
+/* `label-caps`: technical label — Inter, bold, uppercase, tracked out. */
 @utility label-mono {
-  font-family: var(--font-mono);
-  font-size: 13px;
+  font-family: var(--font-sans);
+  font-size: 12px;
   line-height: 16px;
-  font-weight: 500;
+  font-weight: 700;
   letter-spacing: 0.05em;
   text-transform: uppercase;
 }
@@ -246,7 +259,7 @@
  * ------------------------------------------------------------------ */
 .leaflet-container {
   font-family: var(--font-sans);
-  background: #e7eeff;
+  background: var(--color-navy-50);
   z-index: 0;
 }
 
@@ -256,7 +269,7 @@
 }
 
 .leaflet-popup-content-wrapper {
-  border-radius: 0.25rem !important;
+  border-radius: 0.75rem !important;
   box-shadow: var(--shadow-float) !important;
   border: 1px solid var(--color-navy-100);
 }
@@ -315,20 +328,20 @@
 
 @keyframes wp-pulse {
   0% {
-    box-shadow: 0 0 0 0 rgb(225 94 0 / 0.55);
+    box-shadow: 0 0 0 0 rgb(247 75 0 / 0.55);
   }
   70% {
-    box-shadow: 0 0 0 16px rgb(225 94 0 / 0);
+    box-shadow: 0 0 0 16px rgb(247 75 0 / 0);
   }
   100% {
-    box-shadow: 0 0 0 0 rgb(225 94 0 / 0);
+    box-shadow: 0 0 0 0 rgb(247 75 0 / 0);
   }
 }
 
 .map-recenter {
   background: #fff;
-  border: 1px solid var(--color-navy-300) !important;
-  border-radius: 0.25rem !important;
+  border: 1px solid var(--color-navy-200) !important;
+  border-radius: 0.5rem !important;
   box-shadow: var(--shadow-chart);
   width: 34px;
   height: 34px;

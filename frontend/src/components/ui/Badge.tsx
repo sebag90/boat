@@ -5,15 +5,16 @@ type Tone = 'navy' | 'ocean' | 'brass' | 'foam' | 'signal' | 'neutral'
 
 /** Status chips: label-mono uppercase on a tonal tint, 12px radius. */
 const TONES: Record<Tone, string> = {
-  navy: 'bg-navy-950 text-white',
-  ocean: 'bg-tint-strong text-navy-900',
-  /** Critical — safety orange tint. */
-  brass: 'bg-brass-100 text-brass-800',
+  navy: 'bg-navy-800 text-white',
+  /** Active / connected — light ocean tint. */
+  ocean: 'bg-ocean-100 text-ocean-800',
+  /** Critical — safety orange. */
+  brass: 'bg-brass-100 text-brass-700',
   /** Resolved — green tint. */
   foam: 'bg-emerald-50 text-emerald-800',
-  signal: 'bg-red-50 text-signal-700',
-  /** Pending — navy tint. */
-  neutral: 'bg-tint text-navy-700',
+  signal: 'bg-signal-600/10 text-signal-700',
+  /** Pending — seafoam tint. */
+  neutral: 'bg-tint text-navy-800',
 }
 
 interface BadgeProps {

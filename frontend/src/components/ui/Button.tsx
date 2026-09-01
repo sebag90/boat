@@ -5,11 +5,13 @@ type Variant = 'primary' | 'secondary' | 'ghost' | 'danger' | 'brass'
 type Size = 'sm' | 'md' | 'lg'
 
 const VARIANTS: Record<Variant, string> = {
-  primary: 'bg-navy-950 text-white hover:bg-navy-900 active:bg-navy-950 disabled:hover:bg-navy-950',
-  secondary: 'bg-white text-navy-950 border border-navy-200 hover:bg-tint',
+  /** Ocean blue — the default action. */
+  primary: 'bg-ocean-600 text-white hover:bg-ocean-700 active:bg-ocean-800 disabled:hover:bg-ocean-600',
+  /** Deep navy 1.5px outline. */
+  secondary: 'bg-white text-navy-800 border-[1.5px] border-navy-800 hover:bg-tint',
   ghost: 'text-navy-600 hover:bg-tint hover:text-navy-950',
   danger: 'bg-signal-600 text-white hover:bg-signal-700',
-  /** Safety orange — reserved for save / start / emergency actions. */
+  /** Safety orange — reserved for emergency / destructive actions. */
   brass: 'bg-brass-500 text-white hover:bg-brass-600',
 }
 

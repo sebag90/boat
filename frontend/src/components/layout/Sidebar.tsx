@@ -15,7 +15,7 @@ interface SidebarProps {
   showTabs: boolean
 }
 
-/** Desktop primary navigation: fixed white rail, tonal active state. */
+/** Desktop primary navigation: fixed deep-navy rail, ocean-tint active state. */
 export function Sidebar({
   boats,
   selectedBoat,
@@ -27,10 +27,10 @@ export function Sidebar({
 }: SidebarProps) {
   const { t } = useI18n()
   return (
-    <aside className="fixed top-0 left-0 z-40 hidden h-full w-72 flex-col border-r border-navy-200 bg-white lg:flex">
-      <div className="flex h-20 shrink-0 items-center gap-3 border-b border-navy-200 px-6">
+    <aside className="fixed top-0 left-0 z-40 hidden h-full w-72 flex-col bg-navy-800 shadow-float lg:flex">
+      <div className="flex h-20 shrink-0 items-center gap-3 border-b border-white/10 px-6">
         <Logo className="size-8" />
-        <span className="text-headline-md text-navy-950">{t('app.name')}</span>
+        <span className="text-headline-md text-white">{t('app.name')}</span>
       </div>
 
       {showTabs && (
@@ -44,10 +44,10 @@ export function Sidebar({
                 onClick={() => onChange(id)}
                 aria-current={isActive ? 'page' : undefined}
                 className={cn(
-                  'flex w-full items-center gap-4 rounded px-4 py-3 text-left transition-colors',
+                  'flex w-full items-center gap-4 rounded-xl px-4 py-3 text-left transition-colors',
                   isActive
-                    ? 'bg-tint-strong font-semibold text-navy-950'
-                    : 'text-navy-600 hover:bg-tint hover:text-navy-950',
+                    ? 'bg-ocean-300 font-semibold text-ocean-800'
+                    : 'text-ocean-100/80 hover:bg-white/10 hover:text-white',
                 )}
               >
                 <Icon className="size-5 shrink-0" />
@@ -58,7 +58,7 @@ export function Sidebar({
         </nav>
       )}
 
-      <div className="mt-auto border-t border-navy-200 p-4">
+      <div className="mt-auto border-t border-white/10 p-4">
         <BoatSelector
           dropUp
           boats={boats}

@@ -7,15 +7,10 @@ interface PanelProps {
   as?: 'section' | 'div' | 'article'
 }
 
-/** Level 1 surface: white card, 1px outline, 8px radius. */
+/** Level 1 surface: white card, 12px radius, soft ambient shadow. */
 export function Panel({ children, className, as: Tag = 'section' }: PanelProps) {
   return (
-    <Tag
-      className={cn(
-        'overflow-hidden rounded-card border border-navy-200 bg-white shadow-xs',
-        className,
-      )}
-    >
+    <Tag className={cn('overflow-hidden rounded-card bg-white shadow-sm', className)}>
       {children}
     </Tag>
   )
@@ -33,13 +28,13 @@ export function PanelHeader({ title, subtitle, icon, actions, className }: Panel
   return (
     <div
       className={cn(
-        'relative flex flex-wrap items-start justify-between gap-3 border-b border-navy-200 px-5 py-4',
+        'relative flex flex-wrap items-start justify-between gap-3 bg-tint px-5 py-4',
         className,
       )}
     >
       <div className="flex min-w-0 items-start gap-3">
         {icon && (
-          <span className="mt-0.5 flex size-9 shrink-0 items-center justify-center rounded bg-tint-strong text-navy-900">
+          <span className="mt-0.5 flex size-9 shrink-0 items-center justify-center rounded-lg bg-ocean-100 text-ocean-700">
             {icon}
           </span>
         )}
@@ -54,5 +49,5 @@ export function PanelHeader({ title, subtitle, icon, actions, className }: Panel
 }
 
 export function PanelBody({ children, className }: { children: ReactNode; className?: string }) {
-  return <div className={cn('px-5 py-4', className)}>{children}</div>
+  return <div className={cn('px-5 py-5', className)}>{children}</div>
 }

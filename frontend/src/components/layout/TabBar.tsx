@@ -36,7 +36,7 @@ export function TabBar({ active, onChange }: TabBarProps) {
   const { t } = useI18n()
   return (
     <nav className="scrollbar-none -mx-4 overflow-x-auto px-4 sm:mx-0 sm:px-0">
-      <ul className="flex min-w-max items-center gap-1 rounded-card border border-navy-200 bg-white p-1.5">
+      <ul className="flex min-w-max items-center gap-1 rounded-card bg-white p-1.5 shadow-sm">
         {TABS.map(({ id, labelKey, Icon }) => {
           const isActive = active === id
           return (
@@ -46,10 +46,10 @@ export function TabBar({ active, onChange }: TabBarProps) {
                 onClick={() => onChange(id)}
                 aria-current={isActive ? 'page' : undefined}
                 className={cn(
-                  'flex items-center gap-2 rounded px-3.5 py-2 text-sm whitespace-nowrap',
+                  'flex items-center gap-2 rounded-lg px-3.5 py-2 text-sm whitespace-nowrap',
                   'transition-colors duration-200',
                   isActive
-                    ? 'bg-tint-strong font-semibold text-navy-950'
+                    ? 'bg-ocean-100 font-semibold text-ocean-800'
                     : 'text-navy-600 hover:bg-tint hover:text-navy-950',
                 )}
               >

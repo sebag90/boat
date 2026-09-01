@@ -1,11 +1,11 @@
 import type { InputHTMLAttributes, ReactNode, SelectHTMLAttributes, TextareaHTMLAttributes } from 'react'
 import { cn } from '../../lib/cn'
 
-/** White field, 1px grey border thickening to 2px navy on focus. */
+/** White field, #DDE5ED hairline; focus → ocean border + 2px outer glow. */
 const CONTROL =
-  'w-full rounded-xl border border-navy-300 bg-white px-3.5 py-2.5 text-sm text-navy-950 ' +
+  'w-full rounded-xl border border-navy-200 bg-white px-3.5 py-2.5 text-sm text-navy-950 ' +
   'placeholder:text-navy-400 transition-colors duration-200 ' +
-  'focus:border-navy-900 focus:ring-1 focus:ring-navy-900 focus:outline-none ' +
+  'focus:border-ocean-600 focus:ring-2 focus:ring-ocean-600/20 focus:outline-none ' +
   'disabled:cursor-not-allowed disabled:bg-navy-50 disabled:text-navy-400'
 
 interface FieldProps {

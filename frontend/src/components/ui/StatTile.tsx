@@ -11,7 +11,7 @@ interface StatTileProps {
 
 export function StatTile({ label, value, sub, icon, className }: StatTileProps) {
   return (
-    <div className={cn('rounded-chip bg-tint px-4 py-3.5', className)}>
+    <div className={cn('rounded-card bg-tint px-4 py-3.5', className)}>
       <div className="flex items-center gap-1.5 label-mono text-navy-600">
         {icon}
         {label}

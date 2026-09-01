@@ -67,7 +67,7 @@ export function Modal({ open, onClose, title, eyebrow, size = 'md', footer, chil
         aria-modal="true"
         className={cn(
           'relative flex max-h-[94dvh] w-full flex-col overflow-hidden bg-parchment shadow-float',
-          'rounded-t-chip sm:rounded-card border border-navy-200',
+          'rounded-t-card sm:rounded-card',
           'animate-[modal-in_.28s_cubic-bezier(.32,.72,0,1)]',
           SIZES[size],
         )}
@@ -97,7 +97,7 @@ function ModalHeader({
 }) {
   const { t } = useI18n()
   return (
-    <header className="relative flex items-start gap-4 border-b border-navy-200 bg-white px-5 py-4 sm:px-6">
+    <header className="relative flex items-start gap-4 bg-white px-5 py-4 shadow-xs sm:px-6">
       <div className="min-w-0 flex-1">
         {eyebrow && (
           <p className="mb-1 label-mono text-navy-600">

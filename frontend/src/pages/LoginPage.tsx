@@ -60,7 +60,7 @@ export function LoginPage() {
 
         <form
           onSubmit={onSubmit}
-          className="rounded-card border border-navy-200 bg-white px-6 py-7 shadow-chart"
+          className="rounded-card bg-white px-6 py-7 shadow-float"
         >
           <h1 className="text-headline-lg text-navy-950">{t('login.title')}</h1>
           <p className="mt-1 text-sm text-navy-600">{t('login.subtitle')}</p>
@@ -163,7 +163,7 @@ function Horizon() {
   return (
     <div aria-hidden="true" className="pointer-events-none absolute inset-0 overflow-hidden">
       <div className="chart-grid absolute inset-0" />
-      <div className="absolute inset-x-0 bottom-0 h-1/2 bg-linear-to-t from-tint-strong to-transparent" />
+      <div className="absolute inset-x-0 bottom-0 h-1/2 bg-linear-to-t from-ocean-100 to-transparent" />
     </div>
   )
 }

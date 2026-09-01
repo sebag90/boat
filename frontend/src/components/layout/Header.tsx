@@ -19,14 +19,14 @@ export function Header({ boats, selectedBoat, onSelectBoat, onCreateBoat }: Head
   const { username, logout } = useSession()
 
   return (
-    <header className="sticky top-0 z-30 border-b border-navy-200 bg-parchment/85 backdrop-blur-xl">
+    <header className="sticky top-0 z-30 bg-parchment/80 shadow-[0_1px_8px_rgba(0,33,71,0.05)] backdrop-blur-xl">
       <div className="flex flex-wrap items-center gap-3 px-4 py-3 sm:px-6 lg:h-20 lg:flex-nowrap lg:px-8 lg:py-0">
         <div className="lg:hidden">
           <BrandMark subtitle={t('app.fleet')} />
         </div>
 
-        <span className="hidden items-center gap-2 rounded-chip border border-navy-200 bg-tint-strong px-3 py-1.5 label-mono text-navy-800 lg:inline-flex">
-          <span className="size-2.5 rounded-full bg-brass-500" />
+        <span className="hidden items-center gap-2 rounded-chip bg-ocean-100 px-3 py-1.5 label-mono text-ocean-800 lg:inline-flex">
+          <span className="size-2.5 rounded-full bg-ocean-600" />
           {selectedBoat?.name ?? t('nav.selectVessel')}
         </span>
 
