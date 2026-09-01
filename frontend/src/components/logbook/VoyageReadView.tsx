@@ -76,7 +76,7 @@ export function VoyageReadView({
         />
       </section>
 
-      <TrackMap waypoints={waypoints} />
+      {waypoints.length > 0 && <TrackMap waypoints={waypoints} />}
 
       <PhotoGallery parent="logbook" parentId={entry.id} />
     </div>
