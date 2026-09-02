@@ -40,7 +40,7 @@ export function AppShell({
         showTabs={showTabs}
       />
 
-      <div className="flex min-h-dvh flex-col lg:pl-72">
+      <div className="flex min-h-dvh flex-col lg:pl-28">
         <Header
           boats={boats}
           selectedBoat={selectedBoat}

@@ -15,7 +15,7 @@ interface SidebarProps {
   showTabs: boolean
 }
 
-/** Desktop primary navigation: floating deep-navy bar with luxury glass styling. */
+/** Minimal icon-rail navigation matching the example with hover tooltips. */
 export function Sidebar({
   boats,
   selectedBoat,
@@ -28,21 +28,15 @@ export function Sidebar({
   const { t } = useI18n()
 
   return (
-    <aside className="fixed top-4 left-4 bottom-4 z-40 hidden w-64 flex-col rounded-[24px] bg-primary-container text-white shadow-float border border-white/10 overflow-hidden lg:flex">
-      <div className="flex h-20 shrink-0 items-center gap-3 border-b border-white/10 px-6">
+    <aside className="fixed top-4 left-4 bottom-4 z-40 hidden w-20 flex-col rounded-[24px] bg-primary-container text-white shadow-float border border-white/10 overflow-visible lg:flex">
+      {/* Top Logo */}
+      <div className="flex h-20 shrink-0 items-center justify-center border-b border-white/10 p-4">
         <Logo className="size-8 shrink-0" />
-        <div className="min-w-0 flex-1">
-          <span className="block truncate font-display text-lg font-bold text-white tracking-tight">
-            {t('app.name')}
-          </span>
-          <span className="block truncate text-[10px] font-semibold tracking-widest text-on-primary-container uppercase">
-            {t('app.fleet')}
-          </span>
-        </div>
       </div>
 
+      {/* Nav Icons with Hover Tooltips */}
       {showTabs && (
-        <nav className="flex-1 space-y-1.5 p-4 overflow-y-auto scrollbar-none">
+        <nav className="flex-1 space-y-2 py-6 px-3 overflow-visible">
           {TABS.map(({ id, labelKey, Icon }) => {
             const isActive = active === id
             return (
@@ -52,7 +46,7 @@ export function Sidebar({
                 onClick={() => onChange(id)}
                 aria-current={isActive ? 'page' : undefined}
                 className={cn(
-                  'group relative flex w-full items-center gap-3.5 rounded-xl px-4 py-3 text-left font-medium transition-all select-none',
+                  'group relative flex size-12 mx-auto items-center justify-center rounded-2xl transition-all select-none cursor-pointer',
                   isActive
                     ? 'bg-secondary text-white shadow-sm'
                     : 'text-on-primary-container hover:bg-white/10 hover:text-white',
@@ -60,22 +54,25 @@ export function Sidebar({
               >
                 <Icon
                   className={cn(
-                    'size-5 shrink-0 transition-transform duration-200 group-hover:scale-105',
+                    'size-5 shrink-0 transition-transform duration-200 group-hover:scale-110',
                     isActive ? 'text-white' : 'text-on-primary-container group-hover:text-white',
                   )}
                 />
-                <span className="truncate text-sm font-medium">{t(labelKey)}</span>
-                {isActive && (
-                  <span className="ml-auto size-1.5 rounded-full bg-white animate-pulse" />
-                )}
+
+                {/* Floating Tooltip on Hover */}
+                <div className="absolute left-full ml-3 px-3 py-1.5 bg-navy-muted text-white text-xs font-semibold rounded-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap shadow-md pointer-events-none z-50 border border-white/10">
+                  {t(labelKey)}
+                </div>
               </button>
             )
           })}
         </nav>
       )}
 
-      <div className="mt-auto border-t border-white/10 p-4 bg-primary-container/80 backdrop-blur-sm">
+      {/* Bottom Fleet / Boat Selector */}
+      <div className="mt-auto border-t border-white/10 p-4 flex items-center justify-center">
         <BoatSelector
+          compact
           dropUp
           boats={boats}
           selected={selectedBoat}
