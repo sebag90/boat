@@ -11,13 +11,18 @@ interface StatTileProps {
 
 export function StatTile({ label, value, sub, icon, className }: StatTileProps) {
   return (
-    <div className={cn('rounded-card bg-tint px-4 py-3.5', className)}>
-      <div className="flex items-center gap-1.5 label-mono text-navy-600">
-        {icon}
-        {label}
+    <div
+      className={cn(
+        'rounded-2xl bg-surface-container-low/70 backdrop-blur-sm border border-outline-variant/30 p-5 shadow-xs transition-colors hover:bg-surface-container-low',
+        className,
+      )}
+    >
+      <div className="flex items-center gap-2 label-caps text-on-surface-variant">
+        {icon && <span className="text-secondary">{icon}</span>}
+        <span>{label}</span>
       </div>
-      <p className="mt-1.5 text-headline-lg text-navy-950">{value}</p>
-      {sub && <p className="label-mono text-navy-500">{sub}</p>}
+      <p className="mt-2 font-display text-2xl font-bold tracking-tight text-primary">{value}</p>
+      {sub && <p className="mt-1 text-xs text-on-surface-variant font-medium">{sub}</p>}
     </div>
   )
 }

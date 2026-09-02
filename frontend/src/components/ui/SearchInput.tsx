@@ -12,16 +12,16 @@ interface SearchInputProps {
 export function SearchInput({ value, onChange, placeholder, className }: SearchInputProps) {
   const { t } = useI18n()
   return (
-    <div className={cn('relative', className)}>
-      <Search className="pointer-events-none absolute top-1/2 left-3.5 size-4 -translate-y-1/2 text-navy-400" />
+    <div className={cn('relative flex items-center group', className)}>
+      <Search className="pointer-events-none absolute left-4 size-4 text-outline group-focus-within:text-secondary transition-colors" />
       <input
         type="search"
         value={value}
         onChange={(event) => onChange(event.target.value)}
         placeholder={placeholder ?? t('action.search')}
         className={cn(
-          'w-full rounded-xl border border-navy-300 bg-white py-2.5 pr-10 pl-10 text-sm',
-          'placeholder:text-navy-400 focus:border-navy-900 focus:ring-1 focus:ring-navy-900 focus:outline-none',
+          'w-full bg-surface-container-low border border-transparent rounded-full py-2.5 pl-11 pr-10 text-sm text-on-surface',
+          'placeholder:text-on-surface-variant/60 focus:bg-surface-container-lowest focus:border-secondary/40 focus:ring-2 focus:ring-secondary/20 focus:outline-none transition-all',
           '[&::-webkit-search-cancel-button]:hidden',
         )}
       />
@@ -30,9 +30,9 @@ export function SearchInput({ value, onChange, placeholder, className }: SearchI
           type="button"
           onClick={() => onChange('')}
           aria-label={t('action.clearAll')}
-          className="absolute top-1/2 right-2.5 -translate-y-1/2 rounded-lg p-1 text-navy-500 hover:bg-signal-600 hover:text-white"
+          className="absolute right-3 rounded-full p-1 text-on-surface-variant hover:bg-error hover:text-white transition-colors cursor-pointer"
         >
-          <X className="size-4" />
+          <X className="size-3.5" />
         </button>
       )}
     </div>

@@ -7,15 +7,15 @@ export function RouteBanner({ start, goal }: { start: string; goal: string }) {
   if (!start && !goal) return null
 
   return (
-    <section className="flex flex-wrap items-center gap-3 rounded-card bg-tint px-4 py-3.5">
+    <section className="flex flex-wrap items-center gap-4 rounded-2xl bg-surface-container-low/80 border border-outline-variant/30 px-5 py-4 shadow-xs">
       <Endpoint
-        icon={<Anchor className="size-3.5" />}
+        icon={<Anchor className="size-4 text-secondary" />}
         label={t('logbook.start')}
         value={start || '—'}
       />
-      <MoveRight className="size-5 shrink-0 text-navy-800" />
+      <MoveRight className="size-5 shrink-0 text-secondary" />
       <Endpoint
-        icon={<Navigation className="size-3.5" />}
+        icon={<Navigation className="size-4 text-secondary" />}
         label={t('logbook.goal')}
         value={goal || '—'}
       />
@@ -34,11 +34,11 @@ function Endpoint({
 }) {
   return (
     <div className="min-w-0 flex-1">
-      <p className="flex items-center gap-1.5 label-mono text-navy-600">
+      <p className="flex items-center gap-1.5 label-caps text-on-surface-variant font-semibold">
         {icon}
         {label}
       </p>
-      <p className="truncate text-headline-md text-navy-950">{value}</p>
+      <p className="truncate font-display text-lg font-bold text-primary mt-0.5">{value}</p>
     </div>
   )
 }

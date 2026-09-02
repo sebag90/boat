@@ -14,30 +14,30 @@ export function FileTile({ file, previewUrl, onRemove }: FileTileProps) {
   const video = isVideo(file.name, file.type)
 
   return (
-    <li className="group relative flex items-center gap-3 rounded-card border border-navy-200 bg-white p-2">
-      <span className="flex size-11 shrink-0 items-center justify-center overflow-hidden rounded-lg bg-navy-100 text-navy-500">
+    <li className="group relative flex items-center gap-3 rounded-2xl border border-outline-variant/30 bg-surface-container-lowest p-2.5 shadow-xs">
+      <span className="flex size-11 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-surface-container-high text-on-surface-variant">
         {image && previewUrl ? (
           <img src={previewUrl} alt="" className="size-full object-cover" />
         ) : isPdf(file.name) ? (
-          <FileText className="size-5 text-signal-600" />
+          <FileText className="size-5 text-error" />
         ) : image ? (
-          <ImageIcon className="size-5 text-ocean-700" />
+          <ImageIcon className="size-5 text-secondary" />
         ) : video ? (
-          <Film className="size-5 text-ocean-700" />
+          <Film className="size-5 text-secondary" />
         ) : (
           <Paperclip className="size-5" />
         )}
       </span>
       <span className="min-w-0 flex-1">
-        <span className="block truncate text-sm font-medium text-navy-900">{file.name}</span>
-        <span className="text-xs text-navy-500">{formatFileSize(file.size)}</span>
+        <span className="block truncate text-sm font-semibold text-primary">{file.name}</span>
+        <span className="text-xs text-on-surface-variant">{formatFileSize(file.size)}</span>
       </span>
       <button
         type="button"
         onClick={onRemove}
         aria-label={t('action.remove')}
         title={t('action.remove')}
-        className="flex size-7 shrink-0 items-center justify-center rounded-lg text-navy-400 transition-colors hover:bg-signal-600 hover:text-white"
+        className="flex size-7 shrink-0 items-center justify-center rounded-lg text-on-surface-variant transition-colors hover:bg-error hover:text-white cursor-pointer"
       >
         <X className="size-4" />
       </button>

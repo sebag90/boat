@@ -15,13 +15,13 @@ export function IconButton({ label, icon, tone = 'neutral', className, ...props 
       title={label}
       {...props}
       className={cn(
-        'inline-flex size-9 items-center justify-center rounded transition-colors duration-200',
+        'inline-flex size-9 items-center justify-center rounded-xl transition-all duration-200 cursor-pointer',
         'disabled:cursor-not-allowed disabled:opacity-40',
         tone === 'danger'
-          ? 'text-navy-500 hover:bg-signal-600 hover:text-white'
+          ? 'text-on-surface-variant hover:bg-error hover:text-white'
           : tone === 'onDark'
-            ? 'text-navy-200 hover:bg-white/15 hover:text-white'
-            : 'text-navy-600 hover:bg-navy-900 hover:text-white',
+            ? 'text-on-primary-container hover:bg-white/15 hover:text-white'
+            : 'text-on-surface-variant hover:bg-surface-container hover:text-on-surface active:bg-surface-container-high',
         className,
       )}
     >

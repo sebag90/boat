@@ -29,7 +29,7 @@ export function AppShell({
   const { t } = useI18n()
 
   return (
-    <div className="min-h-dvh">
+    <div className="min-h-dvh bg-surface text-on-surface">
       <Sidebar
         boats={boats}
         selectedBoat={selectedBoat}
@@ -49,7 +49,7 @@ export function AppShell({
         />
 
         <main className="w-full flex-1 px-4 py-5 sm:px-6 lg:px-8 lg:py-8">
-          <div className="mx-auto w-full max-w-[1280px]">
+          <div className="mx-auto w-full max-w-[1360px]">
             {showTabs && (
               <div className="mb-5 lg:hidden">
                 <TabBar active={activeTab} onChange={onTabChange} />
@@ -59,7 +59,7 @@ export function AppShell({
           </div>
         </main>
 
-        <footer className="px-4 py-6 text-center label-mono text-navy-500 sm:px-6 lg:px-8">
+        <footer className="px-4 py-6 text-center label-caps text-on-surface-variant/70 sm:px-6 lg:px-8">
           {t('app.tagline')}
         </footer>
       </div>

@@ -24,10 +24,10 @@ export function CheckToggle({ checked, onChange, label, disabled, className }: C
         onChange(!checked)
       }}
       className={cn(
-        'flex size-6 shrink-0 items-center justify-center rounded-full border-2 transition-all duration-200 ease-sail',
+        'flex size-6 shrink-0 items-center justify-center rounded-lg border-2 transition-all duration-200 cursor-pointer',
         checked
-          ? 'border-foam-700 bg-foam-600 text-white'
-          : 'border-navy-400 bg-white text-transparent hover:border-navy-900 hover:bg-navy-50',
+          ? 'border-emerald-600 bg-emerald-600 text-white shadow-xs'
+          : 'border-outline-variant/80 bg-surface-container-lowest text-transparent hover:border-secondary hover:bg-surface-container-low',
         disabled && 'cursor-not-allowed opacity-50',
         className,
       )}
@@ -50,12 +50,12 @@ export function Switch({ checked, onChange, label }: SwitchProps) {
       role="switch"
       aria-checked={checked}
       onClick={() => onChange(!checked)}
-      className="inline-flex items-center gap-2.5 text-sm font-medium text-navy-700"
+      className="inline-flex items-center gap-3 text-sm font-medium text-on-surface cursor-pointer select-none"
     >
       <span
         className={cn(
           'relative h-6 w-11 rounded-full transition-colors duration-200',
-          checked ? 'bg-foam-600' : 'bg-navy-300',
+          checked ? 'bg-secondary' : 'bg-surface-container-highest',
         )}
       >
         <span

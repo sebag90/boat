@@ -2,6 +2,7 @@ import {
   BookOpen,
   ClipboardList,
   FolderOpen,
+  LayoutDashboard,
   Settings,
   ShoppingCart,
   Wrench,
@@ -17,8 +18,9 @@ interface TabDefinition {
   Icon: LucideIcon
 }
 
-/** Tab order is part of the spec (§4.4): settings is always last. */
+/** Tab order: dashboard first, settings always last. */
 export const TABS: TabDefinition[] = [
+  { id: 'dashboard', labelKey: 'nav.dashboard', Icon: LayoutDashboard },
   { id: 'logbook', labelKey: 'nav.logbook', Icon: BookOpen },
   { id: 'documents', labelKey: 'nav.documents', Icon: FolderOpen },
   { id: 'maintenance', labelKey: 'nav.maintenance', Icon: Wrench },
@@ -36,7 +38,7 @@ export function TabBar({ active, onChange }: TabBarProps) {
   const { t } = useI18n()
   return (
     <nav className="scrollbar-none -mx-4 overflow-x-auto px-4 sm:mx-0 sm:px-0">
-      <ul className="flex min-w-max items-center gap-1 rounded-card bg-white p-1.5 shadow-sm">
+      <ul className="flex min-w-max items-center gap-1.5 rounded-2xl bg-surface-container-low/90 p-1.5 backdrop-blur-md border border-outline-variant/30 shadow-xs">
         {TABS.map(({ id, labelKey, Icon }) => {
           const isActive = active === id
           return (
@@ -46,11 +48,11 @@ export function TabBar({ active, onChange }: TabBarProps) {
                 onClick={() => onChange(id)}
                 aria-current={isActive ? 'page' : undefined}
                 className={cn(
-                  'flex items-center gap-2 rounded-lg px-3.5 py-2 text-sm whitespace-nowrap',
-                  'transition-colors duration-200',
+                  'flex items-center gap-2 rounded-xl px-4 py-2 text-sm whitespace-nowrap',
+                  'transition-all duration-200 select-none font-medium',
                   isActive
-                    ? 'bg-ocean-100 font-semibold text-ocean-800'
-                    : 'text-navy-600 hover:bg-tint hover:text-navy-950',
+                    ? 'bg-secondary text-white shadow-xs font-semibold'
+                    : 'text-on-surface-variant hover:bg-surface-container hover:text-on-surface',
                 )}
               >
                 <Icon className="size-4" />

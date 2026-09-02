@@ -15,7 +15,7 @@ interface SidebarProps {
   showTabs: boolean
 }
 
-/** Desktop primary navigation: fixed deep-navy rail, ocean-tint active state. */
+/** Desktop primary navigation: floating deep-navy bar with luxury glass styling. */
 export function Sidebar({
   boats,
   selectedBoat,
@@ -26,15 +26,23 @@ export function Sidebar({
   showTabs,
 }: SidebarProps) {
   const { t } = useI18n()
+
   return (
-    <aside className="fixed top-0 left-0 z-40 hidden h-full w-72 flex-col bg-navy-800 shadow-float lg:flex">
+    <aside className="fixed top-4 left-4 bottom-4 z-40 hidden w-64 flex-col rounded-[24px] bg-primary-container text-white shadow-float border border-white/10 overflow-hidden lg:flex">
       <div className="flex h-20 shrink-0 items-center gap-3 border-b border-white/10 px-6">
-        <Logo className="size-8" />
-        <span className="text-headline-md text-white">{t('app.name')}</span>
+        <Logo className="size-8 shrink-0" />
+        <div className="min-w-0 flex-1">
+          <span className="block truncate font-display text-lg font-bold text-white tracking-tight">
+            {t('app.name')}
+          </span>
+          <span className="block truncate text-[10px] font-semibold tracking-widest text-on-primary-container uppercase">
+            {t('app.fleet')}
+          </span>
+        </div>
       </div>
 
       {showTabs && (
-        <nav className="flex-1 space-y-1 p-4">
+        <nav className="flex-1 space-y-1.5 p-4 overflow-y-auto scrollbar-none">
           {TABS.map(({ id, labelKey, Icon }) => {
             const isActive = active === id
             return (
@@ -44,21 +52,29 @@ export function Sidebar({
                 onClick={() => onChange(id)}
                 aria-current={isActive ? 'page' : undefined}
                 className={cn(
-                  'flex w-full items-center gap-4 rounded-xl px-4 py-3 text-left transition-colors',
+                  'group relative flex w-full items-center gap-3.5 rounded-xl px-4 py-3 text-left font-medium transition-all select-none',
                   isActive
-                    ? 'bg-ocean-300 font-semibold text-ocean-800'
-                    : 'text-ocean-100/80 hover:bg-white/10 hover:text-white',
+                    ? 'bg-secondary text-white shadow-sm'
+                    : 'text-on-primary-container hover:bg-white/10 hover:text-white',
                 )}
               >
-                <Icon className="size-5 shrink-0" />
-                {t(labelKey)}
+                <Icon
+                  className={cn(
+                    'size-5 shrink-0 transition-transform duration-200 group-hover:scale-105',
+                    isActive ? 'text-white' : 'text-on-primary-container group-hover:text-white',
+                  )}
+                />
+                <span className="truncate text-sm font-medium">{t(labelKey)}</span>
+                {isActive && (
+                  <span className="ml-auto size-1.5 rounded-full bg-white animate-pulse" />
+                )}
               </button>
             )
           })}
         </nav>
       )}
 
-      <div className="mt-auto border-t border-white/10 p-4">
+      <div className="mt-auto border-t border-white/10 p-4 bg-primary-container/80 backdrop-blur-sm">
         <BoatSelector
           dropUp
           boats={boats}

@@ -42,13 +42,13 @@ export function GpsPanel({ onFix, onImport }: GpsPanelProps) {
   }
 
   return (
-    <section className="space-y-3 rounded-card bg-tint p-4">
-      <h3 className="flex items-center gap-2 label-mono text-navy-600">
-        <Radio className="size-3.5" />
+    <section className="space-y-4 rounded-2xl bg-surface-container-low/80 border border-outline-variant/30 p-5 shadow-xs">
+      <h3 className="flex items-center gap-2 label-caps text-on-surface-variant font-semibold">
+        <Radio className="size-4 text-secondary" />
         {t('voyage.gps')}
       </h3>
 
-      <div className="flex flex-wrap gap-2">
+      <div className="flex flex-wrap gap-2.5">
         <Button
           variant="secondary"
           onClick={captureNow}
@@ -70,72 +70,69 @@ export function GpsPanel({ onFix, onImport }: GpsPanelProps) {
           ref={fileRef}
           type="file"
           hidden
-          accept=".jsonl,.json,.csv,.tsv,.txt"
+          accept=".jsonl,.ndjson,.json,.csv,.tsv,.txt"
           onChange={(event) => {
             const file = event.target.files?.[0]
+            if (file) importFile(file)
             event.target.value = ''
-            if (file) void importFile(file)
           }}
         />
       </div>
 
-      <p className="text-xs text-navy-600">{t('voyage.importHint')}</p>
-      {importMessage && <p className="text-xs font-semibold text-foam-700">{importMessage}</p>}
-      <InlineError message={importError} />
+      {importMessage && (
+        <p className="rounded-xl bg-emerald-500/10 px-3 py-2 text-xs font-semibold text-emerald-800 border border-emerald-500/20">
+          ✓ {importMessage}
+        </p>
+      )}
+      <InlineError message={importError || tracker.error} />
 
-      <div className="rounded-card border border-navy-200 bg-white p-3.5">
+      <div className="border-t border-outline-variant/20 pt-4">
         <div className="flex flex-wrap items-end gap-3">
-          <Field label={t('voyage.tracker')} className="w-32">
+          <Field label={t('voyage.tracker')} hint={t('voyage.trackerHint')} className="min-w-[12rem]">
             <Select
               value={tracker.interval}
               disabled={tracker.running}
-              onChange={(event) =>
-                tracker.setInterval(Number(event.target.value) as (typeof TRACKER_INTERVALS)[number])
-              }
+              onChange={(event) => tracker.setInterval(Number(event.target.value) as any)}
             >
-              {TRACKER_INTERVALS.map((seconds) => (
-                <option key={seconds} value={seconds}>
-                  {seconds / 60} {t('voyage.min')}
+              {TRACKER_INTERVALS.map((sec) => (
+                <option key={sec} value={sec}>
+                  {sec / 60} {t('voyage.min')}
                 </option>
               ))}
             </Select>
           </Field>
 
           {tracker.running ? (
-            <Button variant="danger" onClick={tracker.stop} icon={<Square className="size-4" />}>
+            <Button
+              variant="danger"
+              onClick={tracker.stop}
+              icon={<Square className="size-3.5 fill-current" />}
+            >
               {t('voyage.stop')}
             </Button>
           ) : (
             <Button
-              variant="brass"
-              onClick={() => void tracker.start()}
-              icon={<Play className="size-4" />}
+              variant="primary"
+              onClick={tracker.start}
+              icon={<Play className="size-3.5 fill-current" />}
             >
               {t('voyage.start')}
             </Button>
           )}
 
           {tracker.running && (
-            <div className="flex items-center gap-2 text-sm">
-              <span className="relative flex size-2.5">
-                <span className="absolute inline-flex size-full animate-ping rounded-full bg-signal-500/70" />
-                <span className="relative inline-flex size-2.5 rounded-full bg-signal-500" />
+            <div className="flex items-center gap-3 text-xs text-on-surface-variant font-medium">
+              <span className="inline-flex size-2 animate-ping rounded-full bg-secondary" />
+              <span>
+                {t('voyage.nextIn')} <strong className="font-mono text-primary font-bold">{tracker.countdown}s</strong>
               </span>
-              <span className="font-semibold text-navy-800">
-                {t('voyage.nextIn')} {tracker.countdown}s
-              </span>
+              {tracker.lastFixAt && (
+                <span>
+                  · {t('voyage.lastFix')}: {formatTime(localIsoTimestamp(tracker.lastFixAt))}
+                </span>
+              )}
             </div>
           )}
-        </div>
-
-        <p className="mt-2 text-xs text-navy-600">{t('voyage.trackerHint')}</p>
-        {tracker.lastFixAt && (
-          <p className="mt-1 text-xs font-medium text-navy-700">
-            {t('voyage.lastFix')}: {formatTime(localIsoTimestamp(tracker.lastFixAt))}
-          </p>
-        )}
-        <div className="mt-2">
-          <InlineError message={tracker.error} />
         </div>
       </div>
     </section>

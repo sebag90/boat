@@ -71,6 +71,23 @@ export function formatCoordinate(value: number): string {
   return value.toFixed(5)
 }
 
+export function formatDms(lat: number, lon: number): { lat: string; lon: string } {
+  const latDir = lat >= 0 ? 'N' : 'S'
+  const absLat = Math.abs(lat)
+  const latDeg = Math.floor(absLat)
+  const latMin = ((absLat - latDeg) * 60).toFixed(1)
+
+  const lonDir = lon >= 0 ? 'E' : 'W'
+  const absLon = Math.abs(lon)
+  const lonDeg = Math.floor(absLon)
+  const lonMin = ((absLon - lonDeg) * 60).toFixed(1)
+
+  return {
+    lat: `${latDeg}°${latMin.padStart(4, '0')}'${latDir}`,
+    lon: `${String(lonDeg).padStart(3, '0')}°${lonMin.padStart(4, '0')}'${lonDir}`,
+  }
+}
+
 export function isPdf(filename?: string | null): boolean {
   return !!filename && filename.toLowerCase().endsWith('.pdf')
 }

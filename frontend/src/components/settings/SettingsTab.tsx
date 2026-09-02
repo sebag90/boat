@@ -9,6 +9,7 @@ import {
   Button,
   Field,
   InlineError,
+  LocationInput,
   Panel,
   PanelBody,
   PanelHeader,
@@ -29,12 +30,14 @@ export function SettingsTab({ boat, onDeleted }: SettingsTabProps) {
   const remove = useDeleteBoat()
   const [name, setName] = useState(boat.name)
   const [description, setDescription] = useState(boat.description)
+  const [location, setLocation] = useState(boat.location ?? '')
   const [error, setError] = useState<string | null>(null)
   const [saved, setSaved] = useState(false)
 
   useEffect(() => {
     setName(boat.name)
     setDescription(boat.description)
+    setLocation(boat.location ?? '')
   }, [boat])
 
   async function onSave(event: React.FormEvent) {
@@ -43,7 +46,12 @@ export function SettingsTab({ boat, onDeleted }: SettingsTabProps) {
     setError(null)
     setSaved(false)
     try {
-      await update.mutateAsync({ id: boat.id, name: name.trim(), description })
+      await update.mutateAsync({
+        id: boat.id,
+        name: name.trim(),
+        description,
+        location: location.trim(),
+      })
       setSaved(true)
     } catch (cause) {
       setError(cause instanceof Error ? cause.message : t('app.error'))
@@ -72,26 +80,36 @@ export function SettingsTab({ boat, onDeleted }: SettingsTabProps) {
         }
       />
 
-      <Panel className="mb-5">
+      <Panel className="mb-6">
         <PanelHeader title={t('settings.identity')} icon={<SettingsIcon className="size-4" />} />
         <PanelBody>
           <form onSubmit={onSave} className="space-y-4">
             <Field label={`${t('fleet.name')} · ${t('label.required')}`}>
               <TextInput value={name} required onChange={(event) => setName(event.target.value)} />
             </Field>
+
+            <Field label={t('fleet.location')} hint={t('fleet.locationHint')}>
+              <LocationInput
+                value={location}
+                placeholder={t('fleet.locationPlaceholder')}
+                onChange={setLocation}
+              />
+            </Field>
+
             <Field label={t('fleet.description')}>
               <TextArea
                 rows={3}
                 value={description}
+                placeholder={t('fleet.descriptionPlaceholder')}
                 onChange={(event) => setDescription(event.target.value)}
               />
             </Field>
 
             <InlineError message={error} />
 
-            <div className="flex items-center justify-end gap-3">
+            <div className="flex items-center justify-end gap-3 pt-2">
               {saved && !update.isPending && (
-                <span className="text-sm font-semibold text-foam-700">✓</span>
+                <span className="text-sm font-semibold text-emerald-700">✓ {t('action.save')}</span>
               )}
               <Button
                 type="submit"
@@ -105,13 +123,15 @@ export function SettingsTab({ boat, onDeleted }: SettingsTabProps) {
         </PanelBody>
       </Panel>
 
-      <Panel className="border-2 border-signal-600/70 bg-red-50 ring-0">
+      <Panel className="border border-error-container bg-error-container/10">
         <PanelHeader
           title={t('settings.danger')}
-          icon={<ShieldAlert className="size-4 text-signal-500" />}
+          icon={<ShieldAlert className="size-4 text-error" />}
         />
         <PanelBody className="space-y-4">
-          <p className="text-sm text-red-900">{t('settings.dangerBody')}</p>
+          <p className="text-sm text-on-surface-variant leading-relaxed">
+            {t('settings.dangerBody')}
+          </p>
           <Button
             variant="danger"
             onClick={onDelete}

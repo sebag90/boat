@@ -7,10 +7,15 @@ interface PanelProps {
   as?: 'section' | 'div' | 'article'
 }
 
-/** Level 1 surface: white card, 12px radius, soft ambient shadow. */
+/** Bento Card: rounded-[24px], frosted glass or crisp surface, subtle outline, soft ambient shadow. */
 export function Panel({ children, className, as: Tag = 'section' }: PanelProps) {
   return (
-    <Tag className={cn('overflow-hidden rounded-card bg-white shadow-sm', className)}>
+    <Tag
+      className={cn(
+        'overflow-hidden rounded-[24px] bg-surface-container-lowest border border-outline-variant/30 shadow-sm transition-shadow duration-200',
+        className,
+      )}
+    >
       {children}
     </Tag>
   )
@@ -28,19 +33,21 @@ export function PanelHeader({ title, subtitle, icon, actions, className }: Panel
   return (
     <div
       className={cn(
-        'relative flex flex-wrap items-start justify-between gap-3 bg-tint px-5 py-4',
+        'relative flex flex-wrap items-center justify-between gap-3 border-b border-outline-variant/20 px-6 py-5',
         className,
       )}
     >
-      <div className="flex min-w-0 items-start gap-3">
+      <div className="flex min-w-0 items-center gap-3">
         {icon && (
-          <span className="mt-0.5 flex size-9 shrink-0 items-center justify-center rounded-lg bg-ocean-100 text-ocean-700">
+          <span className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-secondary-fixed text-secondary">
             {icon}
           </span>
         )}
         <div className="min-w-0">
-          <h2 className="text-headline-md text-navy-950">{title}</h2>
-          {subtitle && <p className="mt-0.5 label-mono text-navy-500">{subtitle}</p>}
+          <h2 className="font-display text-xl font-semibold text-primary">{title}</h2>
+          {subtitle && (
+            <p className="mt-0.5 label-caps text-on-surface-variant font-medium">{subtitle}</p>
+          )}
         </div>
       </div>
       {actions && <div className="flex shrink-0 items-center gap-2">{actions}</div>}
@@ -49,5 +56,5 @@ export function PanelHeader({ title, subtitle, icon, actions, className }: Panel
 }
 
 export function PanelBody({ children, className }: { children: ReactNode; className?: string }) {
-  return <div className={cn('px-5 py-5', className)}>{children}</div>
+  return <div className={cn('p-6 sm:p-7', className)}>{children}</div>
 }

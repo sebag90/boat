@@ -3,7 +3,7 @@ import { Sailboat } from 'lucide-react'
 import { useI18n } from '../../i18n'
 import { useCreateBoat } from '../../api/boats'
 import type { Boat } from '../../lib/types'
-import { Button, Field, InlineError, Modal, Spinner, TextArea, TextInput } from '../ui'
+import { Button, Field, InlineError, LocationInput, Modal, Spinner, TextArea, TextInput } from '../ui'
 
 interface CreateBoatDialogProps {
   onClose: () => void
@@ -15,6 +15,7 @@ export function CreateBoatDialog({ onClose, onCreated }: CreateBoatDialogProps) 
   const create = useCreateBoat()
   const [name, setName] = useState('')
   const [description, setDescription] = useState('')
+  const [location, setLocation] = useState('')
   const [error, setError] = useState<string | null>(null)
 
   async function onSubmit(event: React.FormEvent) {
@@ -22,7 +23,13 @@ export function CreateBoatDialog({ onClose, onCreated }: CreateBoatDialogProps) 
     if (!name.trim()) return
     setError(null)
     try {
-      onCreated(await create.mutateAsync({ name: name.trim(), description }))
+      onCreated(
+        await create.mutateAsync({
+          name: name.trim(),
+          description,
+          location: location.trim(),
+        }),
+      )
     } catch (cause) {
       setError(cause instanceof Error ? cause.message : t('app.error'))
     }
@@ -60,6 +67,15 @@ export function CreateBoatDialog({ onClose, onCreated }: CreateBoatDialogProps) 
             onChange={(event) => setName(event.target.value)}
           />
         </Field>
+
+        <Field label={t('fleet.location')}>
+          <LocationInput
+            value={location}
+            placeholder={t('fleet.locationPlaceholder')}
+            onChange={setLocation}
+          />
+        </Field>
+
         <Field label={t('fleet.description')}>
           <TextArea
             rows={3}

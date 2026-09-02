@@ -13,11 +13,11 @@ export function AttachmentChip({
   return (
     <span
       className={cn(
-        'inline-flex max-w-[14rem] items-center gap-1.5 rounded-chip bg-tint px-2.5 py-1 font-mono text-[0.7rem] text-navy-800',
+        'inline-flex max-w-[14rem] items-center gap-1.5 rounded-full bg-surface-container px-2.5 py-0.5 label-caps text-[10px] text-on-surface-variant font-medium',
         className,
       )}
     >
-      <Paperclip className="size-3.5 shrink-0" />
+      <Paperclip className="size-3 shrink-0 text-secondary" />
       <span className="truncate">{filename}</span>
     </span>
   )

@@ -6,7 +6,9 @@ import { I18nProvider } from '../src/i18n'
 import { SessionProvider } from '../src/hooks/useSession'
 import { EntryDetailDialog } from '../src/components/detail/EntryDetailDialog'
 import { VoyageDialog } from '../src/components/logbook/VoyageDialog'
+import { DashboardTab } from '../src/components/dashboard/DashboardTab'
 import { DocumentsTab } from '../src/components/documents/DocumentsTab'
+import { LogbookTab } from '../src/components/logbook/LogbookTab'
 import { MaintenanceTab } from '../src/components/maintenance/MaintenanceTab'
 import { TodosTab } from '../src/components/todos/TodosTab'
 import { ShoppingTab } from '../src/components/shopping/ShoppingTab'
@@ -49,6 +51,8 @@ createRoot(document.getElementById('root')!).render(
       <QueryClientProvider client={queryClient}>
         <SessionProvider>
           <App />
+          <DashboardTab boat={boat} onNavigateTab={() => {}} />
+          <LogbookTab boatId={1} />
           <EntryDetailDialog boatId={1} type="document" entry={doc} onClose={() => {}} />
           <VoyageDialog boatId={1} entry={voyage} onClose={() => {}} />
           <DocumentsTab boatId={1} />

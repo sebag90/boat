@@ -1,3 +1,4 @@
+import { DashboardTab } from '../components/dashboard/DashboardTab'
 import { DocumentsTab } from '../components/documents/DocumentsTab'
 import { LogbookTab } from '../components/logbook/LogbookTab'
 import { MaintenanceTab } from '../components/maintenance/MaintenanceTab'
@@ -10,11 +11,14 @@ interface TabContentProps {
   tab: TabId
   boat: Boat
   onBoatDeleted: () => void
+  onNavigateTab: (tab: TabId) => void
 }
 
 /** Only the active tab's collection is fetched (spec §4.4). */
-export function TabContent({ tab, boat, onBoatDeleted }: TabContentProps) {
+export function TabContent({ tab, boat, onBoatDeleted, onNavigateTab }: TabContentProps) {
   switch (tab) {
+    case 'dashboard':
+      return <DashboardTab boat={boat} onNavigateTab={onNavigateTab} />
     case 'logbook':
       return <LogbookTab boatId={boat.id} />
     case 'documents':

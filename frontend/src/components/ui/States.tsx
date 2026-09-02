@@ -11,9 +11,9 @@ export function Spinner({ className }: { className?: string }) {
 export function LoadingState({ label }: { label?: string }) {
   const { t } = useI18n()
   return (
-    <div className="flex items-center justify-center gap-2.5 px-6 py-14 text-sm text-navy-600">
-      <Spinner className="size-5 text-ocean-600" />
-      {label ?? t('app.loading')}
+    <div className="flex items-center justify-center gap-3 px-6 py-16 text-sm text-on-surface-variant">
+      <Spinner className="size-5 text-secondary" />
+      <span className="font-medium">{label ?? t('app.loading')}</span>
     </div>
   )
 }
@@ -27,13 +27,13 @@ interface EmptyStateProps {
 
 export function EmptyState({ title, body, icon, action }: EmptyStateProps) {
   return (
-    <div className="flex flex-col items-center justify-center rounded-card border border-dashed border-navy-300 bg-tint/50 px-6 py-14 text-center">
-      <span className="mb-4 flex size-14 items-center justify-center rounded-chip bg-tint-strong text-navy-900">
+    <div className="flex flex-col items-center justify-center rounded-[24px] border border-dashed border-outline-variant/50 bg-surface-container-low/40 p-8 sm:p-14 text-center">
+      <span className="mb-4 flex size-14 items-center justify-center rounded-2xl bg-secondary-fixed text-secondary shadow-xs">
         {icon ?? <LifeBuoy className="size-7" />}
       </span>
-      {title && <p className="text-headline-md text-navy-950">{title}</p>}
-      {body && <p className="mt-1.5 max-w-sm text-sm text-navy-600">{body}</p>}
-      {action && <div className="mt-5">{action}</div>}
+      {title && <p className="font-display text-lg sm:text-xl font-semibold text-primary">{title}</p>}
+      {body && <p className="mt-1.5 max-w-sm text-sm text-on-surface-variant leading-relaxed">{body}</p>}
+      {action && <div className="mt-6">{action}</div>}
     </div>
   )
 }
@@ -41,11 +41,11 @@ export function EmptyState({ title, body, icon, action }: EmptyStateProps) {
 export function ErrorState({ message, onRetry }: { message: string; onRetry?: () => void }) {
   const { t } = useI18n()
   return (
-    <div className="flex flex-col items-center gap-3 rounded-card bg-brass-100/60 px-6 py-10 text-center">
-      <AlertTriangle className="size-7 text-signal-600" />
+    <div className="flex flex-col items-center gap-3.5 rounded-[24px] bg-error-container/20 border border-error-container/50 px-6 py-10 text-center">
+      <AlertTriangle className="size-8 text-error" />
       <div>
-        <p className="font-semibold text-navy-950">{t('app.error')}</p>
-        <p className="mt-1 text-sm text-signal-700">{message}</p>
+        <p className="font-display font-semibold text-error">{t('app.error')}</p>
+        <p className="mt-1 text-sm text-on-error-container">{message}</p>
       </div>
       {onRetry && (
         <Button variant="secondary" size="sm" onClick={onRetry}>
@@ -59,8 +59,8 @@ export function ErrorState({ message, onRetry }: { message: string; onRetry?: ()
 export function InlineError({ message }: { message?: string | null }) {
   if (!message) return null
   return (
-    <p className="flex items-start gap-1.5 rounded-lg bg-red-50 px-3 py-2 text-sm font-medium text-signal-700 ring-1 ring-signal-600/30">
-      <AlertTriangle className="mt-0.5 size-4 shrink-0 text-signal-600" />
+    <p className="flex items-start gap-2 rounded-xl bg-error-container/30 px-3.5 py-2.5 text-sm font-medium text-on-error-container border border-error-container/60">
+      <AlertTriangle className="mt-0.5 size-4 shrink-0 text-error" />
       <span>{message}</span>
     </p>
   )

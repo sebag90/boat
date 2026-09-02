@@ -3,18 +3,18 @@ import { cn } from '../../lib/cn'
 
 type Tone = 'navy' | 'ocean' | 'brass' | 'foam' | 'signal' | 'neutral'
 
-/** Status chips: label-mono uppercase on a tonal tint, 12px radius. */
+/** Status chips: label-caps uppercase on a subtle tonal tint, rounded-full pill. */
 const TONES: Record<Tone, string> = {
-  navy: 'bg-navy-800 text-white',
+  navy: 'bg-primary-container text-white',
   /** Active / connected — light ocean tint. */
-  ocean: 'bg-ocean-100 text-ocean-800',
+  ocean: 'bg-secondary-fixed text-on-secondary-fixed',
   /** Critical — safety orange. */
-  brass: 'bg-brass-100 text-brass-700',
+  brass: 'bg-safety-orange/15 text-safety-orange border border-safety-orange/30',
   /** Resolved — green tint. */
-  foam: 'bg-emerald-50 text-emerald-800',
-  signal: 'bg-signal-600/10 text-signal-700',
-  /** Pending — seafoam tint. */
-  neutral: 'bg-tint text-navy-800',
+  foam: 'bg-emerald-50 text-emerald-800 border border-emerald-200/60',
+  signal: 'bg-error-container text-on-error-container border border-error-container',
+  /** Neutral — surface container tint. */
+  neutral: 'bg-surface-container text-on-surface-variant',
 }
 
 interface BadgeProps {
@@ -28,8 +28,8 @@ export function Badge({ children, tone = 'neutral', icon, className }: BadgeProp
   return (
     <span
       className={cn(
-        'inline-flex items-center gap-1.5 rounded-chip px-2.5 py-1',
-        'label-mono',
+        'inline-flex items-center gap-1.5 rounded-full px-3 py-1',
+        'label-caps',
         TONES[tone],
         className,
       )}

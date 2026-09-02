@@ -16,7 +16,7 @@ export function WorkspacePage() {
   const { logout } = useSession()
   const { data: boats, isPending, error, refetch } = useBoats()
   const { selectedBoat, select, clear } = useSelectedBoat(boats)
-  const [activeTab, setActiveTab] = useState<TabId>('logbook')
+  const [activeTab, setActiveTab] = useState<TabId>('dashboard')
   const [registering, setRegistering] = useState(false)
 
   // A 401 on the fleet bootstrap invalidates the stored session.
@@ -61,8 +61,9 @@ export function WorkspacePage() {
           boat={selectedBoat}
           onBoatDeleted={() => {
             clear()
-            setActiveTab('logbook')
+            setActiveTab('dashboard')
           }}
+          onNavigateTab={setActiveTab}
         />
       )}
 
@@ -72,7 +73,7 @@ export function WorkspacePage() {
           onCreated={(boat) => {
             setRegistering(false)
             select(boat)
-            setActiveTab('logbook')
+            setActiveTab('dashboard')
           }}
         />
       )}

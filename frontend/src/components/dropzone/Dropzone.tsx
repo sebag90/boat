@@ -57,18 +57,24 @@ export function Dropzone({
         onDragLeave={() => setDragging(false)}
         onDrop={onDrop}
         className={cn(
-          'flex cursor-pointer flex-col items-center justify-center gap-1.5 rounded-card border border-dashed',
-          'px-5 py-7 text-center transition-colors duration-200',
+          'flex cursor-pointer flex-col items-center justify-center gap-2 rounded-2xl border-2 border-dashed',
+          'px-6 py-8 text-center transition-all duration-200',
           dragging
-            ? 'border-navy-900 bg-tint-strong'
-            : 'border-navy-300 bg-tint/60 hover:border-navy-400 hover:bg-tint',
+            ? 'border-secondary bg-secondary-fixed/30'
+            : 'border-outline-variant/50 bg-surface-container-low/40 hover:border-secondary/40 hover:bg-surface-container-low',
         )}
       >
-        <UploadCloud className={cn('size-7', dragging ? 'text-navy-600' : 'text-navy-400')} />
-        <p className="text-sm font-semibold text-navy-900">
-          {label ?? (multiple ? t('dropzone.title') : t('dropzone.single'))}
-        </p>
-        {multiple && <p className="text-xs text-navy-500">{t('dropzone.subtitle')}</p>}
+        <div className="flex size-12 items-center justify-center rounded-xl bg-secondary-fixed text-secondary shadow-xs">
+          <UploadCloud className="size-6" />
+        </div>
+        <div>
+          <p className="text-sm font-semibold text-primary">
+            {label ?? (multiple ? t('dropzone.title') : t('dropzone.single'))}
+          </p>
+          {multiple && (
+            <p className="text-xs text-on-surface-variant mt-0.5">{t('dropzone.subtitle')}</p>
+          )}
+        </div>
         <input
           ref={inputRef}
           type="file"
@@ -83,25 +89,25 @@ export function Dropzone({
       </div>
 
       {files.length > 0 && (
-        <div className="mt-3">
-          <div className="mb-2 flex items-center justify-between">
-            <p className="label-mono text-navy-600">
+        <div className="mt-4">
+          <div className="mb-2.5 flex items-center justify-between">
+            <p className="label-caps text-on-surface-variant font-semibold">
               {t('dropzone.selected')} · {files.length}
             </p>
             <button
               type="button"
               onClick={() => onChange([])}
-              className="text-xs font-semibold text-signal-600 hover:text-signal-700 hover:underline"
+              className="text-xs font-semibold text-error hover:underline cursor-pointer"
             >
               {t('action.clearAll')}
             </button>
           </div>
-          <ul className="grid gap-2 sm:grid-cols-2">
+          <ul className="grid gap-2.5 sm:grid-cols-2">
             {files.map((file, index) => (
               <FileTile
-                key={`${file.name}-${file.lastModified}-${index}`}
+                key={`${file.name}-${file.size}-${index}`}
                 file={file}
-                previewUrl={previews[index]}
+                previewUrl={previews[index] ?? undefined}
                 onRemove={() => onChange(files.filter((_, i) => i !== index))}
               />
             ))}
@@ -112,17 +118,16 @@ export function Dropzone({
   )
 }
 
-/** Creates image thumbnails and revokes them on change/unmount. */
-function useObjectUrls(files: File[]): (string | undefined)[] {
-  const [urls, setUrls] = useState<(string | undefined)[]>([])
+function useObjectUrls(files: File[]): (string | null)[] {
+  const [urls, setUrls] = useState<(string | null)[]>([])
 
   useEffect(() => {
-    const created = files.map((file) =>
-      isImage(file.name, file.type) ? URL.createObjectURL(file) : undefined,
-    )
-    setUrls(created)
+    const list = files.map((file) => (isImage(file.name, file.type) ? URL.createObjectURL(file) : null))
+    setUrls(list)
     return () => {
-      for (const url of created) if (url) URL.revokeObjectURL(url)
+      list.forEach((url) => {
+        if (url) URL.revokeObjectURL(url)
+      })
     }
   }, [files])
 

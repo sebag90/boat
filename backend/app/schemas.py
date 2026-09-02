@@ -6,12 +6,14 @@ from pydantic import BaseModel
 class BoatCreate(BaseModel):
     name: str
     description: str = ""
+    location: str = ""
 
 
 class BoatOut(BaseModel):
     id: int
     name: str
     description: str
+    location: str = ""
     created_at: datetime
 
     class Config:

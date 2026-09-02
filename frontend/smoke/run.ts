@@ -100,13 +100,14 @@ const module_ = { exports: {} }
 const { createRequire } = await import('node:module')
 run(createRequire(import.meta.url), module_, module_.exports, 'bundle.cjs', process.cwd())
 
-await new Promise((resolve) => setTimeout(resolve, 800))
+await new Promise((resolve) => setTimeout(resolve, 1500))
 
 const html: string = dom.window.document.getElementById('root').innerHTML
 const body: string = dom.window.document.body.innerHTML
 const checks: [string, boolean][] = [
   ['renders root markup', html.length > 2000],
   ['renders header brand', html.includes('Boat Organizer')],
+  ['renders dashboard', html.includes('SYSTEM ONLINE') || html.includes('CURRENT POSITION')],
   ['renders tab bar', html.includes('Log Book')],
   ['renders voyage card', html.includes('Monaco')],
   ['renders voyage picture count', html.includes('3 Photos &amp; Videos') || html.includes('3 Photos & Videos')],

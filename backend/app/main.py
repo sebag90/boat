@@ -32,6 +32,7 @@ _init_db()
 for _stmt in (
     "ALTER TABLE photos ADD COLUMN position INTEGER DEFAULT 0",
     "ALTER TABLE photos ADD COLUMN album VARCHAR(200)",
+    "ALTER TABLE boats ADD COLUMN location VARCHAR(200) DEFAULT ''",
 ):
     try:
         with engine.begin() as _conn:
@@ -71,7 +72,9 @@ def list_boats(db: Session = Depends(get_db)):
 
 @app.post("/api/boats", response_model=schemas.BoatOut)
 def create_boat(payload: schemas.BoatCreate, db: Session = Depends(get_db)):
-    boat = models.Boat(name=payload.name, description=payload.description)
+    boat = models.Boat(
+        name=payload.name, description=payload.description, location=payload.location
+    )
     db.add(boat)
     db.commit()
     db.refresh(boat)
@@ -88,6 +91,7 @@ def update_boat(boat_id: int, payload: schemas.BoatCreate, db: Session = Depends
     boat = get_boat(boat_id, db)
     boat.name = payload.name
     boat.description = payload.description
+    boat.location = payload.location
     db.commit()
     db.refresh(boat)
     return boat

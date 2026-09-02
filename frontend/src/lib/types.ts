@@ -2,6 +2,7 @@ export interface Boat {
   id: number
   name: string
   description: string
+  location?: string
   created_at: string
 }
 
@@ -89,7 +90,7 @@ export interface ShoppingEntry {
   created_at: string
 }
 
-export type TabId = 'logbook' | 'documents' | 'maintenance' | 'todos' | 'shopping' | 'settings'
+export type TabId = 'dashboard' | 'logbook' | 'documents' | 'maintenance' | 'todos' | 'shopping' | 'settings'
 
 export type EntryType = 'document' | 'maintenance' | 'todo' | 'shopping'
 

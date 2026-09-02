@@ -14,7 +14,7 @@ export function useBoats() {
 export function useCreateBoat() {
   const queryClient = useQueryClient()
   return useMutation({
-    mutationFn: (payload: { name: string; description: string }) =>
+    mutationFn: (payload: { name: string; description?: string; location?: string }) =>
       api.postJson<Boat>('/api/boats', payload),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: queryKeys.boats }),
   })
@@ -23,8 +23,15 @@ export function useCreateBoat() {
 export function useUpdateBoat() {
   const queryClient = useQueryClient()
   return useMutation({
-    mutationFn: ({ id, ...payload }: { id: number; name: string; description: string }) =>
-      api.putJson<Boat>(`/api/boats/${id}`, payload),
+    mutationFn: ({
+      id,
+      ...payload
+    }: {
+      id: number
+      name: string
+      description?: string
+      location?: string
+    }) => api.putJson<Boat>(`/api/boats/${id}`, payload),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: queryKeys.boats }),
   })
 }

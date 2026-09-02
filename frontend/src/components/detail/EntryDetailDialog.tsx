@@ -146,9 +146,9 @@ export function EntryDetailDialog({ boatId, type, entry, onClose }: EntryDetailD
                 href={view.link}
                 target="_blank"
                 rel="noreferrer"
-                className="inline-flex max-w-full items-center gap-2 rounded-xl bg-ocean-100 px-3.5 py-2.5 text-sm font-semibold text-ocean-900 ring-1 ring-ocean-400 hover:bg-ocean-200"
+                className="inline-flex max-w-full items-center gap-2 rounded-xl bg-secondary-fixed px-4 py-2.5 text-sm font-semibold text-on-secondary-fixed border border-secondary-fixed-dim/40 hover:bg-secondary-fixed-dim/80 shadow-xs transition-colors"
               >
-                <ExternalLink className="size-4 shrink-0" />
+                <ExternalLink className="size-4 shrink-0 text-secondary" />
                 <span className="truncate">{view.link}</span>
               </a>
             )}

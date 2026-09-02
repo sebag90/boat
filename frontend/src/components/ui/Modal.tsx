@@ -55,7 +55,7 @@ export function Modal({ open, onClose, title, eyebrow, size = 'md', footer, chil
 
   return createPortal(
     <div
-      className="fixed inset-0 z-50 flex items-end justify-center overflow-y-auto overscroll-contain bg-navy-950/45 p-0 backdrop-blur-sm sm:items-start sm:p-6 sm:py-10"
+      className="fixed inset-0 z-50 flex items-end justify-center overflow-y-auto overscroll-contain bg-primary-container/60 p-0 backdrop-blur-md sm:items-start sm:p-6 sm:py-10"
       onMouseDown={(event) => {
         if (event.target === event.currentTarget) onClose()
       }}
@@ -66,16 +66,16 @@ export function Modal({ open, onClose, title, eyebrow, size = 'md', footer, chil
         role="dialog"
         aria-modal="true"
         className={cn(
-          'relative flex max-h-[94dvh] w-full flex-col overflow-hidden bg-parchment shadow-float',
-          'rounded-t-card sm:rounded-card',
+          'relative flex max-h-[92dvh] w-full flex-col overflow-hidden bg-surface-container-lowest shadow-float border border-outline-variant/40',
+          'rounded-t-[24px] sm:rounded-[24px]',
           'animate-[modal-in_.28s_cubic-bezier(.32,.72,0,1)]',
           SIZES[size],
         )}
       >
         <ModalHeader title={title} eyebrow={eyebrow} onClose={onClose} />
-        <div className="min-h-0 flex-1 overflow-y-auto px-5 py-5 sm:px-6">{children}</div>
+        <div className="min-h-0 flex-1 overflow-y-auto p-6 sm:p-7">{children}</div>
         {footer && (
-          <div className="flex flex-wrap items-center justify-end gap-2 border-t border-navy-200 bg-white px-5 py-3.5 sm:px-6">
+          <div className="flex flex-wrap items-center justify-end gap-3 border-t border-outline-variant/30 bg-surface-container-low/60 px-6 py-4">
             {footer}
           </div>
         )}
@@ -97,16 +97,21 @@ function ModalHeader({
 }) {
   const { t } = useI18n()
   return (
-    <header className="relative flex items-start gap-4 bg-white px-5 py-4 shadow-xs sm:px-6">
+    <header className="relative flex items-start gap-4 border-b border-outline-variant/30 bg-surface-container-lowest px-6 py-5">
       <div className="min-w-0 flex-1">
         {eyebrow && (
-          <p className="mb-1 label-mono text-navy-600">
-            {eyebrow}
-          </p>
+          <p className="label-caps text-secondary font-semibold mb-1">{eyebrow}</p>
         )}
-        <h2 className="text-headline-md break-words text-navy-950">{title}</h2>
+        <h2 className="font-display text-xl sm:text-2xl font-semibold tracking-tight text-primary">
+          {title}
+        </h2>
       </div>
-      <IconButton label={t('action.close')} icon={<X className="size-5" />} onClick={onClose} />
+      <IconButton
+        label={t('action.close')}
+        icon={<X className="size-5" />}
+        onClick={onClose}
+        className="-mr-2 -mt-1 text-on-surface-variant hover:bg-surface-container hover:text-on-surface"
+      />
     </header>
   )
 }

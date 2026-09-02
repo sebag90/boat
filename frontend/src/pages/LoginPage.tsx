@@ -43,16 +43,18 @@ export function LoginPage() {
   }
 
   return (
-    <div className="relative flex min-h-dvh flex-col items-center justify-center overflow-hidden px-4 py-10">
+    <div className="relative flex min-h-dvh flex-col items-center justify-center overflow-hidden px-4 py-10 bg-surface">
       <Horizon />
 
-      <div className="relative w-full max-w-md">
+      <div className="relative w-full max-w-md z-10">
         <div className="mb-6 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <Logo className="size-11" />
             <div>
-              <p className="text-headline-md text-navy-950">{t('app.name')}</p>
-              <p className="label-mono text-navy-500">{t('app.fleet')}</p>
+              <p className="font-display text-xl font-bold tracking-tight text-primary">
+                {t('app.name')}
+              </p>
+              <p className="label-caps text-secondary font-semibold">{t('app.fleet')}</p>
             </div>
           </div>
           <LanguageToggle />
@@ -60,11 +62,13 @@ export function LoginPage() {
 
         <form
           onSubmit={onSubmit}
-          className="rounded-card bg-white px-6 py-7 shadow-float"
+          className="rounded-[24px] bg-surface-container-lowest border border-outline-variant/30 px-7 py-8 shadow-float"
         >
-          <h1 className="text-headline-lg text-navy-950">{t('login.title')}</h1>
-          <p className="mt-1 text-sm text-navy-600">{t('login.subtitle')}</p>
-          <div className="rope-divider my-5" />
+          <h1 className="font-display text-2xl sm:text-3xl font-bold tracking-tight text-primary">
+            {t('login.title')}
+          </h1>
+          <p className="mt-1 text-sm text-on-surface-variant">{t('login.subtitle')}</p>
+          <div className="rope-divider my-6" />
 
           <div className="space-y-4">
             <Field label={t('login.username')} htmlFor="username">
@@ -91,25 +95,32 @@ export function LoginPage() {
 
             <InlineError message={error} />
 
-            <Button type="submit" size="lg" full disabled={busy} icon={busy ? <Spinner /> : <Anchor className="size-4" />}>
+            <Button
+              type="submit"
+              size="lg"
+              full
+              disabled={busy}
+              icon={busy ? <Spinner /> : <Anchor className="size-4.5" />}
+              className="mt-2"
+            >
               {busy ? t('login.working') : t('login.submit')}
             </Button>
           </div>
 
-          <div className="mt-5 border-t border-navy-200 pt-4">
+          <div className="mt-6 border-t border-outline-variant/20 pt-4">
             <button
               type="button"
               onClick={() => setShowAdvanced((value) => !value)}
-              className="flex w-full items-center gap-1.5 label-mono text-navy-500 hover:text-navy-950"
+              className="flex w-full items-center gap-2 label-caps text-on-surface-variant hover:text-primary transition-colors cursor-pointer"
             >
-              <Server className="size-3.5" />
-              {t('login.advanced')}
+              <Server className="size-3.5 text-secondary" />
+              <span>{t('login.advanced')}</span>
               <ChevronDown
                 className={cn('ml-auto size-4 transition-transform', showAdvanced && 'rotate-180')}
               />
             </button>
             {showAdvanced && (
-              <div className="mt-3">
+              <div className="mt-4">
                 <Field label={t('login.apiHost')} hint={t('login.apiHostHint')} htmlFor="apiHost">
                   <TextInput
                     id="apiHost"
@@ -124,7 +135,7 @@ export function LoginPage() {
           </div>
         </form>
 
-        <p className="mt-5 text-center text-xs text-navy-600">{t('app.tagline')}</p>
+        <p className="mt-6 text-center label-caps text-on-surface-variant/70">{t('app.tagline')}</p>
       </div>
     </div>
   )
@@ -143,7 +154,7 @@ interface IconInputProps {
 function IconInput({ id, icon, value, onChange, type = 'text', ...rest }: IconInputProps) {
   return (
     <div className="relative">
-      <span className="pointer-events-none absolute top-1/2 left-3.5 -translate-y-1/2 text-navy-400">
+      <span className="pointer-events-none absolute top-1/2 left-3.5 -translate-y-1/2 text-outline">
         {icon}
       </span>
       <TextInput
@@ -158,12 +169,12 @@ function IconInput({ id, icon, value, onChange, type = 'text', ...rest }: IconIn
   )
 }
 
-/** Tonal wash behind the sign-in card. */
+/** Luxury atmospheric backdrop. */
 function Horizon() {
   return (
     <div aria-hidden="true" className="pointer-events-none absolute inset-0 overflow-hidden">
-      <div className="chart-grid absolute inset-0" />
-      <div className="absolute inset-x-0 bottom-0 h-1/2 bg-linear-to-t from-ocean-100 to-transparent" />
+      <div className="chart-grid absolute inset-0 opacity-40" />
+      <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-secondary-fixed/40 to-transparent" />
     </div>
   )
 }

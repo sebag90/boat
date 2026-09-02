@@ -26,7 +26,7 @@ export function AttachmentBlock({ filename, contentType, path, label }: Attachme
 
   return (
     <section className="space-y-3">
-      <h3 className="label-mono text-navy-600">
+      <h3 className="label-caps text-on-surface-variant font-semibold">
         {label ?? t('label.attachment')}
       </h3>
 
@@ -34,31 +34,31 @@ export function AttachmentBlock({ filename, contentType, path, label }: Attachme
         href={href}
         target="_blank"
         rel="noreferrer"
-        className="group flex items-center gap-3 rounded-card border border-navy-200 bg-white p-3 transition-shadow hover:shadow-chart"
+        className="group flex items-center gap-3.5 rounded-2xl border border-outline-variant/30 bg-surface-container-low/70 p-3.5 transition-all hover:bg-surface-container-low hover:border-secondary/40 shadow-xs"
       >
-        <span className="flex size-10 shrink-0 items-center justify-center rounded bg-tint-strong text-navy-900">
+        <span className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-secondary-fixed text-secondary shadow-xs">
           {pdf ? (
-            <FileText className="size-5 text-signal-600" />
+            <FileText className="size-5 text-error" />
           ) : image ? (
-            <ImageIcon className="size-5 text-ocean-700" />
+            <ImageIcon className="size-5 text-secondary" />
           ) : video ? (
-            <Film className="size-5 text-ocean-700" />
+            <Film className="size-5 text-secondary" />
           ) : (
             <Paperclip className="size-5" />
           )}
         </span>
         <span className="min-w-0 flex-1">
-          <span className="block truncate text-sm font-medium text-navy-900">{filename}</span>
-          <span className="text-xs text-navy-500">{t('action.open')}</span>
+          <span className="block truncate text-sm font-semibold text-primary">{filename}</span>
+          <span className="text-xs text-on-surface-variant">{t('action.open')}</span>
         </span>
-        <ExternalLink className="size-4 shrink-0 text-navy-400 transition-colors group-hover:text-navy-800" />
+        <ExternalLink className="size-4 shrink-0 text-outline group-hover:text-secondary transition-colors" />
       </a>
 
       {pdf && (
         <iframe
           src={href}
           title={filename}
-          className="h-[65vh] max-h-[560px] w-full rounded-xl bg-white border border-navy-200"
+          className="h-[65vh] max-h-[560px] w-full rounded-2xl bg-white border border-outline-variant/30 shadow-xs"
         />
       )}
 
@@ -67,7 +67,7 @@ export function AttachmentBlock({ filename, contentType, path, label }: Attachme
           <img
             src={href}
             alt={filename}
-            className="max-h-[520px] w-full rounded-xl bg-white object-contain border border-navy-200"
+            className="max-h-[520px] w-full rounded-2xl bg-white object-contain border border-outline-variant/30 shadow-xs"
           />
         </a>
       )}
@@ -76,8 +76,7 @@ export function AttachmentBlock({ filename, contentType, path, label }: Attachme
         <video
           src={href}
           controls
-          playsInline
-          className="max-h-[520px] w-full rounded-xl bg-black object-contain border border-navy-200"
+          className="max-h-[520px] w-full rounded-2xl bg-black shadow-xs"
         />
       )}
     </section>

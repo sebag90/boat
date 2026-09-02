@@ -33,30 +33,51 @@ export function BoatSelector({ boats, selected, onSelect, onCreate, dropUp }: Bo
         onClick={() => setOpen((value) => !value)}
         aria-expanded={open}
         className={cn(
-          'flex w-full items-center gap-2.5 rounded-xl border bg-white px-3 py-2 text-left transition-colors sm:min-w-[13rem]',
-          open ? 'border-navy-900' : 'border-navy-200 hover:border-navy-400',
+          'flex w-full items-center gap-3 rounded-2xl p-2.5 text-left transition-all sm:min-w-[13rem]',
+          dropUp
+            ? 'bg-white/10 text-white hover:bg-white/15 border border-white/10'
+            : 'bg-surface-container-low text-on-surface hover:bg-surface-container border border-outline-variant/30',
         )}
       >
-        <span className="flex size-8 shrink-0 items-center justify-center rounded bg-tint-strong text-navy-900">
-          <Sailboat className="size-4" />
+        <span
+          className={cn(
+            'flex size-9 shrink-0 items-center justify-center rounded-xl',
+            dropUp ? 'bg-secondary text-white' : 'bg-primary-fixed text-on-primary-fixed',
+          )}
+        >
+          <Sailboat className="size-4.5" />
         </span>
         <span className="min-w-0 flex-1">
-          <span className="block truncate text-sm font-semibold text-navy-950">
+          <span
+            className={cn(
+              'block truncate text-sm font-semibold',
+              dropUp ? 'text-white' : 'text-on-surface',
+            )}
+          >
             {selected?.name ?? t('nav.selectVessel')}
           </span>
-          <span className="block truncate text-[0.7rem] text-navy-500">
+          <span
+            className={cn(
+              'block truncate text-[11px]',
+              dropUp ? 'text-on-primary-container' : 'text-on-surface-variant',
+            )}
+          >
             {selected?.description || `${boats.length} ${t('fleet.vessels')}`}
           </span>
         </span>
         <ChevronDown
-          className={cn('size-4 shrink-0 text-navy-500 transition-transform', open && 'rotate-180')}
+          className={cn(
+            'size-4 shrink-0 transition-transform',
+            dropUp ? 'text-on-primary-container' : 'text-on-surface-variant',
+            open && 'rotate-180',
+          )}
         />
       </button>
 
       {open && (
         <div
           className={cn(
-            'absolute right-0 left-0 z-40 overflow-hidden rounded-card border border-navy-200 bg-white shadow-float',
+            'absolute right-0 left-0 z-50 overflow-hidden rounded-2xl border border-outline-variant/40 bg-surface-container-lowest shadow-float',
             dropUp ? 'bottom-full mb-2' : 'top-full mt-2 sm:left-auto sm:w-72',
           )}
         >
@@ -69,19 +90,19 @@ export function BoatSelector({ boats, selected, onSelect, onCreate, dropUp }: Bo
                     onSelect(boat)
                     setOpen(false)
                   }}
-                  className="flex w-full items-center gap-2 px-3 py-2 text-left hover:bg-ocean-50"
+                  className="flex w-full items-center gap-2.5 px-4 py-2.5 text-left transition-colors hover:bg-surface-container-low"
                 >
                   <span className="min-w-0 flex-1">
-                    <span className="block truncate text-sm font-medium text-navy-900">
+                    <span className="block truncate text-sm font-semibold text-on-surface">
                       {boat.name}
                     </span>
                     {boat.description && (
-                      <span className="block truncate text-xs text-navy-500">
+                      <span className="block truncate text-xs text-on-surface-variant">
                         {boat.description}
                       </span>
                     )}
                   </span>
-                  {selected?.id === boat.id && <Check className="size-4 shrink-0 text-foam-600" />}
+                  {selected?.id === boat.id && <Check className="size-4 shrink-0 text-secondary" />}
                 </button>
               </li>
             ))}
@@ -92,7 +113,7 @@ export function BoatSelector({ boats, selected, onSelect, onCreate, dropUp }: Bo
               onCreate()
               setOpen(false)
             }}
-            className="flex w-full items-center gap-2 border-t border-navy-200 bg-navy-50 px-3 py-2.5 text-sm font-semibold text-navy-700 hover:bg-navy-100"
+            className="flex w-full items-center gap-2 border-t border-outline-variant/30 bg-surface-container-low px-4 py-3 text-sm font-semibold text-secondary hover:bg-surface-container transition-colors"
           >
             <Plus className="size-4" />
             {t('nav.newVessel')}
