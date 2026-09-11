@@ -120,6 +120,7 @@ const checks: [string, boolean][] = [
   ['renders documents tab', body.includes('Manual') && body.includes('Documents Locker')],
   ['renders maintenance preview as date - title', body.includes('10-05-2026 - Impeller')],
   ['renders maintenance picture count', body.includes('2 Photos &amp; Videos') || body.includes('2 Photos & Videos')],
+  ['renders download button', body.includes('Download')],
   ['renders todos tab', body.includes('Check bilge')],
   ['renders shopping tab', body.includes('Shackle')],
   ['renders settings tab', body.includes('Danger zone')],

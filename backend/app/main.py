@@ -1,4 +1,6 @@
 import io
+import os
+import zipfile
 from datetime import date, datetime
 
 from fastapi import FastAPI, Depends, HTTPException, UploadFile, File, Form
@@ -166,14 +168,15 @@ async def create_document(
 
 
 @app.get("/api/documents/{doc_id}/download")
-def download_document(doc_id: int, db: Session = Depends(get_db)):
+def download_document(doc_id: int, download: bool = False, db: Session = Depends(get_db)):
     doc = db.get(models.Document, doc_id)
     if not doc or not doc.data:
         raise HTTPException(404, "Document file not found")
+    disposition = "attachment" if download else "inline"
     return StreamingResponse(
         io.BytesIO(doc.data),
         media_type=doc.content_type or "application/octet-stream",
-        headers={"Content-Disposition": f'inline; filename="{doc.filename}"'},
+        headers={"Content-Disposition": f'{disposition}; filename="{doc.filename}"'},
     )
 
 
@@ -297,14 +300,15 @@ async def update_maintenance(
 
 
 @app.get("/api/maintenance/{record_id}/receipt")
-def download_receipt(record_id: int, db: Session = Depends(get_db)):
+def download_receipt(record_id: int, download: bool = False, db: Session = Depends(get_db)):
     record = db.get(models.Maintenance, record_id)
     if not record or not record.receipt_data:
         raise HTTPException(404, "Receipt not found")
+    disposition = "attachment" if download else "inline"
     return StreamingResponse(
         io.BytesIO(record.receipt_data),
         media_type=record.receipt_content_type or "application/octet-stream",
-        headers={"Content-Disposition": f'inline; filename="{record.receipt_filename}"'},
+        headers={"Content-Disposition": f'{disposition}; filename="{record.receipt_filename}"'},
     )
 
 
@@ -438,15 +442,104 @@ def update_photo(photo_id: int, payload: schemas.PhotoUpdate, db: Session = Depe
     return photo
 
 
+def _zip_photos(photos: list[models.Photo], archive_name: str) -> StreamingResponse:
+    if not photos:
+        raise HTTPException(404, "No photos to download")
+    buf = io.BytesIO()
+    with zipfile.ZipFile(buf, "w", compression=zipfile.ZIP_DEFLATED) as zf:
+        seen: dict[str, int] = {}
+        for p in photos:
+            name = p.filename or f"photo_{p.id}.jpg"
+            if name in seen:
+                seen[name] += 1
+                base, ext = os.path.splitext(name)
+                zip_name = f"{base}_{seen[name]}{ext}"
+            else:
+                seen[name] = 1
+                zip_name = name
+            zf.writestr(zip_name, p.data)
+    buf.seek(0)
+    return StreamingResponse(
+        buf,
+        media_type="application/zip",
+        headers={"Content-Disposition": f'attachment; filename="{archive_name}.zip"'},
+    )
+
+
+@app.get("/api/maintenance/{record_id}/photos/download")
+def download_maintenance_photos(
+    record_id: int,
+    album: str | None = None,
+    ids: str | None = None,
+    db: Session = Depends(get_db),
+):
+    if not db.get(models.Maintenance, record_id):
+        raise HTTPException(404, "Record not found")
+    query = db.query(models.Photo).filter_by(maintenance_id=record_id)
+    if album == "__uncategorized__":
+        query = query.filter((models.Photo.album == None) | (models.Photo.album == ""))
+    elif album:
+        query = query.filter_by(album=album)
+    if ids:
+        id_list = [int(x.strip()) for x in ids.split(",") if x.strip().isdigit()]
+        if id_list:
+            query = query.filter(models.Photo.id.in_(id_list))
+    photos = query.order_by(models.Photo.position, models.Photo.id).all()
+    archive_name = f"maintenance_{record_id}_photos"
+    if album and album != "__uncategorized__":
+        archive_name += f"_{album}"
+    return _zip_photos(photos, archive_name)
+
+
+@app.get("/api/logbook/{entry_id}/photos/download")
+def download_log_photos(
+    entry_id: int,
+    album: str | None = None,
+    ids: str | None = None,
+    db: Session = Depends(get_db),
+):
+    if not db.get(models.LogEntry, entry_id):
+        raise HTTPException(404, "Log entry not found")
+    query = db.query(models.Photo).filter_by(log_id=entry_id)
+    if album == "__uncategorized__":
+        query = query.filter((models.Photo.album == None) | (models.Photo.album == ""))
+    elif album:
+        query = query.filter_by(album=album)
+    if ids:
+        id_list = [int(x.strip()) for x in ids.split(",") if x.strip().isdigit()]
+        if id_list:
+            query = query.filter(models.Photo.id.in_(id_list))
+    photos = query.order_by(models.Photo.position, models.Photo.id).all()
+    archive_name = f"logbook_{entry_id}_photos"
+    if album and album != "__uncategorized__":
+        archive_name += f"_{album}"
+    return _zip_photos(photos, archive_name)
+
+
+@app.get("/api/photos/download")
+def download_photos_by_ids(ids: str, db: Session = Depends(get_db)):
+    id_list = [int(x.strip()) for x in ids.split(",") if x.strip().isdigit()]
+    if not id_list:
+        raise HTTPException(400, "No photo IDs provided")
+    photos = (
+        db.query(models.Photo)
+        .filter(models.Photo.id.in_(id_list))
+        .order_by(models.Photo.position, models.Photo.id)
+        .all()
+    )
+    return _zip_photos(photos, "photos")
+
+
 @app.get("/api/photos/{photo_id}")
-def download_photo(photo_id: int, db: Session = Depends(get_db)):
+def download_photo(photo_id: int, download: bool = False, db: Session = Depends(get_db)):
     photo = db.get(models.Photo, photo_id)
     if not photo:
         raise HTTPException(404, "Photo not found")
+    disposition = "attachment" if download else "inline"
     return StreamingResponse(
         io.BytesIO(photo.data),
         media_type=photo.content_type,
-        headers={"Content-Disposition": f'inline; filename="{photo.filename}"'},
+        headers={"Content-Disposition": f'{disposition}; filename="{photo.filename}"'},
     )
 
 
@@ -579,14 +672,15 @@ async def update_todo(
 
 
 @app.get("/api/todos/{item_id}/file")
-def download_todo_file(item_id: int, db: Session = Depends(get_db)):
+def download_todo_file(item_id: int, download: bool = False, db: Session = Depends(get_db)):
     item = db.get(models.Todo, item_id)
     if not item or not item.file_data:
         raise HTTPException(404, "File not found")
+    disposition = "attachment" if download else "inline"
     return StreamingResponse(
         io.BytesIO(item.file_data),
         media_type=item.file_content_type or "application/octet-stream",
-        headers={"Content-Disposition": f'inline; filename="{item.file_filename}"'},
+        headers={"Content-Disposition": f'{disposition}; filename="{item.file_filename}"'},
     )
 
 
@@ -693,14 +787,15 @@ async def update_shopping(
 
 
 @app.get("/api/shopping/{item_id}/file")
-def download_shopping_file(item_id: int, db: Session = Depends(get_db)):
+def download_shopping_file(item_id: int, download: bool = False, db: Session = Depends(get_db)):
     item = db.get(models.ShoppingItem, item_id)
     if not item or not item.file_data:
         raise HTTPException(404, "File not found")
+    disposition = "attachment" if download else "inline"
     return StreamingResponse(
         io.BytesIO(item.file_data),
         media_type=item.file_content_type or "application/octet-stream",
-        headers={"Content-Disposition": f'inline; filename="{item.file_filename}"'},
+        headers={"Content-Disposition": f'{disposition}; filename="{item.file_filename}"'},
     )
 
 

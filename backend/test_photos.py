@@ -3,6 +3,7 @@
 Uses a throwaway sqlite DB and htpasswd file; no pytest, no fixtures.
 """
 import base64
+import io
 import os
 import tempfile
 
@@ -80,6 +81,35 @@ def demo():
         assert photo_by_id[more[0]["id"]]["album"] == "forward cabin"
         assert photo_by_id[listed[1]["id"]]["album"] == "back cabin"
         assert photo_by_id[listed[0]["id"]]["album"] is None
+
+        # test single photo download with disposition=attachment
+        dl = client.get(f"/api/photos/{more[0]['id']}?download=true")
+        assert dl.status_code == 200
+        assert "attachment" in dl.headers["content-disposition"]
+        inline = client.get(f"/api/photos/{more[0]['id']}")
+        assert "inline" in inline.headers["content-disposition"]
+
+        # test multi-photo zip download for parent
+        zip_res = client.get(f"/api/{parent}/{pid}/photos/download")
+        assert zip_res.status_code == 200
+        assert zip_res.headers["content-type"] == "application/zip"
+        import zipfile
+        with zipfile.ZipFile(io.BytesIO(zip_res.content)) as zf:
+            assert len(zf.namelist()) == 3
+            assert "clip.mp4" in zf.namelist()
+
+        # test album-filtered zip download
+        album_res = client.get(f"/api/{parent}/{pid}/photos/download?album=forward%20cabin")
+        assert album_res.status_code == 200
+        with zipfile.ZipFile(io.BytesIO(album_res.content)) as zf:
+            assert zf.namelist() == ["clip.mp4"]
+
+        # test multi-photo zip download by ids
+        ids_param = f"{listed[1]['id']},{more[0]['id']}"
+        by_ids = client.get(f"/api/photos/download?ids={ids_param}")
+        assert by_ids.status_code == 200
+        with zipfile.ZipFile(io.BytesIO(by_ids.content)) as zf:
+            assert len(zf.namelist()) == 2
 
         assert client.delete(f"/api/photos/{listed[0]['id']}").status_code == 200
         assert len(client.get(f"/api/{parent}/{pid}/photos").json()) == 2

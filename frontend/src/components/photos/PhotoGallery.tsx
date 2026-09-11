@@ -1,7 +1,10 @@
 import { useEffect, useMemo, useState } from 'react'
 import {
+  Check,
+  CheckSquare,
   ChevronLeft,
   ChevronRight,
+  Download,
   ExternalLink,
   FolderPlus,
   GripVertical,
@@ -30,6 +33,10 @@ export function PhotoGallery({ parent, parentId }: { parent: PhotoParent; parent
   const [preview, setPreview] = useState<Photo[] | null>(null)
   const [viewIndex, setViewIndex] = useState<number | null>(null)
   const [error, setError] = useState<string | null>(null)
+
+  // Multi-select state
+  const [isSelectMode, setIsSelectMode] = useState(false)
+  const [selectedIds, setSelectedIds] = useState<Set<number>>(new Set())
 
   // Dialog states
   const [isCreatingAlbum, setIsCreatingAlbum] = useState(false)
@@ -219,6 +226,38 @@ export function PhotoGallery({ parent, parentId }: { parent: PhotoParent; parent
     }
   }
 
+  function toggleSelect(id: number) {
+    setSelectedIds((prev) => {
+      const next = new Set(prev)
+      if (next.has(id)) next.delete(id)
+      else next.add(id)
+      return next
+    })
+  }
+
+  function toggleSelectAll() {
+    if (selectedIds.size === shown.length) {
+      setSelectedIds(new Set())
+    } else {
+      setSelectedIds(new Set(shown.map((p) => p.id)))
+    }
+  }
+
+  const downloadAllUrl = useMemo(() => {
+    let path = `/api/${parent}/${parentId}/photos/download`
+    if (activeAlbum === '__uncategorized__') {
+      path += '?album=__uncategorized__'
+    } else if (activeAlbum) {
+      path += `?album=${encodeURIComponent(activeAlbum)}`
+    }
+    return attachmentUrl(path)
+  }, [parent, parentId, activeAlbum])
+
+  const downloadSelectedUrl = useMemo(() => {
+    if (selectedIds.size === 0) return ''
+    return attachmentUrl(`/api/photos/download?ids=${Array.from(selectedIds).join(',')}`)
+  }, [selectedIds])
+
   return (
     <section className="space-y-3">
       <div className="flex flex-wrap items-center justify-between gap-2">
@@ -226,17 +265,79 @@ export function PhotoGallery({ parent, parentId }: { parent: PhotoParent; parent
           {t('photos.title')} · {photos.length}
         </h3>
 
-        <button
-          type="button"
-          onClick={() => {
-            setNewAlbumInput('')
-            setIsCreatingAlbum(true)
-          }}
-          className="inline-flex items-center gap-1 rounded-lg bg-navy-100 px-2.5 py-1 text-xs font-semibold text-navy-800 transition-colors hover:bg-ocean-100 hover:text-ocean-900"
-        >
-          <FolderPlus className="size-3.5" />
-          {t('photos.newAlbum')}
-        </button>
+        <div className="flex flex-wrap items-center gap-2">
+          {photos.length > 0 && (
+            isSelectMode ? (
+              <>
+                <span className="text-xs font-semibold text-navy-700">
+                  {selectedIds.size} / {shown.length} {t('photos.selected')}
+                </span>
+                <button
+                  type="button"
+                  onClick={toggleSelectAll}
+                  className="rounded-lg bg-navy-100 px-2.5 py-1 text-xs font-semibold text-navy-800 transition-colors hover:bg-ocean-100 hover:text-ocean-900"
+                >
+                  {selectedIds.size === shown.length ? t('action.deselectAll') : t('action.selectAll')}
+                </button>
+                {selectedIds.size > 0 && (
+                  <a
+                    href={downloadSelectedUrl}
+                    download="photos.zip"
+                    className="inline-flex items-center gap-1 rounded-lg bg-navy-950 px-2.5 py-1 text-xs font-semibold text-white transition-colors hover:bg-navy-800 shadow-xs"
+                  >
+                    <Download className="size-3.5" />
+                    {t('photos.downloadSelected')} ({selectedIds.size})
+                  </a>
+                )}
+                <button
+                  type="button"
+                  onClick={() => {
+                    setIsSelectMode(false)
+                    setSelectedIds(new Set())
+                  }}
+                  className="rounded-lg px-2 py-1 text-xs font-semibold text-navy-600 hover:text-navy-900"
+                >
+                  {t('action.cancel')}
+                </button>
+              </>
+            ) : (
+              <>
+                <a
+                  href={downloadAllUrl}
+                  download={activeAlbum ? `${activeAlbum}.zip` : 'photos.zip'}
+                  title={activeAlbum ? t('photos.downloadAlbum') : t('photos.downloadAll')}
+                  className="inline-flex items-center gap-1 rounded-lg bg-navy-100 px-2.5 py-1 text-xs font-semibold text-navy-800 transition-colors hover:bg-ocean-100 hover:text-ocean-900"
+                >
+                  <Download className="size-3.5" />
+                  {activeAlbum
+                    ? `${t('photos.downloadAlbum')} (${shown.length})`
+                    : `${t('photos.downloadAll')} (${photos.length})`}
+                </a>
+
+                <button
+                  type="button"
+                  onClick={() => setIsSelectMode(true)}
+                  className="inline-flex items-center gap-1 rounded-lg bg-navy-100 px-2.5 py-1 text-xs font-semibold text-navy-800 transition-colors hover:bg-ocean-100 hover:text-ocean-900"
+                >
+                  <CheckSquare className="size-3.5" />
+                  {t('photos.select')}
+                </button>
+              </>
+            )
+          )}
+
+          <button
+            type="button"
+            onClick={() => {
+              setNewAlbumInput('')
+              setIsCreatingAlbum(true)
+            }}
+            className="inline-flex items-center gap-1 rounded-lg bg-navy-100 px-2.5 py-1 text-xs font-semibold text-navy-800 transition-colors hover:bg-ocean-100 hover:text-ocean-900"
+          >
+            <FolderPlus className="size-3.5" />
+            {t('photos.newAlbum')}
+          </button>
+        </div>
       </div>
 
       {/* Album filter tabs */}
@@ -313,14 +414,16 @@ export function PhotoGallery({ parent, parentId }: { parent: PhotoParent; parent
           {shown.map((photo, index) => (
             <li
               key={photo.id}
-              draggable
+              draggable={!isSelectMode}
               onDragStart={(event) => {
+                if (isSelectMode) return
                 event.dataTransfer.effectAllowed = 'move'
                 setDragId(photo.id)
               }}
               onDragEnd={commitOrder}
-              onDragEnter={() => previewAt(index)}
+              onDragEnter={() => !isSelectMode && previewAt(index)}
               onDragOver={(event) => {
+                if (isSelectMode) return
                 event.preventDefault()
                 event.dataTransfer.dropEffect = 'move'
               }}
@@ -328,12 +431,19 @@ export function PhotoGallery({ parent, parentId }: { parent: PhotoParent; parent
                 event.preventDefault()
                 event.stopPropagation()
               }}
+              onClick={() => isSelectMode && toggleSelect(photo.id)}
               className={cn(
-                'group relative cursor-grab overflow-hidden rounded-card border border-navy-200',
+                'group relative overflow-hidden rounded-card border border-navy-200 transition-all',
+                isSelectMode ? 'cursor-pointer' : 'cursor-grab',
                 dragId === photo.id && 'ring-2 ring-navy-500 opacity-60',
+                isSelectMode && selectedIds.has(photo.id) && 'ring-2 ring-navy-950 border-navy-950',
               )}
             >
-              <button type="button" onClick={() => setViewIndex(index)} className="block w-full">
+              <button
+                type="button"
+                onClick={() => !isSelectMode && setViewIndex(index)}
+                className="block w-full"
+              >
                 {isVideo(photo.filename, photo.content_type) ? (
                   <div className="relative h-32 w-full bg-navy-950">
                     <video
@@ -358,64 +468,92 @@ export function PhotoGallery({ parent, parentId }: { parent: PhotoParent; parent
                 )}
               </button>
 
-              <span className="absolute top-1.5 left-1.5 flex size-7 items-center justify-center rounded-lg bg-white/90 text-navy-400 shadow-sm">
-                <GripVertical className="size-4" />
-              </span>
-
-              {/* Photo album badge or move button */}
-              {photo.album?.trim() ? (
-                <button
-                  type="button"
-                  onClick={(e) => {
-                    e.stopPropagation()
-                    openMoveModal(photo)
-                  }}
-                  title={t('photos.moveToAlbum')}
-                  className="absolute bottom-1.5 left-1.5 inline-flex max-w-[calc(100%-12px)] items-center gap-1 truncate rounded-md bg-navy-950/80 px-2 py-0.5 text-[0.65rem] font-semibold text-white backdrop-blur transition-colors hover:bg-navy-950 hover:text-white"
+              {isSelectMode ? (
+                <span
+                  className={cn(
+                    'absolute top-1.5 left-1.5 flex size-6 items-center justify-center rounded-md border shadow-sm transition-all',
+                    selectedIds.has(photo.id)
+                      ? 'bg-navy-950 border-navy-950 text-white'
+                      : 'bg-white/90 border-navy-300 text-transparent',
+                  )}
                 >
-                  <Tag className="size-2.5 shrink-0" />
-                  <span className="truncate">{photo.album}</span>
-                </button>
+                  <Check className="size-3.5 stroke-[3]" />
+                </span>
               ) : (
-                <button
-                  type="button"
-                  onClick={(e) => {
-                    e.stopPropagation()
-                    openMoveModal(photo)
-                  }}
-                  title={t('photos.moveToAlbum')}
-                  className="absolute bottom-1.5 left-1.5 hidden items-center gap-1 rounded-md bg-white/90 px-1.5 py-0.5 text-[0.65rem] font-semibold text-navy-600 shadow-sm group-hover:inline-flex hover:bg-ocean-100 hover:text-navy-900"
-                >
-                  <Tag className="size-2.5" />
-                  <span>{t('photos.moveToAlbum')}</span>
-                </button>
+                <span className="absolute top-1.5 left-1.5 flex size-7 items-center justify-center rounded-lg bg-white/90 text-navy-400 shadow-sm">
+                  <GripVertical className="size-4" />
+                </span>
               )}
 
-              <div className="absolute top-1.5 right-1.5 flex items-center gap-1">
-                <button
-                  type="button"
-                  onClick={() => openMoveModal(photo)}
-                  aria-label={t('photos.moveToAlbum')}
-                  title={t('photos.moveToAlbum')}
-                  className="flex size-7 items-center justify-center rounded-lg bg-white/90 text-navy-600 shadow-sm transition-colors hover:bg-ocean-100 hover:text-ocean-900"
-                >
-                  <Tag className="size-3.5" />
-                </button>
+              {/* Photo album badge or move button */}
+              {!isSelectMode && (
+                photo.album?.trim() ? (
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      openMoveModal(photo)
+                    }}
+                    title={t('photos.moveToAlbum')}
+                    className="absolute bottom-1.5 left-1.5 inline-flex max-w-[calc(100%-12px)] items-center gap-1 truncate rounded-md bg-navy-950/80 px-2 py-0.5 text-[0.65rem] font-semibold text-white backdrop-blur transition-colors hover:bg-navy-950 hover:text-white"
+                  >
+                    <Tag className="size-2.5 shrink-0" />
+                    <span className="truncate">{photo.album}</span>
+                  </button>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      openMoveModal(photo)
+                    }}
+                    title={t('photos.moveToAlbum')}
+                    className="absolute bottom-1.5 left-1.5 hidden items-center gap-1 rounded-md bg-white/90 px-1.5 py-0.5 text-[0.65rem] font-semibold text-navy-600 shadow-sm group-hover:inline-flex hover:bg-ocean-100 hover:text-navy-900"
+                  >
+                    <Tag className="size-2.5" />
+                    <span>{t('photos.moveToAlbum')}</span>
+                  </button>
+                )
+              )}
 
-                <button
-                  type="button"
-                  onClick={() => {
-                    if (!window.confirm(t('photos.confirmDelete'))) return
-                    setError(null)
-                    remove.mutate(photo.id, { onError: report })
-                  }}
-                  aria-label={t('action.delete')}
-                  title={t('action.delete')}
-                  className="flex size-7 items-center justify-center rounded-lg bg-white/90 text-navy-500 shadow-sm transition-colors hover:bg-signal-600 hover:text-white"
-                >
-                  <Trash2 className="size-4" />
-                </button>
-              </div>
+              {!isSelectMode && (
+                <div className="absolute top-1.5 right-1.5 flex items-center gap-1">
+                  <a
+                    href={attachmentUrl(`/api/photos/${photo.id}?download=true`)}
+                    download={photo.filename}
+                    onClick={(e) => e.stopPropagation()}
+                    aria-label={t('action.download')}
+                    title={t('action.download')}
+                    className="flex size-7 items-center justify-center rounded-lg bg-white/90 text-navy-600 shadow-sm transition-colors hover:bg-ocean-100 hover:text-ocean-900"
+                  >
+                    <Download className="size-3.5" />
+                  </a>
+
+                  <button
+                    type="button"
+                    onClick={() => openMoveModal(photo)}
+                    aria-label={t('photos.moveToAlbum')}
+                    title={t('photos.moveToAlbum')}
+                    className="flex size-7 items-center justify-center rounded-lg bg-white/90 text-navy-600 shadow-sm transition-colors hover:bg-ocean-100 hover:text-ocean-900"
+                  >
+                    <Tag className="size-3.5" />
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => {
+                      if (!window.confirm(t('photos.confirmDelete'))) return
+                      setError(null)
+                      remove.mutate(photo.id, { onError: report })
+                    }}
+                    aria-label={t('action.delete')}
+                    title={t('action.delete')}
+                    className="flex size-7 items-center justify-center rounded-lg bg-white/90 text-navy-500 shadow-sm transition-colors hover:bg-signal-600 hover:text-white"
+                  >
+                    <Trash2 className="size-4" />
+                  </button>
+                </div>
+              )}
             </li>
           ))}
         </ul>
@@ -487,14 +625,25 @@ export function PhotoGallery({ parent, parentId }: { parent: PhotoParent; parent
                 {t('photos.moveToAlbum')}
               </button>
             </div>
-            <a
-              href={attachmentUrl(`/api/photos/${viewing.id}`)}
-              target="_blank"
-              rel="noreferrer"
-              className="inline-flex items-center gap-2 text-sm font-semibold text-ocean-800 hover:underline"
-            >
-              <ExternalLink className="size-4" /> {t('action.open')}
-            </a>
+            <div className="flex items-center gap-3">
+              <a
+                href={attachmentUrl(`/api/photos/${viewing.id}?download=true`)}
+                download={viewing.filename}
+                className="inline-flex items-center gap-1.5 rounded-lg bg-navy-950 px-3 py-1.5 text-xs font-semibold text-white shadow-xs hover:bg-navy-800 transition-colors"
+              >
+                <Download className="size-3.5" />
+                {t('action.download')}
+              </a>
+              <a
+                href={attachmentUrl(`/api/photos/${viewing.id}`)}
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex items-center gap-1.5 rounded-lg border border-navy-200 bg-white px-3 py-1.5 text-xs font-semibold text-navy-700 hover:bg-tint transition-colors"
+              >
+                <ExternalLink className="size-3.5" />
+                {t('action.open')}
+              </a>
+            </div>
           </div>
         </Modal>
       )}

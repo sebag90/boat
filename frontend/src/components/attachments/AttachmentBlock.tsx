@@ -1,4 +1,4 @@
-import { ExternalLink, FileText, Film, Image as ImageIcon, Paperclip } from 'lucide-react'
+import { Download, ExternalLink, FileText, Film, Image as ImageIcon, Paperclip } from 'lucide-react'
 import { useI18n } from '../../i18n'
 import { attachmentUrl } from '../../lib/api'
 import { isImage, isPdf, isVideo } from '../../lib/format'
@@ -20,6 +20,7 @@ export function AttachmentBlock({ filename, contentType, path, label }: Attachme
   if (!filename) return null
 
   const href = attachmentUrl(path)
+  const downloadHref = attachmentUrl(`${path}${path.includes('?') ? '&' : '?'}download=true`)
   const pdf = isPdf(filename)
   const image = isImage(filename, contentType)
   const video = isVideo(filename, contentType)
@@ -30,12 +31,7 @@ export function AttachmentBlock({ filename, contentType, path, label }: Attachme
         {label ?? t('label.attachment')}
       </h3>
 
-      <a
-        href={href}
-        target="_blank"
-        rel="noreferrer"
-        className="group flex items-center gap-3.5 rounded-2xl border border-outline-variant/30 bg-surface-container-low/70 p-3.5 transition-all hover:bg-surface-container-low hover:border-secondary/40 shadow-xs"
-      >
+      <div className="flex items-center gap-3.5 rounded-2xl border border-outline-variant/30 bg-surface-container-low/70 p-3.5 shadow-xs">
         <span className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-secondary-fixed text-secondary shadow-xs">
           {pdf ? (
             <FileText className="size-5 text-error" />
@@ -49,10 +45,29 @@ export function AttachmentBlock({ filename, contentType, path, label }: Attachme
         </span>
         <span className="min-w-0 flex-1">
           <span className="block truncate text-sm font-semibold text-primary">{filename}</span>
-          <span className="text-xs text-on-surface-variant">{t('action.open')}</span>
         </span>
-        <ExternalLink className="size-4 shrink-0 text-outline group-hover:text-secondary transition-colors" />
-      </a>
+        <div className="flex items-center gap-2 shrink-0">
+          <a
+            href={downloadHref}
+            download={filename}
+            title={t('action.download')}
+            className="inline-flex items-center gap-1.5 rounded-xl bg-secondary px-3 py-1.5 text-xs font-semibold text-white shadow-xs hover:bg-secondary/90 transition-colors"
+          >
+            <Download className="size-3.5" />
+            <span>{t('action.download')}</span>
+          </a>
+          <a
+            href={href}
+            target="_blank"
+            rel="noreferrer"
+            title={t('action.open')}
+            className="inline-flex items-center gap-1.5 rounded-xl border border-outline-variant/40 bg-surface-container-lowest px-3 py-1.5 text-xs font-semibold text-primary hover:bg-surface-container-low transition-colors shadow-xs"
+          >
+            <ExternalLink className="size-3.5 text-outline" />
+            <span>{t('action.open')}</span>
+          </a>
+        </div>
+      </div>
 
       {pdf && (
         <iframe

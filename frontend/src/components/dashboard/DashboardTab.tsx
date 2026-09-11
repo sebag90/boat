@@ -73,8 +73,7 @@ export function DashboardTab({ boat, onNavigateTab }: DashboardTabProps) {
   const current = forecast[0]
 
   const recentLogs = useMemo(() => logbook.slice(0, 3), [logbook])
-  const pendingMaintenance = useMemo(() => maintenance.slice(0, 2), [maintenance])
-  const activeTodos = useMemo(() => openTodos.slice(0, 3), [openTodos])
+  const activeTodos = useMemo(() => openTodos.slice(0, 5), [openTodos])
 
   const openVoyage = logbook.find((entry) => entry.id === selectedLogId) ?? null
 
@@ -377,7 +376,7 @@ export function DashboardTab({ boat, onNavigateTab }: DashboardTabProps) {
           </div>
         </div>
 
-        {/* Pending Maintenance & Tasks Bento Card */}
+        {/* Pending Tasks Bento Card */}
         <div className="col-span-12 lg:col-span-6 rounded-[24px] bg-surface-container-lowest border border-outline-variant/30 shadow-sm p-6 sm:p-8 flex flex-col justify-between">
           <div>
             <div className="flex items-center justify-between mb-6">
@@ -393,34 +392,13 @@ export function DashboardTab({ boat, onNavigateTab }: DashboardTabProps) {
               </button>
             </div>
 
-            {openTodos.length === 0 && pendingMaintenance.length === 0 ? (
+            {openTodos.length === 0 ? (
               <div className="py-8 text-center text-sm text-on-surface-variant">
                 <CheckCircle2 className="size-8 text-emerald-600 mx-auto mb-2 opacity-80" />
                 <p>{t('dashboard.noTasks')}</p>
               </div>
             ) : (
               <div className="space-y-3">
-                {/* Active maintenance record preview */}
-                {pendingMaintenance.map((record) => (
-                  <div
-                    key={`m-${record.id}`}
-                    onClick={() => onNavigateTab('maintenance')}
-                    className="flex items-center gap-3.5 p-3.5 bg-secondary-fixed/30 border border-secondary-fixed-dim/40 rounded-2xl cursor-pointer hover:bg-secondary-fixed/50 transition-colors"
-                  >
-                    <div className="size-9 rounded-xl bg-secondary text-white flex items-center justify-center shrink-0">
-                      <Wrench className="size-4" />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <h4 className="text-sm font-semibold text-primary truncate">
-                        {record.title}
-                      </h4>
-                      <p className="text-xs text-on-surface-variant">
-                        {formatDate(record.date)} • {t('nav.maintenance')}
-                      </p>
-                    </div>
-                  </div>
-                ))}
-
                 {/* Open Todos with direct check-off toggle */}
                 {activeTodos.map((todo) => (
                   <div
@@ -447,7 +425,7 @@ export function DashboardTab({ boat, onNavigateTab }: DashboardTabProps) {
 
           <div className="mt-6 pt-4 border-t border-outline-variant/20 flex items-center justify-between">
             <span className="text-xs text-on-surface-variant font-medium">
-              {openTodos.length} {t('todos.open')} • {maintenance.length} {t('maintenance.count')}
+              {openTodos.length} {t('todos.open')}
             </span>
             <Button
               size="sm"
