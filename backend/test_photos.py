@@ -122,6 +122,38 @@ def demo():
     client.delete(f"/api/logbook/{voyage['id']}")
     assert client.get(f"/api/logbook/{voyage['id']}/photos").json() == []
 
+    # delete attachment checks
+    doc = client.post(
+        f"/api/boats/{boat['id']}/documents",
+        data={"title": "Doc with file"},
+        files=[("files", ("test.pdf", b"pdf-content", "application/pdf"))],
+    ).json()
+    assert doc["filename"] == "test.pdf"
+    del_doc_file = client.delete(f"/api/documents/{doc['id']}/file").json()
+    assert del_doc_file["filename"] is None
+
+    todo = client.post(
+        f"/api/boats/{boat['id']}/todos",
+        data={"text": "Todo with file"},
+        files=[("files", ("todo.pdf", b"pdf-content", "application/pdf"))],
+    ).json()
+    assert todo["file_filename"] == "todo.pdf"
+    del_todo_file = client.delete(f"/api/todos/{todo['id']}/file").json()
+    assert del_todo_file["file_filename"] is None
+
+    # update with remove_file=True
+    maint_with_rcpt = client.post(
+        f"/api/boats/{boat['id']}/maintenance",
+        data={"title": "Oil", "date": "2024-06-01"},
+        files=[("files", ("receipt.pdf", b"rcpt", "application/pdf"))],
+    ).json()
+    assert maint_with_rcpt["receipt_filename"] == "receipt.pdf"
+    updated_maint = client.put(
+        f"/api/maintenance/{maint_with_rcpt['id']}",
+        data={"title": "Oil", "date": "2024-06-01", "remove_file": "true"},
+    ).json()
+    assert updated_maint["receipt_filename"] is None
+
     # unauthenticated image links are rejected
     assert TestClient(app).get("/api/photos/1").status_code == 401
     print("ok")

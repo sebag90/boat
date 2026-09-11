@@ -37,15 +37,25 @@ export function useUpdateShopping(boatId: number) {
       link?: string
       done?: boolean
       file?: File | null
+      removeFile?: boolean
     }) => {
       const form = new FormData()
       if (input.name !== undefined) form.append('name', input.name)
       if (input.description !== undefined) form.append('description', input.description)
       if (input.link !== undefined) form.append('link', input.link)
       if (input.done !== undefined) form.append('done', String(input.done))
-      if (input.file) form.append('file', input.file)
+      if (input.removeFile) form.append('remove_file', 'true')
+      else if (input.file) form.append('file', input.file)
       return api.putForm<ShoppingEntry>(`/api/shopping/${input.id}`, form)
     },
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: queryKeys.shopping(boatId) }),
+  })
+}
+
+export function useDeleteShoppingFile(boatId: number) {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: (id: number) => api.del<ShoppingEntry>(`/api/shopping/${id}/file`),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: queryKeys.shopping(boatId) }),
   })
 }

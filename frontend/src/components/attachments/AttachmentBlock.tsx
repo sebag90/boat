@@ -1,4 +1,4 @@
-import { Download, ExternalLink, FileText, Film, Image as ImageIcon, Paperclip } from 'lucide-react'
+import { Download, ExternalLink, FileText, Film, Image as ImageIcon, Paperclip, Trash2 } from 'lucide-react'
 import { useI18n } from '../../i18n'
 import { attachmentUrl } from '../../lib/api'
 import { isImage, isPdf, isVideo } from '../../lib/format'
@@ -9,13 +9,22 @@ interface AttachmentBlockProps {
   /** API path of the download route, e.g. `/api/documents/12/download`. */
   path: string
   label?: string
+  onDelete?: () => void
+  deleting?: boolean
 }
 
 /**
  * Read-only attachment viewer: filename card + open action, inline PDF iframe
  * and image preview (spec §3.4). Rendering is gated on `filename`.
  */
-export function AttachmentBlock({ filename, contentType, path, label }: AttachmentBlockProps) {
+export function AttachmentBlock({
+  filename,
+  contentType,
+  path,
+  label,
+  onDelete,
+  deleting,
+}: AttachmentBlockProps) {
   const { t } = useI18n()
   if (!filename) return null
 
@@ -66,6 +75,18 @@ export function AttachmentBlock({ filename, contentType, path, label }: Attachme
             <ExternalLink className="size-3.5 text-outline" />
             <span>{t('action.open')}</span>
           </a>
+          {onDelete && (
+            <button
+              type="button"
+              onClick={onDelete}
+              disabled={deleting}
+              title={t('action.deleteAttachment')}
+              aria-label={t('action.deleteAttachment')}
+              className="inline-flex items-center gap-1.5 rounded-xl border border-outline-variant/40 bg-surface-container-lowest px-2.5 py-1.5 text-xs font-semibold text-signal-700 hover:bg-signal-600 hover:text-white transition-colors shadow-xs disabled:opacity-50 cursor-pointer"
+            >
+              <Trash2 className="size-3.5" />
+            </button>
+          )}
         </div>
       </div>
 

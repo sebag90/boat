@@ -91,6 +91,7 @@ export const en = {
   'action.close': 'Close',
   'action.modify': 'Modify',
   'action.delete': 'Delete',
+  'action.deleteAttachment': 'Delete attachment',
   'action.search': 'Search',
   'action.open': 'Open in new tab',
   'action.download': 'Download',
@@ -260,6 +261,7 @@ export const en = {
 
   // --- confirmations -------------------------------------------------
   'confirm.deleteEntry': 'Delete this entry permanently?',
+  'confirm.deleteAttachment': 'Delete this attached file permanently?',
   'confirm.deleteVoyage': 'Delete this voyage and all its waypoints?',
   'confirm.deleteWaypoint': 'Delete this waypoint?',
   'confirm.deleteBoat': 'Permanently delete this vessel and all of her records?',

@@ -28,13 +28,28 @@ export function useCreateTodo(boatId: number) {
 export function useUpdateTodo(boatId: number) {
   const queryClient = useQueryClient()
   return useMutation({
-    mutationFn: (input: { id: number; text?: string; done?: boolean; file?: File | null }) => {
+    mutationFn: (input: {
+      id: number
+      text?: string
+      done?: boolean
+      file?: File | null
+      removeFile?: boolean
+    }) => {
       const form = new FormData()
       if (input.text !== undefined) form.append('text', input.text)
       if (input.done !== undefined) form.append('done', String(input.done))
-      if (input.file) form.append('file', input.file)
+      if (input.removeFile) form.append('remove_file', 'true')
+      else if (input.file) form.append('file', input.file)
       return api.putForm<TodoEntry>(`/api/todos/${input.id}`, form)
     },
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: queryKeys.todos(boatId) }),
+  })
+}
+
+export function useDeleteTodoFile(boatId: number) {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: (id: number) => api.del<TodoEntry>(`/api/todos/${id}/file`),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: queryKeys.todos(boatId) }),
   })
 }

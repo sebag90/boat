@@ -1,7 +1,23 @@
-import { useDeleteDocument, useUpdateDocument } from '../../api/documents'
-import { useDeleteMaintenance, useUpdateMaintenance } from '../../api/maintenance'
-import { useDeleteShopping, useUpdateShopping } from '../../api/shopping'
-import { useDeleteTodo, useUpdateTodo } from '../../api/todos'
+import {
+  useDeleteDocument,
+  useDeleteDocumentFile,
+  useUpdateDocument,
+} from '../../api/documents'
+import {
+  useDeleteMaintenance,
+  useDeleteMaintenanceReceipt,
+  useUpdateMaintenance,
+} from '../../api/maintenance'
+import {
+  useDeleteShopping,
+  useDeleteShoppingFile,
+  useUpdateShopping,
+} from '../../api/shopping'
+import {
+  useDeleteTodo,
+  useDeleteTodoFile,
+  useUpdateTodo,
+} from '../../api/todos'
 import type { AnyEntry, EntryType } from '../../lib/types'
 
 /** Unified edit draft — each form only touches the fields it owns. */
@@ -14,6 +30,7 @@ export interface EntryDraft {
   link: string
   done: boolean
   file: File | null
+  removeFile?: boolean
 }
 
 export function useEntryMutations(boatId: number) {
@@ -27,6 +44,11 @@ export function useEntryMutations(boatId: number) {
   const deleteTodo = useDeleteTodo(boatId)
   const deleteShopping = useDeleteShopping(boatId)
 
+  const deleteDocumentFile = useDeleteDocumentFile(boatId)
+  const deleteMaintenanceReceipt = useDeleteMaintenanceReceipt(boatId)
+  const deleteTodoFile = useDeleteTodoFile(boatId)
+  const deleteShoppingFile = useDeleteShoppingFile(boatId)
+
   async function update(type: EntryType, id: number, draft: EntryDraft): Promise<AnyEntry> {
     switch (type) {
       case 'document':
@@ -35,6 +57,7 @@ export function useEntryMutations(boatId: number) {
           title: draft.title,
           description: draft.description,
           file: draft.file,
+          removeFile: draft.removeFile,
         })
       case 'maintenance':
         return updateMaintenance.mutateAsync({
@@ -43,9 +66,16 @@ export function useEntryMutations(boatId: number) {
           date: draft.date,
           description: draft.description,
           file: draft.file,
+          removeFile: draft.removeFile,
         })
       case 'todo':
-        return updateTodo.mutateAsync({ id, text: draft.text, done: draft.done, file: draft.file })
+        return updateTodo.mutateAsync({
+          id,
+          text: draft.text,
+          done: draft.done,
+          file: draft.file,
+          removeFile: draft.removeFile,
+        })
       case 'shopping':
         return updateShopping.mutateAsync({
           id,
@@ -54,7 +84,21 @@ export function useEntryMutations(boatId: number) {
           link: draft.link,
           done: draft.done,
           file: draft.file,
+          removeFile: draft.removeFile,
         })
+    }
+  }
+
+  async function removeAttachment(type: EntryType, id: number): Promise<AnyEntry> {
+    switch (type) {
+      case 'document':
+        return deleteDocumentFile.mutateAsync(id)
+      case 'maintenance':
+        return deleteMaintenanceReceipt.mutateAsync(id)
+      case 'todo':
+        return deleteTodoFile.mutateAsync(id)
+      case 'shopping':
+        return deleteShoppingFile.mutateAsync(id)
     }
   }
 
@@ -85,7 +129,11 @@ export function useEntryMutations(boatId: number) {
     deleteDocument.isPending ||
     deleteMaintenance.isPending ||
     deleteTodo.isPending ||
-    deleteShopping.isPending
+    deleteShopping.isPending ||
+    deleteDocumentFile.isPending ||
+    deleteMaintenanceReceipt.isPending ||
+    deleteTodoFile.isPending ||
+    deleteShoppingFile.isPending
 
-  return { update, remove, saving, deleting }
+  return { update, remove, removeAttachment, saving, deleting }
 }

@@ -47,7 +47,7 @@ function draftFrom(type: EntryType, entry: AnyEntry): EntryDraft {
 /** Read-only first, edit only on explicit "Modify" (spec §4.2). */
 export function EntryDetailDialog({ boatId, type, entry, onClose }: EntryDetailDialogProps) {
   const { t } = useI18n()
-  const { update, remove, saving, deleting } = useEntryMutations(boatId)
+  const { update, remove, removeAttachment, saving, deleting } = useEntryMutations(boatId)
   const [current, setCurrent] = useState(entry)
   const [editMode, setEditMode] = useState(false)
   const [draft, setDraft] = useState(() => draftFrom(type, entry))
@@ -79,6 +79,18 @@ export function EntryDetailDialog({ boatId, type, entry, onClose }: EntryDetailD
     try {
       await remove(type, current.id)
       onClose()
+    } catch (cause) {
+      setError(cause instanceof Error ? cause.message : t('app.error'))
+    }
+  }
+
+  async function onDeleteAttachment() {
+    if (!window.confirm(t('confirm.deleteAttachment'))) return
+    setError(null)
+    try {
+      const updated = await removeAttachment(type, current.id)
+      setCurrent(updated)
+      setDraft(draftFrom(type, updated))
     } catch (cause) {
       setError(cause instanceof Error ? cause.message : t('app.error'))
     }
@@ -137,6 +149,7 @@ export function EntryDetailDialog({ boatId, type, entry, onClose }: EntryDetailD
           <EntryEditForm
             type={type}
             draft={draft}
+            existingFilename={view.attachment?.filename}
             onChange={(patch) => setDraft((value) => ({ ...value, ...patch }))}
           />
         ) : (
@@ -161,6 +174,8 @@ export function EntryDetailDialog({ boatId, type, entry, onClose }: EntryDetailD
                 filename={view.attachment.filename}
                 contentType={view.attachment.contentType}
                 label={view.attachment.label}
+                onDelete={onDeleteAttachment}
+                deleting={deleting}
               />
             ) : (
               <p className="text-sm font-medium text-navy-500 italic">{t('label.noAttachment')}</p>

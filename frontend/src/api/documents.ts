@@ -34,13 +34,28 @@ export function useCreateDocument(boatId: number) {
 export function useUpdateDocument(boatId: number) {
   const queryClient = useQueryClient()
   return useMutation({
-    mutationFn: (input: { id: number; title: string; description: string; file: File | null }) => {
+    mutationFn: (input: {
+      id: number
+      title: string
+      description: string
+      file: File | null
+      removeFile?: boolean
+    }) => {
       const form = new FormData()
       form.append('title', input.title)
       form.append('description', input.description)
-      if (input.file) form.append('file', input.file)
+      if (input.removeFile) form.append('remove_file', 'true')
+      else if (input.file) form.append('file', input.file)
       return api.putForm<DocumentEntry>(`/api/documents/${input.id}`, form)
     },
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: queryKeys.documents(boatId) }),
+  })
+}
+
+export function useDeleteDocumentFile(boatId: number) {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: (id: number) => api.del<DocumentEntry>(`/api/documents/${id}/file`),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: queryKeys.documents(boatId) }),
   })
 }

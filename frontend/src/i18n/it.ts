@@ -93,6 +93,7 @@ export const it: Record<TranslationKey, string> = {
   'action.close': 'Chiudi',
   'action.modify': 'Modifica',
   'action.delete': 'Elimina',
+  'action.deleteAttachment': 'Elimina allegato',
   'action.search': 'Cerca',
   'action.open': 'Apri in una nuova scheda',
   'action.download': 'Scarica',
@@ -262,6 +263,7 @@ export const it: Record<TranslationKey, string> = {
 
   // --- confirmations -------------------------------------------------
   'confirm.deleteEntry': 'Eliminare definitivamente questa voce?',
+  'confirm.deleteAttachment': 'Eliminare definitivamente questo file allegato?',
   'confirm.deleteVoyage': 'Eliminare questa navigazione e tutti i suoi waypoint?',
   'confirm.deleteWaypoint': 'Eliminare questo waypoint?',
   'confirm.deleteBoat': 'Eliminare definitivamente questa imbarcazione e tutti i suoi dati?',

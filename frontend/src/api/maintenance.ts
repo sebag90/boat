@@ -47,14 +47,24 @@ export function useUpdateMaintenance(boatId: number) {
       date: string
       description: string
       file: File | null
+      removeFile?: boolean
     }) => {
       const form = new FormData()
       form.append('title', input.title)
       form.append('date', input.date)
       form.append('description', input.description)
-      if (input.file) form.append('receipt', input.file)
+      if (input.removeFile) form.append('remove_file', 'true')
+      else if (input.file) form.append('receipt', input.file)
       return api.putForm<MaintenanceEntry>(`/api/maintenance/${input.id}`, form)
     },
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: queryKeys.maintenance(boatId) }),
+  })
+}
+
+export function useDeleteMaintenanceReceipt(boatId: number) {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: (id: number) => api.del<MaintenanceEntry>(`/api/maintenance/${id}/receipt`),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: queryKeys.maintenance(boatId) }),
   })
 }

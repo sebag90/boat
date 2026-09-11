@@ -7,11 +7,12 @@ import type { EntryType } from '../../lib/types'
 interface EntryEditFormProps {
   type: EntryType
   draft: EntryDraft
+  existingFilename?: string | null
   onChange: (patch: Partial<EntryDraft>) => void
 }
 
 /** Type-specific edit fields + single-file replacement dropzone (spec §4.2.3). */
-export function EntryEditForm({ type, draft, onChange }: EntryEditFormProps) {
+export function EntryEditForm({ type, draft, existingFilename, onChange }: EntryEditFormProps) {
   const { t } = useI18n()
 
   return (
@@ -78,10 +79,22 @@ export function EntryEditForm({ type, draft, onChange }: EntryEditFormProps) {
       )}
 
       <Field label={t('label.attachment')}>
+        {existingFilename && !draft.removeFile && !draft.file && (
+          <div className="mb-2 flex items-center justify-between rounded-xl border border-outline-variant/40 bg-surface-container p-2.5">
+            <span className="truncate text-xs font-medium text-primary">{existingFilename}</span>
+            <button
+              type="button"
+              onClick={() => onChange({ removeFile: true })}
+              className="ml-2 text-xs font-semibold text-signal-700 hover:underline cursor-pointer"
+            >
+              {t('action.remove')}
+            </button>
+          </div>
+        )}
         <Dropzone
           multiple={false}
           files={draft.file ? [draft.file] : []}
-          onChange={(files) => onChange({ file: files[0] ?? null })}
+          onChange={(files) => onChange({ file: files[0] ?? null, removeFile: false })}
           accept={type === 'document' ? 'image/*,.pdf,.doc,.docx,.txt' : 'image/*,.pdf,.doc,.docx'}
         />
       </Field>

@@ -186,6 +186,7 @@ async def update_document(
     title: str = Form(...),
     description: str = Form(""),
     file: UploadFile | None = File(None),
+    remove_file: bool = Form(False),
     db: Session = Depends(get_db),
 ):
     doc = db.get(models.Document, doc_id)
@@ -193,10 +194,27 @@ async def update_document(
         raise HTTPException(404, "Document not found")
     doc.title = title
     doc.description = description
-    if file is not None:
+    if remove_file:
+        doc.data = None
+        doc.filename = None
+        doc.content_type = None
+    elif file is not None:
         doc.data = await file.read()
         doc.filename = file.filename or "file"
         doc.content_type = file.content_type or "application/octet-stream"
+    db.commit()
+    db.refresh(doc)
+    return doc
+
+
+@app.delete("/api/documents/{doc_id}/file", response_model=schemas.DocumentOut)
+def delete_document_file(doc_id: int, db: Session = Depends(get_db)):
+    doc = db.get(models.Document, doc_id)
+    if not doc:
+        raise HTTPException(404, "Document not found")
+    doc.data = None
+    doc.filename = None
+    doc.content_type = None
     db.commit()
     db.refresh(doc)
     return doc
@@ -282,6 +300,7 @@ async def update_maintenance(
     date: date = Form(...),
     description: str = Form(""),
     receipt: UploadFile | None = File(None),
+    remove_file: bool = Form(False),
     db: Session = Depends(get_db),
 ):
     record = db.get(models.Maintenance, record_id)
@@ -290,10 +309,27 @@ async def update_maintenance(
     record.title = title
     record.date = date
     record.description = description
-    if receipt is not None:
+    if remove_file:
+        record.receipt_data = None
+        record.receipt_filename = None
+        record.receipt_content_type = None
+    elif receipt is not None:
         record.receipt_data = await receipt.read()
         record.receipt_filename = receipt.filename
         record.receipt_content_type = receipt.content_type or "application/octet-stream"
+    db.commit()
+    db.refresh(record)
+    return record
+
+
+@app.delete("/api/maintenance/{record_id}/receipt", response_model=schemas.MaintenanceOut)
+def delete_receipt(record_id: int, db: Session = Depends(get_db)):
+    record = db.get(models.Maintenance, record_id)
+    if not record:
+        raise HTTPException(404, "Record not found")
+    record.receipt_data = None
+    record.receipt_filename = None
+    record.receipt_content_type = None
     db.commit()
     db.refresh(record)
     return record
@@ -653,6 +689,7 @@ async def update_todo(
     text: str | None = Form(None),
     done: bool | None = Form(None),
     file: UploadFile | None = File(None),
+    remove_file: bool = Form(False),
     db: Session = Depends(get_db)
 ):
     item = db.get(models.Todo, item_id)
@@ -662,10 +699,27 @@ async def update_todo(
         item.text = text
     if done is not None:
         item.done = done
-    if file is not None:
+    if remove_file:
+        item.file_data = None
+        item.file_filename = None
+        item.file_content_type = None
+    elif file is not None:
         item.file_data = await file.read()
         item.file_filename = file.filename
         item.file_content_type = file.content_type or "application/octet-stream"
+    db.commit()
+    db.refresh(item)
+    return item
+
+
+@app.delete("/api/todos/{item_id}/file", response_model=schemas.ItemOut)
+def delete_todo_file(item_id: int, db: Session = Depends(get_db)):
+    item = db.get(models.Todo, item_id)
+    if not item:
+        raise HTTPException(404, "Item not found")
+    item.file_data = None
+    item.file_filename = None
+    item.file_content_type = None
     db.commit()
     db.refresh(item)
     return item
@@ -764,6 +818,7 @@ async def update_shopping(
     link: str | None = Form(None),
     done: bool | None = Form(None),
     file: UploadFile | None = File(None),
+    remove_file: bool = Form(False),
     db: Session = Depends(get_db)
 ):
     item = db.get(models.ShoppingItem, item_id)
@@ -777,10 +832,27 @@ async def update_shopping(
         item.link = link
     if done is not None:
         item.done = done
-    if file is not None:
+    if remove_file:
+        item.file_data = None
+        item.file_filename = None
+        item.file_content_type = None
+    elif file is not None:
         item.file_data = await file.read()
         item.file_filename = file.filename
         item.file_content_type = file.content_type or "application/octet-stream"
+    db.commit()
+    db.refresh(item)
+    return item
+
+
+@app.delete("/api/shopping/{item_id}/file", response_model=schemas.ShoppingOut)
+def delete_shopping_file(item_id: int, db: Session = Depends(get_db)):
+    item = db.get(models.ShoppingItem, item_id)
+    if not item:
+        raise HTTPException(404, "Item not found")
+    item.file_data = None
+    item.file_filename = None
+    item.file_content_type = None
     db.commit()
     db.refresh(item)
     return item
